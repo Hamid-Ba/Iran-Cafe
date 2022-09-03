@@ -8,9 +8,19 @@ from account.vaidators import phone_validator
 
 class UserManager(BaseUserManager):
     """User Manager"""
-    def create_user(self,phone,password,**extra_fields):
+    def create_user(self,phone,password=None,**extra_fields):
         """Custome Create Normal User"""
+        if not phone : raise ValueError
         user = self.model(phone=phone,**extra_fields)
+        user.set_password(password)
+        user.save()
+
+        return user
+
+    def create_superuser(self,phone,password=None,**extra_fields):
+        """Create Super User"""
+        if not phone : raise ValueError
+        user = self.model(phone=phone,is_staff=True,is_superuser=True,**extra_fields)
         user.set_password(password)
         user.save()
 
