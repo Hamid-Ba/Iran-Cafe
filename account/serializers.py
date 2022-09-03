@@ -32,8 +32,8 @@ class AuthenticationSerializer(serializers.Serializer):
 
 class AuthTokenSerializer(serializers.Serializer):
     """Auth Token Serializer For Create Token"""
-    phone = serializers.CharField(max_length=11,required=True)
-    password = serializers.CharField(max_length=11,required=True)
+    phone = serializers.CharField(max_length=11,required=True,error_messages={'blank': 'موبایل خود را وارد نمایید'})
+    password = serializers.CharField(max_length=11,required=True,error_messages={'blank': 'رمز یک بار مصرف خود را وارد نمایید'})
 
     def validate(self,attrs):
         phone = attrs.get('phone')
@@ -46,7 +46,7 @@ class AuthTokenSerializer(serializers.Serializer):
         )
 
         if not user :
-            msg = 'please enter correct information'
+            msg = 'لطفا اطلاعات خود را درست وارد نمایید'
             raise serializers.ValidationError(msg,code='authorization')
 
         attrs['user'] = user
