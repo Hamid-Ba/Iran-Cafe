@@ -8,6 +8,7 @@ from rest_framework import status
 from django.contrib.auth import get_user_model
 
 AUTH_URL = reverse('account:auth-login-or-register')
+TOKEN_URL = reverse('account:token')
 
 def create_user(phone,password=None):
     """Helper Function For Create User"""
@@ -43,3 +44,17 @@ class PublicTests(TestCase):
 
         user.refresh_from_db()
         self.assertNotEqual(user.password , old_password)
+
+    def test_create_token_should_work_properly(self):
+        """Test For Creation The Token"""
+        payload = {
+            "phone" : "09151498722",
+            "password" : "123456"
+        }
+
+        user = create_user(payload['phone'],payload['password'])
+
+        res = self.client.post(TOKEN_URL,payload)
+        
+        self.assertIn('token',res.data)
+        self.assertEqual(res.status_code,status.HTTP_200_OK)

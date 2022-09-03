@@ -1,14 +1,13 @@
 """
 Account Module Views
 """
-from django.contrib.auth import get_user_model
-from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework import status
+from rest_framework.authtoken.views import ObtainAuthToken
 
 from rest_framework.response import Response
-from account.serializers import AuthenticationSerializer
+from account.serializers import (AuthenticationSerializer , AuthTokenSerializer)
 # Create your views here.
 
 class AuthenticationViewSet(viewsets.ViewSet):
@@ -24,3 +23,7 @@ class AuthenticationViewSet(viewsets.ViewSet):
             return Response({"phone" : serializer.data['phone'] } , status = status.HTTP_200_OK)
 
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+class AuthTokenView(ObtainAuthToken):
+    """Auth Token View For Create Valid Token"""
+    serializer_class = AuthTokenSerializer

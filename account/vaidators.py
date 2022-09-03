@@ -1,7 +1,6 @@
 from django.core import validators
 from django.utils.deconstruct import deconstructible
 
-
 @deconstructible
 class PhoneValidator(validators.RegexValidator):
     regex = r'^09\d{9}$'
