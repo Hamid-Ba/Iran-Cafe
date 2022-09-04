@@ -7,7 +7,10 @@ from random import (randint)
 
 class AuthenticationSerializer(serializers.Serializer):
     """Authentcation Serializer For Login And Register"""
-    phone = serializers.CharField(max_length=11,required=True)
+    phone = serializers.CharField(max_length=11,required=True,error_messages={
+        'blank': 'موبایل خود را وارد نمایید',
+        'required': 'موبایل خود را وارد نمایید',
+        })
 
     def validate(self, attrs):
         phone = attrs.get('phone')
