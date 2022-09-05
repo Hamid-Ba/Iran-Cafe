@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'rest_framework.authtoken',
     'rest_framework',
-    'account'
+    'account',
+    'province'
 ]
 
 MIDDLEWARE = [
