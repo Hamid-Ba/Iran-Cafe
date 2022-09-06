@@ -40,5 +40,8 @@ class Cafe(models.Model):
                             choices=CafeType.choices)
     
     owner = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    province = models.OneToOneField(Province, on_delete=models.DO_NOTHING)
-    city = models.OneToOneField(City, on_delete=models.DO_NOTHING)
+    province = models.ForeignKey(Province, on_delete=models.DO_NOTHING)
+    city = models.ForeignKey(City, on_delete=models.DO_NOTHING)
+
+    def __str__(self) -> str:
+        return self.persian_title
