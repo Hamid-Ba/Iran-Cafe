@@ -1,7 +1,6 @@
 """
 Test Cafe Endpoints
 """
-import json
 from django.test import TestCase
 from rest_framework.test import APIClient
 from django.urls import reverse
@@ -9,9 +8,6 @@ from rest_framework import status
 from django.template.defaultfilters import slugify
 from django.contrib.auth import get_user_model
 from cafe.models import Cafe
-from django.forms.models import model_to_dict
-from cafe.serializers import CreateUpdateCafeSerializer
-
 
 from province.models import City, Province
 
@@ -34,15 +30,12 @@ class PrivateTest(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.owner = create_user("09151498722")
-
         self.client.force_authenticate(self.owner)
-        
-
+    
     def test_register_cafe_should_work_properly(self):
         """Test Registering The Cafe By User"""
         province = create_province("Tehran" , "Tehran")
         city = create_city("Tehran" , "Tehran",province)
-        
         payload = {
             # "code" : str(uuid.uuid1())[0:5],
             "persian_title" : "تست",
@@ -58,13 +51,6 @@ class PrivateTest(TestCase):
         }
         
         res = self.client.post(CAFE_URL, payload , format='json')
-        # serializer = CreateUpdateCafeSerializer(data=payload)
-        print(res.data)
+
         self.assertEqual(res.status_code,status.HTTP_201_CREATED)
-
-        cafe = Cafe.objects.get(owner=self.owner)
-
-        # for (k , v) in payload.items():
-        #     self.assertEqual(getattr(cafe,k), v)
-
         self.assertTrue(Cafe.objects.filter(owner=self.owner).exists())
