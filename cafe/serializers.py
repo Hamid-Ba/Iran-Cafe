@@ -4,12 +4,8 @@ Cafe Module Serializers
 from rest_framework import serializers
 from cafe.models import Cafe
 
-from province.serializers import (CitySerializer, ProvinceSerializer)
-
 class CreateUpdateCafeSerializer(serializers.ModelSerializer):
     """Cafe Serializer For Register Cafe"""
-    # province = ProvinceSerializer(required=True,many=False)
-    # city = CitySerializer(required=True,many=False)
     class Meta:
         """Meta Class"""
         model = Cafe

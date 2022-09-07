@@ -38,6 +38,6 @@ class User(AbstractBaseUser,PermissionsMixin):
     objects = UserManager()
 
     def __str__(self) :
-        if not self.fullName: return self.fullName
+        if self.fullName: return self.fullName
         return self.phone
         
