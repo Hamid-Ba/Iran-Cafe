@@ -39,7 +39,7 @@ class PublicTest(TestCase):
         self.province = create_province("Tehran" , "Tehran")
         self.city = create_city("Tehran" , "Tehran",self.province)
         self.owner = create_user("09151498722")
-        
+
     def test_get_cafes_by_province_should_work_properly(self):
         """Test Gets Cafe By Province"""
         payload = {
@@ -82,6 +82,12 @@ class PublicTest(TestCase):
         cafes = Cafe.objects.get_by_province(self.province.slug)
         self.assertEqual(len(cafes),1)
         self.assertTrue(cafes.exists())
+
+    def test_get_empty_cafe_list_by_province(self):
+        """Test If Provinces Cafe Are None"""
+        url = get_cafe_province_url(self.province.slug)
+        res = self.client.get(url)
+        self.assertEqual(res.status_code,status.HTTP_204_NO_CONTENT)
 
 
 class PrivateTest(TestCase):

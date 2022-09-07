@@ -1,14 +1,11 @@
 """
 Cafe Module Views
 """
-import json
-from typing import Generic
-from rest_framework import (mixins , generics ,viewsets , permissions , authentication)
+from rest_framework import (mixins , generics ,viewsets , permissions , authentication ,status)
 from cafe.models import Cafe
-from rest_framework.views import APIView
 from rest_framework.response import Response
 from cafe.serializers import CafeSerializer, CreateUpdateCafeSerializer
-from django.forms.models import model_to_dict
+
 
 class CafeViewSet(mixins.RetrieveModelMixin,
                     mixins.CreateModelMixin,
@@ -38,4 +35,9 @@ class CafesListView(generics.ListAPIView):
         
     def get(self, request, province_slug):
         cafes = Cafe.objects.get_by_province(province_slug)
+        
+        if len(cafes) == 0 : return Response(
+            data ={"message" : "کافه ای برای این استان ثبت نشده است"},
+            status = status.HTTP_204_NO_CONTENT)
+
         return Response(cafes) 
