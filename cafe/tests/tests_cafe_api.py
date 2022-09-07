@@ -28,8 +28,23 @@ def create_city(name,slug,province):
     """Helper Function To Create Province"""
     return City.objects.create(name=name,slug=slug,province=province)
 
-def create_cafe(**payload):
+def create_cafe(province,city,owner,**new_payload):
     """Helper Function To Create Cafe"""
+    payload  = {
+        "persian_title" : "تست",
+        "english_title" : "Test",
+        "slug" : slugify("Test"),
+        "phone" : owner.phone,
+        "street" : "west coast street",
+        "short_desc" : "test short desc",
+        "desc" : "test description",
+        "type" : "C",
+        "state" : "P",
+        "province" : province,
+        "city" : city,
+        "owner" : owner
+    }
+    payload.update(new_payload)
     return Cafe.objects.create(**payload)
 
 class PublicTest(TestCase):
@@ -46,36 +61,19 @@ class PublicTest(TestCase):
             "persian_title" : "تست",
             "english_title" : "Test",
             "slug" : slugify("Test"),
-            "phone" : "09151498722",
             "street" : "west coast street",
             "short_desc" : "test short desc",
             "desc" : "test description",
             "type" : "C",
             "state" : "C",
-            "province" : self.province,
-            "city" : self.city,
-            "owner" : self.owner
         }
 
         province_2 = create_province("NY" , "NY")
         city_2 = create_city("SD" , "SD",province_2)
         owner_2 = create_user("09151498721")
-        payload_2 = {
-            "persian_title" : "تست",
-            "english_title" : "Test",
-            "slug" : slugify("Test"),
-            "phone" : "09151498721",
-            "street" : "west coast street",
-            "short_desc" : "test short desc",
-            "desc" : "test description",
-            "type" : "C",
-            "state" : "C",
-            "province" : province_2,
-            "city" : city_2,
-            "owner" : owner_2
-        }
-        create_cafe(**payload)
-        create_cafe(**payload_2)
+    
+        create_cafe(self.province,self.city,self.owner,**payload)
+        create_cafe(province_2,city_2,owner_2,**payload)
 
         url = get_cafe_province_url(self.province.slug)
         res = self.client.get(url)
@@ -103,27 +101,11 @@ class PublicTest(TestCase):
             "desc" : "test description",
             "type" : "C",
             "state" : "C",
-            "province" : self.province,
-            "city" : self.city,
-            "owner" : self.owner
         }
 
         owner_2 = create_user("09151498721")
-        payload_2 = {
-            "persian_title" : "تست",
-            "english_title" : "Test",
-            "slug" : slugify("Test"),
-            "phone" : "09151498721",
-            "street" : "west coast street",
-            "short_desc" : "test short desc",
-            "desc" : "test description",
-            "type" : "C",
-            "province" : self.province,
-            "city" : self.city,
-            "owner" : owner_2
-        }
-        create_cafe(**payload)
-        create_cafe(**payload_2)
+        create_cafe(self.province,self.city,self.owner,**payload)
+        create_cafe(self.province,self.city,owner_2)
         
         url = get_cafe_province_url(self.province.slug)
         res = self.client.get(url)
