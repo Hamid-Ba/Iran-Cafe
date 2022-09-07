@@ -1,6 +1,7 @@
 """
 Cafe Module Models
 """
+from pickle import TRUE
 from django.db import models
 
 from django.conf import settings
@@ -29,13 +30,13 @@ class Cafe(models.Model):
     english_title = models.CharField(max_length=90,null=False, blank=False)
     slug = models.SlugField(max_length=200,blank=False,null=False)
     phone = models.CharField(max_length=11,unique=True,validators=[PhoneValidator])
-    email = models.EmailField(max_length=125,null=False, blank=False)
-    image_url = models.URLField(max_length=250)
-    telegram_id = models.CharField(max_length=100)
-    instagram_id = models.CharField(max_length=100)
-    postal_code = models.CharField(max_length=10)
-    google_map_url = models.URLField(max_length=250)
-    street = models.CharField(max_length=250,null=False, blank=False)
+    email = models.EmailField(max_length=125,null=True, blank=True)
+    image_url = models.URLField(max_length=250,blank=True,null=True)
+    telegram_id = models.CharField(max_length=100,blank=True,null=True)
+    instagram_id = models.CharField(max_length=100,blank=True,null=True)
+    postal_code = models.CharField(max_length=10,blank=True,null=True)
+    google_map_url = models.URLField(max_length=250,blank=True,null=True)
+    street = models.CharField(max_length=250,null=True, blank=True)
     short_desc = models.CharField(max_length=250,blank=False,null=False)
     desc = models.TextField(blank=True)
     state = models.CharField(max_length=1,
