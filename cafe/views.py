@@ -1,7 +1,6 @@
 """
 Cafe Module Views
 """
-from django.shortcuts import render
 from rest_framework import (mixins , generics ,viewsets , permissions , authentication)
 from cafe.models import Cafe
 

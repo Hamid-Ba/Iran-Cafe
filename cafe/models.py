@@ -38,6 +38,7 @@ class Cafe(models.Model):
     type = models.CharField(max_length=2,
                             default=CafeType.CAFE,
                             choices=CafeType.choices)
+    view_count = models.BigIntegerField(default = 0)
     
     owner = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     province = models.ForeignKey(Province, on_delete=models.DO_NOTHING)

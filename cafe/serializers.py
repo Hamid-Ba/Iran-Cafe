@@ -28,5 +28,5 @@ class CafeSerializer(CreateUpdateCafeSerializer):
     class Meta(CreateUpdateCafeSerializer.Meta):
         """Meta Class"""
         fields = ['id'] + CreateUpdateCafeSerializer.Meta.fields + ['image_url', 'instagram_id' , 'telegram_id' ,
-                                                    'postal_code', 'code', 'state' , 'owner'] 
-        read_only_fields = ['owner' , 'code' , 'state']
+                                                    'postal_code', 'code', 'state' , 'owner' , 'view_count'] 
+        read_only_fields = ['owner' , 'code' , 'state' , 'view_count']

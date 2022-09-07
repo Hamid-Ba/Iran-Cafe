@@ -4,11 +4,11 @@ from cafe.models import Cafe
 
 class CafeAdmin(admin.ModelAdmin):
     """Cafe Admin Model"""
-    list_display = ['code' ,'owner','persian_title' , 'english_title' ,'state' , 'type' , 'province' ,'city']
+    list_display = ['code' ,'owner','persian_title' , 'english_title' , 'view_count' ,'state' , 'type' , 'province' ,'city']
     list_display_links = ['code' , 'owner' , 'persian_title' , 'english_title']
     list_editable = ['state']
     list_filter = ['province' , 'state' , 'type']
-    sortable_by = ['state', 'type']
+    sortable_by = ['state', 'type','view_count']
     
     search_fields = ['code' , 'owner' , 'persian_title' , 'english_title']
 
