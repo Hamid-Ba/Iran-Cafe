@@ -145,6 +145,13 @@ class PublicTest(TestCase):
         cafes = Cafe.objects.get_by_city(self.city.slug)
         self.assertEqual(len(cafes) , 1)
         self.assertTrue(cafes.exists())
+
+    def test_get_empty_cafe_list_by_city(self):
+        """Test Get None Cafe If No Cafe Registered In City"""
+        url = get_cafe_city_url(self.city.slug)
+        res = self.client.get(url)
+        self.assertEqual(res.status_code,status.HTTP_204_NO_CONTENT)
+
         
 class PrivateTest(TestCase):
     """Test Those Endpoints Which Need User To Be Authorized"""

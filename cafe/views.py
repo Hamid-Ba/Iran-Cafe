@@ -48,8 +48,8 @@ class CafesCityListView(generics.ListAPIView):
     def get(self, request, city_slug):
         cafes = Cafe.objects.get_by_city(city_slug)
         
-        # if len(cafes) == 0 : return Response(
-        #     data ={"message" : "کافه ای برای این شهر ثبت نشده است"},
-        #     status = status.HTTP_204_NO_CONTENT)
+        if len(cafes) == 0 : return Response(
+            data ={"message" : "کافه ای برای این شهر ثبت نشده است"},
+            status = status.HTTP_204_NO_CONTENT)
 
         return Response(cafes) 
