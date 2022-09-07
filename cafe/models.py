@@ -10,13 +10,17 @@ from province.models import (City, Province)
 
 class CafeManager(models.Manager):
     """Cafe Manager"""
+    def get_confirmed_cafes(self):
+        """Returns a list of cafes that have been confirmed"""
+        return self.filter(state='C').values()
+
     def get_by_province(self, province):
         """Get By Province"""
-        return self.filter(province__slug=province).filter(state="C").order_by('-view_count').values()
+        return  self.get_confirmed_cafes().filter(province__slug=province).order_by('-view_count').values()
 
     def get_by_city(self, city):
         """Get By City"""
-        return self.filter(city__slug=city).order_by('-view_count').values()
+        return self.get_confirmed_cafes().filter(city__slug=city).order_by('-view_count').values()
 
 class Cafe(models.Model):
     """Cafe Model"""

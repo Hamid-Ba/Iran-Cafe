@@ -152,6 +152,32 @@ class PublicTest(TestCase):
         res = self.client.get(url)
         self.assertEqual(res.status_code,status.HTTP_204_NO_CONTENT)
 
+    def test_get_cafe_list_by_city_if_cafe_confirmed(self):
+        """Test Get Confirmed Cafes"""
+        payload = {
+            "persian_title" : "تست",
+            "english_title" : "Test",
+            "slug" : slugify("Test"),
+            "phone" : "09151498722",
+            "street" : "west coast street",
+            "short_desc" : "test short desc",
+            "desc" : "test description",
+            "type" : "C",
+            "state" : "C",
+        }
+
+        owner_2 = create_user("09151498721")
+        create_cafe(self.province,self.city,self.owner,**payload)
+        create_cafe(self.province,self.city,owner_2)
+        
+        url = get_cafe_city_url(self.city.slug)
+        res = self.client.get(url)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+        cafes = Cafe.objects.get_by_city(self.city.slug)
+        self.assertEqual(len(cafes),1)
+        self.assertTrue(cafes.exists())        
+
         
 class PrivateTest(TestCase):
     """Test Those Endpoints Which Need User To Be Authorized"""
