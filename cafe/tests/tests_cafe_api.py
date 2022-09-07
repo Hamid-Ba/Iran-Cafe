@@ -51,6 +51,7 @@ class PublicTest(TestCase):
             "short_desc" : "test short desc",
             "desc" : "test description",
             "type" : "C",
+            "state" : "C",
             "province" : self.province,
             "city" : self.city,
             "owner" : self.owner
@@ -68,6 +69,7 @@ class PublicTest(TestCase):
             "short_desc" : "test short desc",
             "desc" : "test description",
             "type" : "C",
+            "state" : "C",
             "province" : province_2,
             "city" : city_2,
             "owner" : owner_2
@@ -89,6 +91,47 @@ class PublicTest(TestCase):
         res = self.client.get(url)
         self.assertEqual(res.status_code,status.HTTP_204_NO_CONTENT)
 
+    def test_get_cafes_list_if_cafe_confirmed(self):
+        """Test If Cafe Is Confirmed Then Show It"""
+        payload = {
+            "persian_title" : "تست",
+            "english_title" : "Test",
+            "slug" : slugify("Test"),
+            "phone" : "09151498722",
+            "street" : "west coast street",
+            "short_desc" : "test short desc",
+            "desc" : "test description",
+            "type" : "C",
+            "state" : "C",
+            "province" : self.province,
+            "city" : self.city,
+            "owner" : self.owner
+        }
+
+        owner_2 = create_user("09151498721")
+        payload_2 = {
+            "persian_title" : "تست",
+            "english_title" : "Test",
+            "slug" : slugify("Test"),
+            "phone" : "09151498721",
+            "street" : "west coast street",
+            "short_desc" : "test short desc",
+            "desc" : "test description",
+            "type" : "C",
+            "province" : self.province,
+            "city" : self.city,
+            "owner" : owner_2
+        }
+        create_cafe(**payload)
+        create_cafe(**payload_2)
+        
+        url = get_cafe_province_url(self.province.slug)
+        res = self.client.get(url)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+        cafes = Cafe.objects.get_by_province(self.province.slug)
+        self.assertEqual(len(cafes),1)
+        self.assertTrue(cafes.exists())
 
 class PrivateTest(TestCase):
     """Test Those Endpoints Which Need User To Be Authorized"""
