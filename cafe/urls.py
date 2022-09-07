@@ -8,10 +8,11 @@ from cafe import views
 
 
 router = DefaultRouter()
-router.register('cafe' , views.CafeViewSet , basename = 'cafe')
+router.register('' , views.CafeViewSet)
 
 app_name = "cafe"
 
 urlpatterns = [
     path("",include(router.urls)),
+    path("list/<str:province_slug>/",views.CafesListView.as_view(),name='cafes_by_province')
 ]

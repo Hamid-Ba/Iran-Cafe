@@ -7,6 +7,12 @@ from django.conf import settings
 from cafe.validators import PhoneValidator
 from province.models import (City, Province)
 
+class CafeManager(models.Manager):
+    """Cafe Manager"""
+    def get_by_province(self, province):
+        """Get By Province"""
+        return self.filter(province__slug=province).order_by('-view_count').values()
+
 class Cafe(models.Model):
     """Cafe Model"""
     class CafeType(models.TextChoices):
@@ -43,6 +49,8 @@ class Cafe(models.Model):
     owner = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     province = models.ForeignKey(Province, on_delete=models.DO_NOTHING)
     city = models.ForeignKey(City, on_delete=models.DO_NOTHING)
+    
+    objects = CafeManager()
 
     def __str__(self) -> str:
         return self.persian_title

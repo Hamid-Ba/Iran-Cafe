@@ -13,6 +13,9 @@ from province.models import City, Province
 
 CAFE_URL = reverse('cafe:cafe-list')
 
+def get_cafe_province_url(slug):
+    return reverse('cafe:cafes_by_province',kwargs={'province_slug': slug})
+
 def create_user(phone,password=None):
     """Helper Function For Create User"""
     return get_user_model().objects.create_user(phone=phone,password=password)
@@ -24,6 +27,62 @@ def create_province(name,slug):
 def create_city(name,slug,province):
     """Helper Function To Create Province"""
     return City.objects.create(name=name,slug=slug,province=province)
+
+def create_cafe(**payload):
+    """Helper Function To Create Cafe"""
+    return Cafe.objects.create(**payload)
+
+class PublicTest(TestCase):
+    """Test Those Endpoints Which Don't Need User To Be Authorized"""
+    def setUp(self):
+        self.client = APIClient()
+        self.province = create_province("Tehran" , "Tehran")
+        self.city = create_city("Tehran" , "Tehran",self.province)
+        self.owner = create_user("09151498722")
+        
+    def test_get_cafes_by_province_should_work_properly(self):
+        """Test Gets Cafe By Province"""
+        payload = {
+            "persian_title" : "تست",
+            "english_title" : "Test",
+            "slug" : slugify("Test"),
+            "phone" : "09151498722",
+            "street" : "west coast street",
+            "short_desc" : "test short desc",
+            "desc" : "test description",
+            "type" : "C",
+            "province" : self.province,
+            "city" : self.city,
+            "owner" : self.owner
+        }
+
+        province_2 = create_province("NY" , "NY")
+        city_2 = create_city("SD" , "SD",province_2)
+        owner_2 = create_user("09151498721")
+        payload_2 = {
+            "persian_title" : "تست",
+            "english_title" : "Test",
+            "slug" : slugify("Test"),
+            "phone" : "09151498721",
+            "street" : "west coast street",
+            "short_desc" : "test short desc",
+            "desc" : "test description",
+            "type" : "C",
+            "province" : province_2,
+            "city" : city_2,
+            "owner" : owner_2
+        }
+        create_cafe(**payload)
+        create_cafe(**payload_2)
+
+        url = get_cafe_province_url(self.province.slug)
+        res = self.client.get(url)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+        cafes = Cafe.objects.get_by_province(self.province.slug)
+        self.assertEqual(len(cafes),1)
+        self.assertTrue(cafes.exists())
+
 
 class PrivateTest(TestCase):
     """Test Those Endpoints Which Need User To Be Authorized"""

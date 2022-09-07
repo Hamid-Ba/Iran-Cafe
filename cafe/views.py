@@ -1,10 +1,14 @@
 """
 Cafe Module Views
 """
+import json
+from typing import Generic
 from rest_framework import (mixins , generics ,viewsets , permissions , authentication)
 from cafe.models import Cafe
-
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from cafe.serializers import CafeSerializer, CreateUpdateCafeSerializer
+from django.forms.models import model_to_dict
 
 class CafeViewSet(mixins.RetrieveModelMixin,
                     mixins.CreateModelMixin,
@@ -28,3 +32,10 @@ class CafeViewSet(mixins.RetrieveModelMixin,
     def perform_create(self, serializer):
         """Register Cafe"""
         return serializer.save(owner=self.request.user)
+
+class CafesListView(generics.ListAPIView):
+    serializer_class = CafeSerializer
+        
+    def get(self, request, province_slug):
+        cafes = Cafe.objects.get_by_province(province_slug)
+        return Response(cafes) 
