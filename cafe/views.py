@@ -30,7 +30,7 @@ class CafeViewSet(mixins.RetrieveModelMixin,
         """Register Cafe"""
         return serializer.save(owner=self.request.user)
 
-class CafesListView(generics.ListAPIView):
+class CafesProvinceListView(generics.ListAPIView):
     serializer_class = CafeSerializer
         
     def get(self, request, province_slug):
@@ -39,5 +39,17 @@ class CafesListView(generics.ListAPIView):
         if len(cafes) == 0 : return Response(
             data ={"message" : "کافه ای برای این استان ثبت نشده است"},
             status = status.HTTP_204_NO_CONTENT)
+
+        return Response(cafes) 
+
+class CafesCityListView(generics.ListAPIView):
+    serializer_class = CafeSerializer
+        
+    def get(self, request, city_slug):
+        cafes = Cafe.objects.get_by_city(city_slug)
+        
+        # if len(cafes) == 0 : return Response(
+        #     data ={"message" : "کافه ای برای این شهر ثبت نشده است"},
+        #     status = status.HTTP_204_NO_CONTENT)
 
         return Response(cafes) 

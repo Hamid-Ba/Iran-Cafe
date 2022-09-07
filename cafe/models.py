@@ -14,6 +14,10 @@ class CafeManager(models.Manager):
         """Get By Province"""
         return self.filter(province__slug=province).filter(state="C").order_by('-view_count').values()
 
+    def get_by_city(self, city):
+        """Get By City"""
+        return self.filter(city__slug=city).order_by('-view_count').values()
+
 class Cafe(models.Model):
     """Cafe Model"""
     class CafeType(models.TextChoices):

@@ -16,6 +16,9 @@ CAFE_URL = reverse('cafe:cafe-list')
 def get_cafe_province_url(slug):
     return reverse('cafe:cafes_by_province',kwargs={'province_slug': slug})
 
+def get_cafe_city_url(slug):
+    return reverse('cafe:cafes_by_city',kwargs={'city_slug': slug})
+
 def create_user(phone,password=None):
     """Helper Function For Create User"""
     return get_user_model().objects.create_user(phone=phone,password=password)
@@ -115,6 +118,34 @@ class PublicTest(TestCase):
         self.assertEqual(len(cafes),1)
         self.assertTrue(cafes.exists())
 
+    def test_get_cafe_by_city_should_work_properly(self):
+        """Test Get Cafe List Filterd By City"""
+        payload = {
+            "persian_title" : "تست",
+            "english_title" : "Test",
+            "slug" : slugify("Test"),
+            "street" : "west coast street",
+            "short_desc" : "test short desc",
+            "desc" : "test description",
+            "type" : "C",
+            "state" : "C",
+        }
+
+        province_2 = create_province("NY" , "NY")
+        city_2 = create_city("SD" , "SD",province_2)
+        owner_2 = create_user("09151498721")
+
+        create_cafe(self.province,self.city,self.owner,**payload)
+        create_cafe(province_2,city_2,owner_2)
+
+        url = get_cafe_city_url(self.city.slug)
+        res = self.client.get(url)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+        cafes = Cafe.objects.get_by_city(self.city.slug)
+        self.assertEqual(len(cafes) , 1)
+        self.assertTrue(cafes.exists())
+        
 class PrivateTest(TestCase):
     """Test Those Endpoints Which Need User To Be Authorized"""
     def setUp(self):
