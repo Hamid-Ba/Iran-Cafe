@@ -8,6 +8,7 @@ from rest_framework import status
 from django.template.defaultfilters import slugify
 from django.contrib.auth import get_user_model
 from cafe.models import Cafe
+from cafe.serializers import CafeSerializer
 
 from province.models import City, Province
 
@@ -117,6 +118,61 @@ class PublicTest(TestCase):
         cafes = Cafe.objects.get_by_province(self.province.slug)
         self.assertEqual(len(cafes),1)
         self.assertTrue(cafes.exists())
+
+    def test_filter_by_city_name_type(self):
+        """Test Filter Cafes By City Name Type"""
+        payload = {
+            "persian_title" : "تست",
+            "english_title" : "Test",
+            "slug" : slugify("Test"),
+            "phone" : "09151498722",
+            "street" : "west coast street",
+            "short_desc" : "test short desc",
+            "desc" : "test description",
+            "type" : "C",
+            "state" : "C",
+        }
+        payload2 = {
+            "persian_title" : "2تست",
+            "english_title" : "Test2",
+            "slug" : slugify("Test2"),
+            "phone" : "09151498721",
+            "street" : "west coast street",
+            "short_desc" : "test short desc",
+            "desc" : "test description",
+            "type" : "R",
+            "state" : "C",
+        }
+        payload3 = {
+            "persian_title" : "3تست",
+            "english_title" : "Test3",
+            "slug" : slugify("Test3"),
+            "phone" : "09151498723",
+            "street" : "west coast street",
+            "short_desc" : "test short desc",
+            "desc" : "test description",
+            "type" : "C",
+            "state" : "C",
+        }
+
+        owner_2 = create_user("09151498721")
+        city_2 = create_city("Shahriar" , "Shahriar",self.province)
+        owner_3 = create_user("09151498723")
+        c1 = create_cafe(self.province,self.city,self.owner,**payload)
+        c2 = create_cafe(self.province,self.city,owner_2,**payload2)
+        c3 = create_cafe(self.province,city_2,owner_3,**payload3)
+
+        params = {"city":self.city.id , "title" : "تست" , "type" : "C"}
+        url = get_cafe_province_url(self.province.slug)
+        res = self.client.get(url,params)
+
+        s1 = CafeSerializer(c1)
+        s2 = CafeSerializer(c2)
+        s3 = CafeSerializer(c3)
+        
+        self.assertEqual(s1.data['id'],res.data[0]['id'])
+        self.assertNotEqual(s2.data['id'],res.data[0]['id'])
+        self.assertNotEqual(s3.data['id'],res.data[0]['id'])
 
     def test_get_cafe_by_city_should_work_properly(self):
         """Test Get Cafe List Filterd By City"""

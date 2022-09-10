@@ -16,7 +16,7 @@ class CafeManager(models.Manager):
 
     def get_by_province(self, province):
         """Get By Province"""
-        return  self.get_confirmed_cafes().filter(province__slug=province).order_by('-view_count').values()
+        return self.get_confirmed_cafes().filter(province__slug=province).order_by('-view_count').values()
 
     def get_by_city(self, city):
         """Get By City"""
@@ -27,7 +27,8 @@ class Cafe(models.Model):
     class CafeType(models.TextChoices):
         CAFE = 'C' , 'CAFE'
         RESTAURANT = 'R' , 'RESTAURANT',
-        CAFE_RESTAURANT = 'CR' , 'CAFE_RESTAURANT'
+        CAFE_RESTAURANT = 'CR' , 'CAFE_RESTAURANT',
+        ICE_CREAM = "IC" , "ICE_CREAM_PARLOR"
     class CafeState(models.TextChoices):
         PENDING = 'P', 'Pending'
         CONFIRMED = 'C', 'Confirmed'
