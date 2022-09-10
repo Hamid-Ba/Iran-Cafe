@@ -170,9 +170,11 @@ class PublicTest(TestCase):
         s2 = CafeSerializer(c2)
         s3 = CafeSerializer(c3)
         
+        self.assertEqual(len(res.data),1)
         self.assertEqual(s1.data['id'],res.data[0]['id'])
         self.assertNotEqual(s2.data['id'],res.data[0]['id'])
         self.assertNotEqual(s3.data['id'],res.data[0]['id'])
+        
 
     def test_get_cafe_by_city_should_work_properly(self):
         """Test Get Cafe List Filterd By City"""
