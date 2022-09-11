@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'account',
     'province',
-    'cafe'
+    'cafe.apps.CafeConfig'
 ]
 
 MIDDLEWARE = [

@@ -1,7 +1,7 @@
 """
 Cafe Module Models
 """
-from pickle import TRUE
+from uuid import (uuid4)
 from django.db import models
 
 from django.conf import settings
@@ -21,6 +21,15 @@ class CafeManager(models.Manager):
     def get_by_city(self, city):
         """Get By City"""
         return self.get_confirmed_cafes().filter(city__slug=city).order_by('-view_count').values()
+
+    def fill_unique_code(self, cafe_id):
+        """Change Cafe State to Confirmed"""
+        cafe = self.filter(id=cafe_id).get()
+        if cafe.state == 'C':
+            if not cafe.code :
+                cafe.code =  str(uuid4())[0:5]
+                cafe.save()
+        return cafe
 
 class Cafe(models.Model):
     """Cafe Model"""
