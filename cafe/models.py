@@ -27,7 +27,7 @@ class CafeManager(models.Manager):
         cafe = self.filter(id=cafe_id).get()
         if cafe.state == 'C':
             if not cafe.code :
-                cafe.code =  str(uuid4())[0:5]
+                cafe.code =  str(uuid4())[0:5].lower()
                 cafe.save()
         return cafe
 
