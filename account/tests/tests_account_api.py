@@ -9,6 +9,7 @@ from django.contrib.auth import get_user_model
 
 AUTH_URL = reverse('account:auth-login-or-register')
 TOKEN_URL = reverse('account:token')
+ME_USER_URL = reverse("account:me")
 
 def create_user(phone,password=None):
     """Helper Function For Create User"""
@@ -58,3 +59,30 @@ class PublicTests(TestCase):
         
         self.assertIn('token',res.data)
         self.assertEqual(res.status_code,status.HTTP_200_OK)
+
+class PrivateTest(TestCase):
+    """Test APIs Which Needs User To Be Authenticated"""
+    def setUp(self):
+        self.client = APIClient()
+        self.user = create_user("09151498722")
+
+        self.client.force_authenticate(self.user)
+
+    def test_retrieve_user_profile(self):
+        """Test Retrieve User With His Token"""
+        res = self.client.get(ME_USER_URL)
+
+        self.assertEqual(res.status_code,status.HTTP_200_OK)
+        self.assertEqual(res.data["phone"] , self.user.phone)
+
+    def test_update_user_profile(self):
+        """Test Update User Profile"""
+        payload = {
+            "fullName" : "NewHamid"
+        }
+
+        res = self.client.patch(ME_USER_URL, payload)
+
+        self.user.refresh_from_db()
+        self.assertEqual(res.status_code , status.HTTP_200_OK)
+        self.assertEqual(self.user.fullName , payload["fullName"])

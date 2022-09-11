@@ -5,6 +5,14 @@ from rest_framework import serializers
 from django.contrib.auth import (get_user_model , authenticate)
 from random import (randint)
 
+class UserSerializer(serializers.ModelSerializer):
+    """User Serializer"""
+    class Meta:
+        """Meta Class"""
+        model = get_user_model()
+        fields = '__all__'
+        read_only_fields = ['id','phone','is_active','is_staff','groups','user_permissions','is_superuser','last_login','password']
+
 class AuthenticationSerializer(serializers.Serializer):
     """Authentcation Serializer For Login And Register"""
     phone = serializers.CharField(max_length=11,required=True,error_messages={

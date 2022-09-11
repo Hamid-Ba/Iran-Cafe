@@ -1,13 +1,13 @@
 """
 Account Module Views
 """
-from rest_framework import viewsets
+from rest_framework import viewsets , generics ,permissions , authentication
 from rest_framework.decorators import action
 from rest_framework import status
 from rest_framework.authtoken.views import ObtainAuthToken
 
 from rest_framework.response import Response
-from account.serializers import (AuthenticationSerializer , AuthTokenSerializer)
+from account.serializers import (AuthenticationSerializer , AuthTokenSerializer, UserSerializer)
 # Create your views here.
 
 class AuthenticationViewSet(viewsets.ViewSet):
@@ -27,3 +27,13 @@ class AuthenticationViewSet(viewsets.ViewSet):
 class AuthTokenView(ObtainAuthToken):
     """Auth Token View For Create Valid Token"""
     serializer_class = AuthTokenSerializer
+
+class UserView(generics.RetrieveUpdateAPIView):
+    """Retrieve Or Update APIView for User"""
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = UserSerializer
+
+    def get_object(self):
+        """Reterive The Authorized User"""
+        return self.request.user

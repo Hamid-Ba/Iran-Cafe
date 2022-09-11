@@ -17,4 +17,5 @@ app_name = "account"
 urlpatterns = [
     path("",include(router.urls)),
     path("token/", views.AuthTokenView.as_view() , name = "token"),
+    path("me/", views.UserView.as_view(), name="me"),
 ]
