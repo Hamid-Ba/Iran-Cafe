@@ -8,11 +8,9 @@ from rest_framework.authtoken.views import ObtainAuthToken
 
 from rest_framework.response import Response
 from account.serializers import (AuthenticationSerializer , AuthTokenSerializer, UserSerializer)
-# Create your views here.
 
 class AuthenticationViewSet(viewsets.ViewSet):
     """Login & Register Viewset"""
-
     @action(detail=False,methods=['POST'])
     def login_or_register(self,request):
         """Login & Register Action"""
@@ -23,6 +21,15 @@ class AuthenticationViewSet(viewsets.ViewSet):
             return Response({"phone" : serializer.data['phone'] } , status = status.HTTP_200_OK)
 
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False,methods=['POST'])
+    def logout(self,request):
+        """Logout Action"""
+        try:
+            request.user.auth_token.delete()
+            return Response('شما با موفقیت خارج شدید')
+        except :
+            return Response('اول باید وارد حساب خود شوید')
 
 class AuthTokenView(ObtainAuthToken):
     """Auth Token View For Create Valid Token"""

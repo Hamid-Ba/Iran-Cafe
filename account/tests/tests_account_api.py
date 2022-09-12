@@ -8,6 +8,7 @@ from rest_framework import status
 from django.contrib.auth import get_user_model
 
 AUTH_URL = reverse('account:auth-login-or-register')
+LOGOUT_URL = reverse('account:auth-logout')
 TOKEN_URL = reverse('account:token')
 ME_USER_URL = reverse("account:me")
 
@@ -86,3 +87,10 @@ class PrivateTest(TestCase):
         self.user.refresh_from_db()
         self.assertEqual(res.status_code , status.HTTP_200_OK)
         self.assertEqual(self.user.fullName , payload["fullName"])
+
+    def test_logout_user(self):
+        """Test Logout User"""
+        res = self.client.post(LOGOUT_URL)
+
+        self.assertNotIn(self.user,res.request)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
