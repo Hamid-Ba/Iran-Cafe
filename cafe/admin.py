@@ -1,6 +1,6 @@
 from django.contrib import admin
 from account.models import User
-from cafe.models import Cafe
+from cafe.models import Cafe, Category
 
 class CafeAdmin(admin.ModelAdmin):
     """Cafe Admin Model"""
@@ -34,4 +34,11 @@ class CafeAdmin(admin.ModelAdmin):
         }),
     )
 
+class CategoryAdmin(admin.ModelAdmin):
+    """Cafe Admin Model"""
+    list_display = ['title']
+    list_display_links = ['title']
+    sortable_by = ['title']
+
 admin.site.register(Cafe , CafeAdmin)
+admin.site.register(Category , CategoryAdmin)

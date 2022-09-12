@@ -4,8 +4,9 @@ Test Cafe Module Models
 from django.test import TestCase
 from django.template.defaultfilters import slugify
 import uuid
+from unittest.mock import patch
 from django.contrib.auth import get_user_model
-from cafe.models import Cafe
+from cafe.models import Cafe , Category
 from province.models import (Province , City)
 
 def create_user(phone,password):
@@ -47,3 +48,15 @@ class CafeTest(TestCase):
         self.assertEqual(cafe.city , city)
         self.assertEqual(cafe.owner , owner)
         self.assertEqual(cafe.province , province)
+
+class CategoryTest(TestCase):
+    """Test Category Model"""
+    def test_create_category_should_work_properly(self):
+        """Test creating The Category Model"""
+        title = 'test category'
+        image = 'test.jpg'
+
+        category = Category.objects.create(title=title, image=image)
+
+        self.assertEqual(category.title, title)
+        self.assertEqual(category.image, image)

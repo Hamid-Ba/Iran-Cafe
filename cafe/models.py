@@ -1,10 +1,11 @@
 """
 Cafe Module Models
 """
+import os
 from uuid import (uuid4)
 from django.db import models
-
 from django.conf import settings
+
 from cafe.validators import PhoneValidator
 from province.models import (City, Province)
 
@@ -73,3 +74,16 @@ class Cafe(models.Model):
 
     def __str__(self) -> str:
         return self.persian_title
+
+def category_image_file_path(instance,filename):
+    """Generate file path for category image"""
+    ext = os.path.splitext(filename)[1]
+    filename = f'{uuid4()}.{ext}'
+
+    return os.path.join('uploads','category',filename)
+
+
+class Category(models.Model):
+    """Category model"""
+    title = models.CharField(max_length=72,null=False,blank=False)
+    image = models.ImageField(null=False,upload_to=category_image_file_path)
