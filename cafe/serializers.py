@@ -2,7 +2,7 @@
 Cafe Module Serializers
 """
 from rest_framework import serializers
-from cafe.models import Cafe
+from cafe.models import Cafe, Category
 
 class CreateUpdateCafeSerializer(serializers.ModelSerializer):
     """Cafe Serializer For Register Cafe"""
@@ -30,3 +30,11 @@ class CafeSerializer(CreateUpdateCafeSerializer):
         fields = ['id'] + CreateUpdateCafeSerializer.Meta.fields + ['image_url', 'instagram_id' , 'telegram_id' ,
                                                     'postal_code', 'code', 'state' , 'owner' , 'view_count'] 
         read_only_fields = ['owner' , 'code' , 'state' , 'view_count']
+
+class CateogrySerializer(serializers.ModelSerializer):
+    """Cateogry Serializer"""
+    class Meta:
+        """Meta Class"""
+        model = Category
+        fields = '__all__'
+        read_only_fields = ['id']

@@ -8,9 +8,9 @@ from drf_spectacular.utils import (
     OpenApiTypes
 )
 from rest_framework import (mixins , generics ,viewsets , permissions , authentication ,status)
-from cafe.models import Cafe
+from cafe.models import (Cafe,Category)
 from rest_framework.response import Response
-from cafe.serializers import CafeSerializer, CreateUpdateCafeSerializer
+from cafe.serializers import CafeSerializer, CateogrySerializer, CreateUpdateCafeSerializer
 
 class CafeViewSet(mixins.RetrieveModelMixin,
                     mixins.CreateModelMixin,
@@ -94,3 +94,11 @@ class CafesCityListView(generics.ListAPIView):
             status = status.HTTP_204_NO_CONTENT)
 
         return Response(cafes) 
+
+class CategoryView(generics.ListAPIView):
+    """Category List View."""
+    serializer_class = CateogrySerializer
+    queryset = Category.objects.all()
+
+    def get_queryset(self):
+        return self.queryset.order_by('-id')
