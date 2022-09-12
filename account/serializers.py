@@ -59,7 +59,7 @@ class AuthTokenSerializer(serializers.Serializer):
         )
 
         if not user :
-            msg = 'لطفا اطلاعات خود را درست وارد نمایید'
+            msg = 'کد وارد شده نامعتبر هست'
             raise serializers.ValidationError(msg,code='authorization')
 
         attrs['user'] = user

@@ -5,6 +5,8 @@ from rest_framework import viewsets , generics ,permissions , authentication
 from rest_framework.decorators import action
 from rest_framework import status
 from rest_framework.authtoken.views import ObtainAuthToken
+from django.contrib.auth import logout
+
 
 from rest_framework.response import Response
 from account.serializers import (AuthenticationSerializer , AuthTokenSerializer, UserSerializer)
@@ -27,9 +29,9 @@ class AuthenticationViewSet(viewsets.ViewSet):
         """Logout Action"""
         try:
             request.user.auth_token.delete()
-            return Response('شما با موفقیت خارج شدید')
-        except :
-            return Response('اول باید وارد حساب خود شوید')
+        except : pass
+        logout(request)
+        return Response('شما با موفقیت خارج شدید')
 
 class AuthTokenView(ObtainAuthToken):
     """Auth Token View For Create Valid Token"""
