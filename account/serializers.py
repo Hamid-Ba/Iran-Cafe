@@ -10,8 +10,10 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         """Meta Class"""
         model = get_user_model()
-        fields = '__all__'
-        read_only_fields = ['id','phone','is_active','is_staff','groups','user_permissions','is_superuser','last_login','password']
+        fields = ['id','fullName','phone','is_active','is_staff','is_superuser','last_login'
+                ,'password','cafe','groups','user_permissions',]
+        read_only_fields = ['id','phone','is_active','is_staff','groups','user_permissions',
+                            'is_superuser','last_login','password', 'cafe']
 
 class AuthenticationSerializer(serializers.Serializer):
     """Authentcation Serializer For Login And Register"""

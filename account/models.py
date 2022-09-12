@@ -40,4 +40,3 @@ class User(AbstractBaseUser,PermissionsMixin):
     def __str__(self) :
         if self.fullName: return self.fullName
         return self.phone
-        

@@ -65,7 +65,7 @@ class Cafe(models.Model):
                             choices=CafeType.choices)
     view_count = models.BigIntegerField(default = 0)
     
-    owner = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    owner = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name='cafe')
     province = models.ForeignKey(Province, on_delete=models.DO_NOTHING)
     city = models.ForeignKey(City, on_delete=models.DO_NOTHING)
     
