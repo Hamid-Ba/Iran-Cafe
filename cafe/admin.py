@@ -42,13 +42,20 @@ class CategoryAdmin(admin.ModelAdmin):
 
 class MenuItemAdmin(admin.ModelAdmin):
     """Menu Item Admin Model"""
-    # list_display = ['title','price','cafe__code','cafe__owner__phone','is_active']
-    # list_display_links = ['title','price']
-    # list_editable = ['is_active']
-    # list_filter = ['is_active']
-    # sortable_by = ['title', 'price']
+    list_display = ['title','price', 'cafe', 'cafe_code','cafe_owner','is_active']
+    list_display_links = ['title','price']
+    list_editable = ['is_active']
+    list_filter = ['is_active' ,'cafe__code','cafe__owner__phone']
+    sortable_by = ['title', 'price']
+    search_fields = ['title' , 'cafe__code' , 'cafe__owner__phone']
+    @admin.display(ordering='cafe__code')
+    def cafe_code(self, obj):
+        return obj.cafe.code
+
+    @admin.display(ordering='cafe__owner__phone')
+    def cafe_owner(self, obj):
+        return obj.cafe.owner.phone
     
-    # search_fields = ['title' , 'cafe.code' , 'cafe.owner.phone']
 
 admin.site.register(Cafe , CafeAdmin)
 admin.site.register(Category , CategoryAdmin)

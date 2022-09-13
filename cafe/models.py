@@ -89,13 +89,20 @@ class Category(models.Model):
     title = models.CharField(max_length=72,null=False,blank=False)
     image = models.ImageField(null=False,upload_to=category_image_file_path)
 
+    def __str__(self) :
+        return self.title
+
 class MenuItem(models.Model):
     """Menu Item model"""
     title = models.CharField(max_length=125,null=False,blank=False)
     image_url = models.URLField(max_length=250,blank=False,null=False)
-    desc = models.CharField(max_length=1250,null=False,blank=False)
+    desc = models.TextField(null=False,blank=False)
     price = MoneyField(max_digits=10,decimal_places=0,default_currency='IRR',null=False)
     is_active = models.BooleanField(default=True)
 
     cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE,related_name='menu_items')
     category = models.ForeignKey(Category, on_delete=models.CASCADE,related_name='menu_items')
+
+    def __str__(self) :
+        return self.title
+        
