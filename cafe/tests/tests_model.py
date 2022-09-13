@@ -32,7 +32,6 @@ class CafeTest(TestCase):
             "slug" : slugify("Test"),
             "phone" : "09151498722",
             "street" : "west coast street",
-            "short_desc" : "test short desc",
             "desc" : "test description",
             "type" : "C"
         }

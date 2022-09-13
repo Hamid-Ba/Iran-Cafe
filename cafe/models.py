@@ -56,8 +56,7 @@ class Cafe(models.Model):
     postal_code = models.CharField(max_length=10,blank=True,null=True)
     google_map_url = models.URLField(max_length=250,blank=True,null=True)
     street = models.CharField(max_length=250,null=True, blank=True)
-    short_desc = models.CharField(max_length=250,blank=False,null=False)
-    desc = models.TextField(blank=True)
+    desc = models.TextField(blank=False,null=False)
     state = models.CharField(max_length=1,
                             default=CafeState.PENDING,
                             choices=CafeState.choices)

@@ -28,7 +28,6 @@ def create_cafe(province,city,owner,**new_payload):
         "slug" : slugify("Test"),
         "phone" : owner.phone,
         "street" : "west coast street",
-        "short_desc" : "test short desc",
         "desc" : "test description",
         "type" : "C",
         "state" : "P",

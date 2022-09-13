@@ -9,7 +9,7 @@ class CreateUpdateCafeSerializer(serializers.ModelSerializer):
     class Meta:
         """Meta Class"""
         model = Cafe
-        fields = ['persian_title', 'english_title', 'slug' , 'phone' , 'street', 'short_desc',
+        fields = ['persian_title', 'english_title', 'slug' , 'phone' , 'street',
                     'desc' , 'type' , 'province' , 'city']
 
     def create(self, validated_data):
