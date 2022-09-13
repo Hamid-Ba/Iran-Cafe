@@ -5,8 +5,10 @@ import os
 from uuid import (uuid4)
 from django.db import models
 from django.conf import settings
+from djmoney.models.fields import MoneyField
 
 from cafe.validators import PhoneValidator
+
 from province.models import (City, Province)
 
 class CafeManager(models.Manager):
@@ -86,3 +88,14 @@ class Category(models.Model):
     """Category model"""
     title = models.CharField(max_length=72,null=False,blank=False)
     image = models.ImageField(null=False,upload_to=category_image_file_path)
+
+class MenuItem(models.Model):
+    """Menu Item model"""
+    title = models.CharField(max_length=125,null=False,blank=False)
+    image_url = models.URLField(max_length=250,blank=False,null=False)
+    desc = models.CharField(max_length=1250,null=False,blank=False)
+    price = MoneyField(max_digits=10,decimal_places=0,default_currency='IRR',null=False)
+    is_active = models.BooleanField(default=True)
+
+    cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE,related_name='menu_items')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE,related_name='menu_items')

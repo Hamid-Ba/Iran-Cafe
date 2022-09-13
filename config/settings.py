@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'account',
     'province',
     'cafe.apps.CafeConfig',
-    'corsheaders'
+    'corsheaders',
+    'djmoney'
 ]
 
 MIDDLEWARE = [
