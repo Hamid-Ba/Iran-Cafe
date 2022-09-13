@@ -1,6 +1,6 @@
 from django.contrib import admin
 from account.models import User
-from cafe.models import Cafe, Category
+from cafe.models import Cafe, Category, MenuItem
 
 class CafeAdmin(admin.ModelAdmin):
     """Cafe Admin Model"""
@@ -35,10 +35,21 @@ class CafeAdmin(admin.ModelAdmin):
     )
 
 class CategoryAdmin(admin.ModelAdmin):
-    """Cafe Admin Model"""
+    """Category Admin Model"""
     list_display = ['title']
     list_display_links = ['title']
     sortable_by = ['title']
 
+class MenuItemAdmin(admin.ModelAdmin):
+    """Menu Item Admin Model"""
+    # list_display = ['title','price','cafe__code','cafe__owner__phone','is_active']
+    # list_display_links = ['title','price']
+    # list_editable = ['is_active']
+    # list_filter = ['is_active']
+    # sortable_by = ['title', 'price']
+    
+    # search_fields = ['title' , 'cafe.code' , 'cafe.owner.phone']
+
 admin.site.register(Cafe , CafeAdmin)
 admin.site.register(Category , CategoryAdmin)
+admin.site.register(MenuItem, MenuItemAdmin)

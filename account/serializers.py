@@ -5,8 +5,11 @@ from rest_framework import serializers
 from django.contrib.auth import (get_user_model , authenticate)
 from random import (randint)
 
+from cafe.serializers import UserCafeSerializer
+
 class UserSerializer(serializers.ModelSerializer):
     """User Serializer"""
+    cafe = UserCafeSerializer()
     class Meta:
         """Meta Class"""
         model = get_user_model()

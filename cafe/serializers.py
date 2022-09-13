@@ -31,6 +31,13 @@ class CafeSerializer(CreateUpdateCafeSerializer):
                                                     'postal_code', 'code', 'state' , 'owner' , 'view_count'] 
         read_only_fields = ['owner' , 'code' , 'state' , 'view_count']
 
+class UserCafeSerializer(CafeSerializer):
+    """User Cafe Serializer"""
+    class Meta(CafeSerializer.Meta):
+        """Meta Class"""
+        fields = ['id' , 'state']
+        read_only_fields = ['id' , 'state']
+
 class CateogrySerializer(serializers.ModelSerializer):
     """Cateogry Serializer"""
     class Meta:
