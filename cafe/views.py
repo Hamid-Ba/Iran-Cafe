@@ -110,5 +110,10 @@ class MenuItemView(generics.ListAPIView):
     
     def get(self,request,cafe_slug):        
         menu_items = MenuItem.objects.get_active_items(cafe_slug)
+
+        if len(menu_items) == 0 : return Response(
+            data ={"message" : "آیتمی برای این کافه به ثبت نرسیده است"},
+            status = status.HTTP_204_NO_CONTENT)
+
         serializer = MenuItemSerializer(menu_items,many=True)
         return Response(serializer.data)

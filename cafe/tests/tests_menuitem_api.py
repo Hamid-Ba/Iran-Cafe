@@ -93,3 +93,16 @@ class PublicTest(TestCase):
         
         self.assertEqual(res.data,serializer.data)
         self.assertEqual(len(res.data),2)
+
+    def test_return_no_content_when_cafe_has_no_items(self):
+        """Test Returns No Content When Cafe Has No Items"""
+        new_owner = create_user("09151498721","123456")
+        new_cafe = create_cafe(self.province,self.city,new_owner)
+
+        url = get_menu_item_url(new_cafe.slug)
+        res = self.client.get(url)
+        self.assertEqual(res.status_code,status.HTTP_204_NO_CONTENT)
+
+        menuitems = MenuItem.objects.filter(cafe_id=new_cafe.id).filter(is_active=True).order_by('-id').values()
+
+        self.assertEqual(len(menuitems),0)
