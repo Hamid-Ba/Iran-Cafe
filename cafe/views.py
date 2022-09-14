@@ -126,7 +126,6 @@ class MenuItemViewSet(mixins.ListModelMixin,
         return self.serializer_class
 
     def perform_create(self,serializer):
-        print("Hello")
         user = get_user_model().objects.filter(id=self.request.user.id).first()        
         return serializer.save(cafe = user.cafe)
 
