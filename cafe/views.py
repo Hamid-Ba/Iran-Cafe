@@ -28,7 +28,7 @@ class CafeViewSet(mixins.RetrieveModelMixin,
 
     def get_serializer_class(self):
         """Specify The Serializer class"""
-        if self.action == "create" or self.action == "update":
+        if self.action == "create":
             self.serializer_class = CreateUpdateCafeSerializer
 
         return self.serializer_class
