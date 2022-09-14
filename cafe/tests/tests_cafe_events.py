@@ -25,7 +25,7 @@ def create_cafe(province,city,owner,**new_payload):
     payload  = {
         "persian_title" : "تست",
         "english_title" : "Test",
-        "slug" : slugify("Test"),
+        "slug" : slugify(owner.phone),
         "phone" : owner.phone,
         "street" : "west coast street",
         "desc" : "test description",

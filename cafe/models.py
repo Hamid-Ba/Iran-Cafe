@@ -49,7 +49,7 @@ class Cafe(models.Model):
     code = models.CharField(max_length=5,unique=True,null=True, blank=True)
     persian_title = models.CharField(max_length=85,null=False, blank=False)
     english_title = models.CharField(max_length=90,null=False, blank=False)
-    slug = models.SlugField(max_length=200,blank=False,null=False)
+    slug = models.SlugField(max_length=200,unique=True,blank=False,null=False)
     phone = models.CharField(max_length=11,unique=True,validators=[PhoneValidator])
     email = models.EmailField(max_length=125,null=True, blank=True)
     image_url = models.URLField(max_length=250,blank=True,null=True)
@@ -92,6 +92,11 @@ class Category(models.Model):
     def __str__(self) :
         return self.title
 
+class MenuItemManager(models.Manager):
+    """Menu Item Manager"""
+    def get_active_items(self,cafe_slug):
+        return self.filter(cafe__slug=cafe_slug).filter(is_active=True).order_by('-id').values()
+
 class MenuItem(models.Model):
     """Menu Item model"""
     title = models.CharField(max_length=125,null=False,blank=False)
@@ -103,6 +108,7 @@ class MenuItem(models.Model):
     cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE,related_name='menu_items')
     category = models.ForeignKey(Category, on_delete=models.CASCADE,related_name='menu_items')
 
+    objects = MenuItemManager()
+
     def __str__(self) :
         return self.title
-        

@@ -37,7 +37,7 @@ def create_cafe(province,city,owner,**new_payload):
     payload  = {
         "persian_title" : "تست",
         "english_title" : "Test",
-        "slug" : slugify("Test"),
+        "slug" : slugify(owner.phone),
         "phone" : owner.phone,
         "street" : "west coast street",
         "desc" : "test description",
@@ -63,7 +63,6 @@ class PublicTest(TestCase):
         payload = {
             "persian_title" : "تست",
             "english_title" : "Test",
-            "slug" : slugify("Test"),
             "street" : "west coast street",
             "desc" : "test description",
             "type" : "C",
@@ -121,7 +120,7 @@ class PublicTest(TestCase):
         payload = {
             "persian_title" : "تست",
             "english_title" : "Test",
-            "slug" : slugify("Test"),
+            "slug" : slugify("09151498722"),
             "phone" : "09151498722",
             "street" : "west coast street",
             "desc" : "test description",
@@ -131,7 +130,7 @@ class PublicTest(TestCase):
         payload2 = {
             "persian_title" : "2تست",
             "english_title" : "Test2",
-            "slug" : slugify("Test2"),
+            "slug" : slugify("09151498721"),
             "phone" : "09151498721",
             "street" : "west coast street",
             "desc" : "test description",
@@ -141,7 +140,7 @@ class PublicTest(TestCase):
         payload3 = {
             "persian_title" : "3تست",
             "english_title" : "Test3",
-            "slug" : slugify("Test3"),
+            "slug" : slugify("09151498723"),
             "phone" : "09151498723",
             "street" : "west coast street",
             "desc" : "test description",

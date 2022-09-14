@@ -1,8 +1,9 @@
 """
 Cafe Module Serializers
 """
+from dataclasses import fields
 from rest_framework import serializers
-from cafe.models import Cafe, Category
+from cafe.models import Cafe, Category, MenuItem
 
 class CreateUpdateCafeSerializer(serializers.ModelSerializer):
     """Cafe Serializer For Register Cafe"""
@@ -45,3 +46,10 @@ class CateogrySerializer(serializers.ModelSerializer):
         model = Category
         fields = '__all__'
         read_only_fields = ['id']
+
+class MenuItemSerializer(serializers.ModelSerializer):
+    """Menu Item Serializer"""
+    class Meta:
+        """Meta Class"""
+        model = MenuItem
+        fields = ['id','title','image_url','price','desc','is_active']
