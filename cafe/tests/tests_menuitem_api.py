@@ -13,9 +13,11 @@ from cafe.serializers import MenuItemSerializer
 
 from province.models import (City, Province)
 
-def get_menu_item_url(cafe_slug):
+CREATE_MENU_ITEM_URL = reverse('cafe:menuitems-list')
+
+def get_menu_item_url_by_slug(cafe_slug):
     """Returns The Menu Item By Cafe Slug"""
-    return reverse('cafe:menuitem',kwargs={'cafe_slug': cafe_slug})
+    return reverse('cafe:menuitems',kwargs={'cafe_slug': cafe_slug})
 
 def create_user(phone,password):
     """Helper Function for creating a user"""
@@ -84,7 +86,7 @@ class PublicTest(TestCase):
         new_cafe = create_cafe(self.province,self.city,new_owner)
         create_menu_item(new_cafe,self.category)
 
-        url = get_menu_item_url(self.cafe.slug)
+        url = get_menu_item_url_by_slug(self.cafe.slug)
         res = self.client.get(url)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
 
@@ -99,10 +101,32 @@ class PublicTest(TestCase):
         new_owner = create_user("09151498721","123456")
         new_cafe = create_cafe(self.province,self.city,new_owner)
 
-        url = get_menu_item_url(new_cafe.slug)
+        url = get_menu_item_url_by_slug(new_cafe.slug)
         res = self.client.get(url)
         self.assertEqual(res.status_code,status.HTTP_204_NO_CONTENT)
 
         menuitems = MenuItem.objects.filter(cafe_id=new_cafe.id).filter(is_active=True).order_by('-id').values()
 
         self.assertEqual(len(menuitems),0)
+
+    def test_create_menu_item_should_work_properly(self):
+        """Test Create Menu Item should work correctly"""
+        menu_item = {
+            'image_url' : 'https://no_image.png',
+            'title' : 'test title',
+            'desc' : 'test description',
+            'price' : Money(10,'IRR'),
+            'is_active' : True,
+            'cafe' : self.cafe,
+            'category' : self.category
+        }
+
+        res = self.client.post(CREATE_MENU_ITEM_URL,menu_item,format = 'json')
+        self.assertEqual(res.status_code,status.HTTP_201_CREATED)
+
+        item = MenuItem.objects.filter(cafe_id = self.cafe.id)[0]
+
+        for (key  ,value) in menu_item.items():
+            if key == 'cafe' :self.assertEqual(item.cafe,self.cafe)
+            elif key == 'category' : self.assertEqual(item.category,self.category)
+            else : self.assertEqual(getattr(item,key),value)

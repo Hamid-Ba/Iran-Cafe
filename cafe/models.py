@@ -97,6 +97,9 @@ class MenuItemManager(models.Manager):
     def get_active_items(self,cafe_slug):
         return self.filter(cafe__slug=cafe_slug).filter(is_active=True).order_by('-id').values()
 
+    # def get_items_by(self,owner_id):
+    #     return self.filter()
+
 class MenuItem(models.Model):
     """Menu Item model"""
     title = models.CharField(max_length=125,null=False,blank=False)

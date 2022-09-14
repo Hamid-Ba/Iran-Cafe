@@ -7,11 +7,12 @@ from drf_spectacular.utils import (
     OpenApiParameter,
     OpenApiTypes
 )
+from django.contrib.auth import (get_user_model)
 from rest_framework import (mixins , generics ,viewsets , permissions , authentication ,status)
 from cafe import serializers
 from cafe.models import (Cafe,Category, MenuItem)
 from rest_framework.response import Response
-from cafe.serializers import CafeSerializer, CateogrySerializer, CreateUpdateCafeSerializer, MenuItemSerializer
+from cafe.serializers import CafeSerializer, CateogrySerializer, CreateUpdateCafeSerializer, CreateUpdateMenuItemSerializer, MenuItemSerializer
 
 class CafeViewSet(mixins.RetrieveModelMixin,
                     mixins.CreateModelMixin,
@@ -104,9 +105,33 @@ class CategoryView(generics.ListAPIView):
     def get_queryset(self):
         return self.queryset.order_by('-id')
 
-class MenuItemView(generics.ListAPIView):
+class MenuItemViewSet(mixins.ListModelMixin,
+                    mixins.RetrieveModelMixin,
+                    mixins.CreateModelMixin,
+                    mixins.UpdateModelMixin,
+                    viewsets.GenericViewSet) :
+    authentication_classes = (authentication.TokenAuthentication ,)
+    permission_classes = (permissions.IsAuthenticated ,)
     serializer_class = MenuItemSerializer
     queryset = MenuItem.objects.all()
+
+    def get_queryset(self):
+        return MenuItem.objects.filter(cafe__owner=self.request.user)
+
+    def get_serializer_class(self):
+        """Specify The Serializer class"""
+        if self.action == "create" or self.action == "update" or self.action == "partial_update":
+            self.serializer_class = CreateUpdateMenuItemSerializer
+
+        return self.serializer_class
+
+    def perform_create(self,serializer):
+        print("Hello")
+        user = get_user_model().objects.filter(id=self.request.user.id).first()        
+        return serializer.save(cafe = user.cafe)
+
+class MenuItemListView(generics.ListAPIView):
+    serializer_class = MenuItemSerializer
     
     def get(self,request,cafe_slug):        
         menu_items = MenuItem.objects.get_active_items(cafe_slug)
@@ -115,5 +140,4 @@ class MenuItemView(generics.ListAPIView):
             data ={"message" : "آیتمی برای این کافه به ثبت نرسیده است"},
             status = status.HTTP_204_NO_CONTENT)
 
-        serializer = MenuItemSerializer(menu_items,many=True)
-        return Response(serializer.data)
+        return Response(menu_items)

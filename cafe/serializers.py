@@ -19,8 +19,6 @@ class CreateUpdateCafeSerializer(serializers.ModelSerializer):
         city = validated_data.pop('city' , None)
         
         cafe = Cafe.objects.create(province=province,city=city,**validated_data)
-        # cafe.province = province
-        # cafe.city = city
 
         return cafe
 
@@ -47,9 +45,24 @@ class CateogrySerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['id']
 
-class MenuItemSerializer(serializers.ModelSerializer):
-    """Menu Item Serializer"""
+class CreateUpdateMenuItemSerializer(serializers.ModelSerializer):
+    """Cafe Serializer For Register Cafe"""
     class Meta:
         """Meta Class"""
         model = MenuItem
-        fields = ['id','title','image_url','price','desc','is_active']
+        fields = ['title', 'image_url' , 'price' , 'desc','is_active' , 'category']
+                    
+    def create(self, validated_data):
+        """Create Menu Item"""
+        category = validated_data.pop('category', None)
+
+        menuItem = MenuItem.objects.create(category=category,**validated_data)
+
+        return menuItem
+
+class MenuItemSerializer(CreateUpdateMenuItemSerializer):
+    """Menu Item Serializer"""
+    category = CateogrySerializer(required=True)
+    class Meta(CreateUpdateMenuItemSerializer.Meta):
+        """Meta Class"""
+        fields = ['id'] + CreateUpdateMenuItemSerializer.Meta.fields
