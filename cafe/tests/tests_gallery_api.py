@@ -7,9 +7,10 @@ from django.urls import reverse
 from rest_framework import status
 from django.template.defaultfilters import slugify
 from django.contrib.auth import get_user_model
-from djmoney.money import Money
+
 from cafe.models import (Cafe,Category, Gallery,MenuItem)
-from cafe.serializers import MenuItemSerializer
+from PIL import Image
+import tempfile
 
 from province.models import (City, Province)
 
@@ -74,7 +75,7 @@ class PrivateTest(TestCase):
         self.cafe = create_cafe(self.province,self.city,self.owner)
         self.client.force_authenticate(self.owner)
 
-    def tests_get_list_of_cafe_gallery(self):
+    def test_get_list_of_cafe_gallery(self):
         """Test Get List Of Cafe Gallery"""
         create_gallery(self.cafe)
         create_gallery(self.cafe)
@@ -89,3 +90,20 @@ class PrivateTest(TestCase):
         galleries = Gallery.objects.filter(cafe_id=self.cafe.id).order_by('-id').values()
         # self.assertIn(galleries.first(),res.data)
         self.assertEqual(len(res.data),2)
+    
+    def test_create_gallery_should_work_properly(self):
+        """Test Create Gallery Should Work Properly"""
+        payload = {
+            "title" : "test gallery"
+        }
+        with tempfile.NamedTemporaryFile(suffix='.jpg') as image_file:
+            img = Image.new('RGB' , (10,10))
+            img.save(image_file,format='JPEG')
+            image_file.seek(0)
+            payload['image'] = image_file
+
+            res = self.client.post(GALLERY_URL,payload,format='multipart')
+            self.assertEqual(res.status_code , status.HTTP_201_CREATED)
+
+            gallery = Gallery.objects.filter(cafe_id = self.cafe.id).first()
+            self.assertEqual(gallery.cafe , self.cafe)

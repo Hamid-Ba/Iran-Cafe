@@ -12,7 +12,7 @@ from rest_framework import (mixins , generics ,viewsets , permissions , authenti
 from cafe import serializers
 from cafe.models import (Cafe,Category, Gallery, MenuItem)
 from rest_framework.response import Response
-from cafe.serializers import CafeSerializer, CateogrySerializer, CreateUpdateCafeSerializer, CreateUpdateMenuItemSerializer, GallerySerializer, MenuItemSerializer
+from cafe.serializers import CafeSerializer, CateogrySerializer, CreateUpdateCafeSerializer, CreateUpdateGallerySerializer, CreateUpdateMenuItemSerializer, GallerySerializer, MenuItemSerializer
 
 class CafeViewSet(mixins.RetrieveModelMixin,
                     mixins.CreateModelMixin,
@@ -116,7 +116,7 @@ class MenuItemViewSet(mixins.ListModelMixin,
     queryset = MenuItem.objects.all()
 
     def get_queryset(self):
-        return MenuItem.objects.filter(cafe__owner=self.request.user)
+        return MenuItem.objects.filter(cafe__owner=self.request.user).order_by('-id')
 
     def get_serializer_class(self):
         """Specify The Serializer class"""
@@ -126,8 +126,7 @@ class MenuItemViewSet(mixins.ListModelMixin,
         return self.serializer_class
 
     def perform_create(self,serializer):
-        user = get_user_model().objects.filter(id=self.request.user.id).first()        
-        return serializer.save(cafe = user.cafe)
+        return serializer.save(cafe = self.request.user.cafe)
 
 class MenuItemListView(generics.ListAPIView):
     serializer_class = MenuItemSerializer
@@ -142,7 +141,8 @@ class MenuItemListView(generics.ListAPIView):
         return Response(menu_items)
 
 class GalleryViewSet(mixins.ListModelMixin,
-                    viewsets.GenericViewSet):
+                    mixins.CreateModelMixin,
+                    viewsets.GenericViewSet,):
     """Gallery View Set"""
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
@@ -152,3 +152,13 @@ class GalleryViewSet(mixins.ListModelMixin,
     def get_queryset(self):
         """Customize QuerySet"""
         return Gallery.objects.filter(cafe__owner=self.request.user)
+
+    def get_serializer_class(self):
+        """Specify The Serializer class"""
+        if self.action == "create" or self.action == "update" or self.action == "partial_update":
+            self.serializer_class = CreateUpdateGallerySerializer
+
+        return self.serializer_class
+
+    def perform_create(self, serializer):
+        return serializer.save(cafe = self.request.user.cafe)

@@ -67,9 +67,16 @@ class MenuItemSerializer(CreateUpdateMenuItemSerializer):
         """Meta Class"""
         fields = ['id'] + CreateUpdateMenuItemSerializer.Meta.fields
 
-class GallerySerializer(serializers.ModelSerializer):
-    """Gallery Serializer"""
+
+class CreateUpdateGallerySerializer(serializers.ModelSerializer):
+    """Create or Update Gallery Serializer"""
     class Meta:
         """Meta Class"""
         model = Gallery
+        fields = ['title','image']
+
+class GallerySerializer(CreateUpdateGallerySerializer):
+    """Gallery Serializer"""
+    class Meta(CreateUpdateGallerySerializer.Meta):
+        """Meta Class"""
         fields = "__all__"

@@ -128,3 +128,7 @@ class Gallery(models.Model):
     image = models.ImageField(null=False,upload_to=gallery_image_file_path)
 
     cafe = models.ForeignKey(Cafe , on_delete=models.CASCADE,related_name='gallery')
+
+    def __str__(self):
+        if self.title : return self.title
+        return self.image
