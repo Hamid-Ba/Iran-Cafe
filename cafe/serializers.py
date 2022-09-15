@@ -3,7 +3,7 @@ Cafe Module Serializers
 """
 from dataclasses import fields
 from rest_framework import serializers
-from cafe.models import Cafe, Category, MenuItem
+from cafe.models import Cafe, Category, Gallery, MenuItem
 
 class CreateUpdateCafeSerializer(serializers.ModelSerializer):
     """Cafe Serializer For Register Cafe"""
@@ -66,3 +66,10 @@ class MenuItemSerializer(CreateUpdateMenuItemSerializer):
     class Meta(CreateUpdateMenuItemSerializer.Meta):
         """Meta Class"""
         fields = ['id'] + CreateUpdateMenuItemSerializer.Meta.fields
+
+class GallerySerializer(serializers.ModelSerializer):
+    """Gallery Serializer"""
+    class Meta:
+        """Meta Class"""
+        model = Gallery
+        fields = "__all__"

@@ -10,9 +10,9 @@ from drf_spectacular.utils import (
 from django.contrib.auth import (get_user_model)
 from rest_framework import (mixins , generics ,viewsets , permissions , authentication ,status)
 from cafe import serializers
-from cafe.models import (Cafe,Category, MenuItem)
+from cafe.models import (Cafe,Category, Gallery, MenuItem)
 from rest_framework.response import Response
-from cafe.serializers import CafeSerializer, CateogrySerializer, CreateUpdateCafeSerializer, CreateUpdateMenuItemSerializer, MenuItemSerializer
+from cafe.serializers import CafeSerializer, CateogrySerializer, CreateUpdateCafeSerializer, CreateUpdateMenuItemSerializer, GallerySerializer, MenuItemSerializer
 
 class CafeViewSet(mixins.RetrieveModelMixin,
                     mixins.CreateModelMixin,
@@ -140,3 +140,15 @@ class MenuItemListView(generics.ListAPIView):
             status = status.HTTP_204_NO_CONTENT)
 
         return Response(menu_items)
+
+class GalleryViewSet(mixins.ListModelMixin,
+                    viewsets.GenericViewSet):
+    """Gallery View Set"""
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = GallerySerializer
+    queryset = Gallery.objects.all()
+
+    def get_queryset(self):
+        """Customize QuerySet"""
+        return Gallery.objects.filter(cafe__owner=self.request.user)

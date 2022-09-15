@@ -10,6 +10,7 @@ from cafe import views
 router = DefaultRouter()
 router.register('cafes' , views.CafeViewSet)
 router.register('menuitems' , views.MenuItemViewSet)
+router.register('galleries' , views.GalleryViewSet)
 
 app_name = "cafe"
 
