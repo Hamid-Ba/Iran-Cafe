@@ -30,7 +30,7 @@ class CafeManager(models.Manager):
         cafe = self.filter(id=cafe_id).get()
         if cafe.state == 'C':
             if not cafe.code :
-                cafe.code =  str(uuid4())[0:5].lower()
+                cafe.code =  str(10000 + cafe_id)
                 cafe.save()
         return cafe
 
@@ -83,7 +83,6 @@ def category_image_file_path(instance,filename):
 
     return os.path.join('uploads','category',filename)
 
-
 class Category(models.Model):
     """Category model"""
     title = models.CharField(max_length=72,null=False,blank=False)
@@ -115,3 +114,17 @@ class MenuItem(models.Model):
 
     def __str__(self) :
         return self.title
+
+def gallery_image_file_path(instance,filename):
+    """Generate file path for category image"""
+    ext = os.path.splitext(filename)[1]
+    filename = f'{uuid4()}.{ext}'
+
+    return os.path.join('uploads','gallery',filename)
+
+class Gallery(models.Model):
+    """Gallery model"""
+    title = models.CharField(max_length=125, blank=True, null=True)
+    image = models.ImageField(null=False,upload_to=gallery_image_file_path)
+
+    cafe = models.ForeignKey(Cafe , on_delete=models.CASCADE,related_name='gallery')

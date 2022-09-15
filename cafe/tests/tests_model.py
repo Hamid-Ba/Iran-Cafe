@@ -7,7 +7,7 @@ from django.template.defaultfilters import slugify
 from djmoney.money import Money
 
 from django.contrib.auth import get_user_model
-from cafe.models import (Cafe , Category, MenuItem)
+from cafe.models import (Cafe , Category, MenuItem , Gallery)
 from province.models import (Province , City)
 
 def create_user(phone,password):
@@ -108,3 +108,25 @@ class MenuItemTest(TestCase):
         
         self.assertEqual(item.cafe,self.cafe)
         self.assertEqual(item.category,self.category)
+
+class GalleryTest(TestCase):
+    """Test Gallery Model"""
+    def setUp(self):
+        self.province = create_province('Tehran','Tehran')
+        self.city = create_city('Tehran','Tehran',self.province)
+        self.owner = create_user('09151498722','123456')
+        self.cafe = create_cafe(self.province,self.city,self.owner)
+
+    def test_gallery_model_should_work_properly(self):
+        """Test Create Gallery Model"""
+        gallery = {
+            "title" : "New Pic",
+            "image" : "no_image.jpg"
+        }
+
+        created_gallery = Gallery.objects.create(cafe=self.cafe,**gallery)
+
+        for (key, value) in gallery.items():
+            self.assertEqual(getattr(created_gallery,key),value)
+
+        self.assertEqual(created_gallery.cafe , self.cafe)
