@@ -14,12 +14,16 @@ from cafe.models import (Cafe,Category, Gallery, MenuItem)
 from rest_framework.response import Response
 from cafe.serializers import CafeSerializer, CateogrySerializer, CreateUpdateCafeSerializer, CreateUpdateGallerySerializer, CreateUpdateMenuItemSerializer, GallerySerializer, MenuItemSerializer
 
-class CafeViewSet(mixins.RetrieveModelMixin,
+class BaseMixinView(mixins.RetrieveModelMixin,
                     mixins.CreateModelMixin,
                     mixins.UpdateModelMixin,
-                    viewsets.GenericViewSet) :
+                    viewsets.GenericViewSet):
+    """Base Mixin View Class"""
     authentication_classes = (authentication.TokenAuthentication ,)
     permission_classes = (permissions.IsAuthenticated ,)
+
+class CafeViewSet(BaseMixinView) :
+    """Cafe View Set Class"""
     serializer_class = CafeSerializer
     queryset = Cafe.objects.all()
 
@@ -105,18 +109,12 @@ class CategoryView(generics.ListAPIView):
     def get_queryset(self):
         return self.queryset.order_by('-id')
 
-class MenuItemViewSet(mixins.ListModelMixin,
-                    mixins.RetrieveModelMixin,
-                    mixins.CreateModelMixin,
-                    mixins.UpdateModelMixin,
-                    viewsets.GenericViewSet) :
-    authentication_classes = (authentication.TokenAuthentication ,)
-    permission_classes = (permissions.IsAuthenticated ,)
+class MenuItemViewSet(mixins.ListModelMixin,BaseMixinView) :
     serializer_class = MenuItemSerializer
     queryset = MenuItem.objects.all()
 
     def get_queryset(self):
-        return MenuItem.objects.filter(cafe__owner=self.request.user).order_by('-id')
+        return self.queryset.filter(cafe__owner=self.request.user).order_by('-id')
 
     def get_serializer_class(self):
         """Specify The Serializer class"""
@@ -140,12 +138,7 @@ class MenuItemListView(generics.ListAPIView):
 
         return Response(menu_items)
 
-class GalleryViewSet(mixins.ListModelMixin,
-                    mixins.RetrieveModelMixin,
-                    mixins.CreateModelMixin,
-                    mixins.UpdateModelMixin,
-                    mixins.DestroyModelMixin,
-                    viewsets.GenericViewSet,):
+class GalleryViewSet(viewsets.ModelViewSet):
     """Gallery View Set"""
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
@@ -154,7 +147,7 @@ class GalleryViewSet(mixins.ListModelMixin,
 
     def get_queryset(self):
         """Customize QuerySet"""
-        return Gallery.objects.filter(cafe__owner=self.request.user)
+        return self.queryset.filter(cafe__owner=self.request.user)
 
     def get_serializer_class(self):
         """Specify The Serializer class"""
