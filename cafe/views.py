@@ -141,7 +141,10 @@ class MenuItemListView(generics.ListAPIView):
         return Response(menu_items)
 
 class GalleryViewSet(mixins.ListModelMixin,
+                    mixins.RetrieveModelMixin,
                     mixins.CreateModelMixin,
+                    mixins.UpdateModelMixin,
+                    mixins.DestroyModelMixin,
                     viewsets.GenericViewSet,):
     """Gallery View Set"""
     authentication_classes = (authentication.TokenAuthentication,)
