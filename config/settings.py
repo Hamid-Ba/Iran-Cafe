@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'account',
     'province',
+    'siteinfo',
     'cafe.apps.CafeConfig',
     'corsheaders',
     'djmoney'
