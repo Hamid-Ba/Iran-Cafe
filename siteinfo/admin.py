@@ -3,7 +3,7 @@ site info module admin models
 """
 from django.contrib import admin
 
-from siteinfo.models import AboutUs
+from siteinfo.models import (AboutUs,ContactUs)
 
 class AboutUsAdmin(admin.ModelAdmin):
     """About Us Admin Model"""
@@ -25,4 +25,11 @@ class AboutUsAdmin(admin.ModelAdmin):
         }),
     )
 
+class ContactUsAdmin(admin.ModelAdmin):
+    """Contact Us Admin Model"""
+    list_display = ['id' ,'full_name','phone']
+    list_display_links = ['id' ,'full_name','phone']
+    search_fields = ['full_name','phone']
+
 admin.site.register(AboutUs, AboutUsAdmin)
+admin.site.register(ContactUs, ContactUsAdmin)
