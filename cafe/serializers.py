@@ -1,7 +1,6 @@
 """
 Cafe Module Serializers
 """
-from dataclasses import fields
 from rest_framework import serializers
 from cafe.models import Cafe, Category, Gallery, MenuItem, Reservation, Suggestion
 from province.serializers import CitySerializer, ProvinceSerializer
