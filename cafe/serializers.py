@@ -3,7 +3,7 @@ Cafe Module Serializers
 """
 from dataclasses import fields
 from rest_framework import serializers
-from cafe.models import Cafe, Category, Gallery, MenuItem
+from cafe.models import Cafe, Category, Gallery, MenuItem, Suggestion
 
 class CreateUpdateCafeSerializer(serializers.ModelSerializer):
     """Cafe Serializer For Register Cafe"""
@@ -81,3 +81,26 @@ class GallerySerializer(CreateUpdateGallerySerializer):
     class Meta(CreateUpdateGallerySerializer.Meta):
         """Meta Class"""
         fields = "__all__"
+
+class SuggestionSerializer(serializers.ModelSerializer):
+    """Suggestion Serializer"""
+    class Meta:
+        """Meta Class"""
+        model = Suggestion
+        fields = "__all__"
+        read_only_fields = ['id']
+
+    def create(self,validated_data):
+        """Custom Create"""
+        cafe = validated_data.pop('cafe',None)
+
+        # cafe = Cafe.objects.filter(id=cafe_id).first()
+
+        if cafe.state != 'C' :
+            msg = 'کافه نامعتبر است'
+            raise serializers.ValidationError(msg,code='Bad Request')
+        
+        suggest = Suggestion.objects.create(cafe=cafe,**validated_data)
+        # suggest.save()
+
+        return suggest

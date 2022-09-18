@@ -131,8 +131,8 @@ class Gallery(models.Model):
 
 class Suggestion(models.Model):
     """Suggestions model"""
-    full_name = models.CharField(max_length=125, blank=False, null=False)
-    message = models.TextField(blank=True, null=True)
+    full_name = models.CharField(max_length=125, blank=True, null=True)
+    message = models.TextField(blank=False, null=False)
 
     cafe = models.ForeignKey(Cafe , on_delete=models.CASCADE,related_name = 'suggest')
 

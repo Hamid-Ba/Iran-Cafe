@@ -1,6 +1,7 @@
 """
 Cafe Module Views
 """
+from operator import ge
 from drf_spectacular.utils import (
     extend_schema,
     extend_schema_view,
@@ -8,10 +9,11 @@ from drf_spectacular.utils import (
     OpenApiTypes
 )
 from rest_framework import (mixins , generics ,viewsets , permissions , authentication ,status ,views)
-from cafe.models import (Cafe,Category, Gallery, MenuItem)
+from cafe import serializers
+from cafe.models import (Cafe,Category, Gallery, MenuItem, Suggestion)
 from rest_framework.response import Response
 from cafe.serializers import (CafeSerializer, CateogrySerializer, CreateUpdateCafeSerializer,
- CreateUpdateGallerySerializer, CreateUpdateMenuItemSerializer, GallerySerializer, MenuItemSerializer)
+ CreateUpdateGallerySerializer, CreateUpdateMenuItemSerializer, GallerySerializer, MenuItemSerializer, SuggestionSerializer)
 
 class BaseMixinView(mixins.RetrieveModelMixin,
                     mixins.CreateModelMixin,
@@ -167,3 +169,22 @@ class GalleryViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         return serializer.save(cafe = self.request.user.cafe)
+
+class SuggestionView(mixins.ListModelMixin,
+                    mixins.RetrieveModelMixin,
+                    viewsets.GenericViewSet):
+    """Suggestion View"""
+    authentication_classes = (authentication.TokenAuthentication ,)
+    permission_classes = (permissions.IsAuthenticated ,)
+    serializer_class = SuggestionSerializer
+    queryset = Suggestion.objects.all()
+    
+    def get_queryset(self):
+        cafe = Cafe.objects.filter(owner=self.request.user).exists()
+        if cafe :
+            return self.queryset.filter(cafe =self.request.user.cafe).order_by('-id')
+        return []
+    
+class CreateSuggestionApiView(generics.CreateAPIView):
+    """Create Suggestion API view"""
+    serializer_class = SuggestionSerializer        
