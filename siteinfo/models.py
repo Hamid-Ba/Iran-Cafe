@@ -23,4 +23,5 @@ class ContactUs(models.Model):
     message = models.TextField(blank=False,null=False)
 
     class Meta:
+        verbose_name = 'contactus'
         verbose_name_plural = 'Contact Us'

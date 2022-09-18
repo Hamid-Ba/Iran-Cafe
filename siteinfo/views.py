@@ -4,8 +4,8 @@ site info modules views
 from rest_framework import (generics)
 from rest_framework.response import Response
 
-from siteinfo.serializers import AboutUsSerializer
-from siteinfo.models import (AboutUs)
+from siteinfo.serializers import AboutUsSerializer, ContactUsSerializer
+from siteinfo.models import (AboutUs, ContactUs)
 
 class AboutUsView(generics.RetrieveAPIView):
     """About Us View"""
@@ -16,3 +16,8 @@ class AboutUsView(generics.RetrieveAPIView):
         about_us = AboutUs.objects.first()
         serializer = AboutUsSerializer(about_us)
         return Response(serializer.data)
+
+class ContactUsView(generics.CreateAPIView):
+    """Contact Us View"""
+    serializer_class = ContactUsSerializer
+    
