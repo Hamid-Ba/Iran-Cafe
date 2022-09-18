@@ -14,7 +14,7 @@ class CafeAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('General Info', {
-            'fields': ('code' , 'owner', 'persian_title','english_title' , 'slug' , 'image_url'),
+            'fields': ('code' , 'owner', 'persian_title','english_title'  , 'image_url'),
         }),
         ('Status Info', {
             'classes': ('collapse',),

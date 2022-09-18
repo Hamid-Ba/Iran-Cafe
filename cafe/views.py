@@ -118,7 +118,7 @@ class CategoryView(generics.ListAPIView):
     def get_queryset(self):
         return self.queryset.order_by('-id')
 
-class MenuItemViewSet(mixins.ListModelMixin,BaseMixinView) :
+class MenuItemViewSet(mixins.ListModelMixin,mixins.DestroyModelMixin,BaseMixinView) :
     serializer_class = MenuItemSerializer
     queryset = MenuItem.objects.all()
 
