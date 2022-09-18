@@ -135,3 +135,6 @@ class Suggestion(models.Model):
     message = models.TextField(blank=True, null=True)
 
     cafe = models.ForeignKey(Cafe , on_delete=models.CASCADE,related_name = 'suggest')
+
+    def __str__(self):
+        return self.cafe.code
