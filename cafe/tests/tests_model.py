@@ -4,9 +4,9 @@ Test Cafe Module Models
 from django.test import TestCase
 # from decimal import Decimal
 from djmoney.money import Money
-
+from datetime import (datetime , time)
 from django.contrib.auth import get_user_model
-from cafe.models import (Cafe , Category, MenuItem , Gallery, Suggestion)
+from cafe.models import (Cafe , Category, MenuItem , Gallery, Suggestion , Reservation)
 from province.models import (Province , City)
 
 def create_user(phone,password):
@@ -144,3 +144,30 @@ class SuggestionTest(TestCase):
 
         self.assertEqual(suggest.cafe , self.cafe)
         self.assertEqual(suggest.message , message)
+
+class ReservationTestCase(TestCase):
+    """Test Reservation Model"""
+    def setUp(self):
+        self.province = create_province('Tehran','Tehran')
+        self.city = create_city('Tehran','Tehran',self.province)
+        self.owner = create_user('09151498722','123456')
+        self.cafe = create_cafe(self.province,self.city,self.owner)
+
+    def test_create_reservation_model_should_work_properly(self):
+        """Test Create Reservation Model"""
+        client = create_user('09151498721','123456')
+        payload = {
+            "full_name" : "Afagh Balalzadeh",
+            "phone" : client.phone,
+            "date" : datetime(2022,6,20),
+            "time" : time(17,35),
+            "message" : "Hi I Want To Book a Table In This Date Time"
+        }
+        
+        reserve = Reservation.objects.create(user=client,cafe = self.cafe, **payload)
+
+        for (key  , value) in payload.items() :
+            self.assertEqual(getattr(reserve,key),value)
+
+        self.assertTrue(reserve.user)
+        self.assertEqual(reserve.cafe , self.cafe)

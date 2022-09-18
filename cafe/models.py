@@ -138,3 +138,14 @@ class Suggestion(models.Model):
 
     def __str__(self):
         return self.cafe.code
+
+class Reservation(models.Model):
+    """Reservation model"""
+    full_name = models.CharField(max_length=125, blank=False, null=False)
+    phone = models.CharField(max_length=11,unique=True,validators=[PhoneValidator])
+    date = models.DateField(blank=False, null=False)
+    time = models.TimeField(blank=False, null=False)
+    message = models.CharField(max_length=500, blank=True, null=True)
+
+    cafe = models.ForeignKey(Cafe , on_delete=models.CASCADE , related_name='reserve')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name='reserve')
