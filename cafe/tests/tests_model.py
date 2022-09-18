@@ -2,7 +2,6 @@
 Test Cafe Module Models
 """
 from django.test import TestCase
-from django.template.defaultfilters import slugify
 # from decimal import Decimal
 from djmoney.money import Money
 
@@ -31,7 +30,6 @@ def create_cafe(province,city,owner,**new_payload):
     payload  = {
         "persian_title" : "تست",
         "english_title" : "Test",
-        "slug" : slugify(owner.phone),
         "phone" : owner.phone,
         "street" : "west coast street",
         "desc" : "test description",
@@ -52,7 +50,6 @@ class CafeTest(TestCase):
             # "code" : str(uuid.uuid1())[0:5],
             "persian_title" : "تست",
             "english_title" : "Test",
-            "slug" : slugify('09151498722'),
             "phone" : "09151498722",
             "street" : "west coast street",
             "desc" : "test description",

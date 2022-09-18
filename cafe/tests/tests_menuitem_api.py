@@ -5,19 +5,17 @@ from django.test import TestCase
 from rest_framework.test import APIClient
 from django.urls import reverse
 from rest_framework import status
-from django.template.defaultfilters import slugify
 from django.contrib.auth import get_user_model
 from djmoney.money import Money
 from cafe.models import (Cafe,Category,MenuItem)
-from cafe.serializers import MenuItemSerializer
 
 from province.models import (City, Province)
 
 CREATE_MENU_ITEM_URL = reverse('cafe:menuitem-list')
 
-def get_menu_item_url_by_slug(cafe_slug):
-    """Returns The Menu Item By Cafe Slug"""
-    return reverse('cafe:menuitem_list',kwargs={'cafe_slug': cafe_slug})
+def get_menu_item_url_by_id(cafe_id):
+    """Returns The Menu Item By Cafe Id"""
+    return reverse('cafe:menuitem_list',kwargs={'cafe_id': cafe_id})
 
 def create_user(phone,password):
     """Helper Function for creating a user"""
@@ -40,7 +38,6 @@ def create_cafe(province,city,owner,**new_payload):
     payload  = {
         "persian_title" : "تست",
         "english_title" : "Test",
-        "slug" : slugify(owner.phone),
         "phone" : owner.phone,
         "street" : "west coast street",
         "desc" : "test description",
@@ -76,8 +73,8 @@ class PublicTest(TestCase):
         self.cafe = create_cafe(self.province,self.city,self.owner)
         self.category = create_category('Hot Baverage')
     
-    def test_return_list_of_cafe_menu_item_by_cafe_slug(self):
-        """Test Retrieve Cafe Menu Items By Cafe Slug"""
+    def test_return_list_of_cafe_menu_item_by_cafe_id(self):
+        """Test Retrieve Cafe Menu Items By Cafe Id"""
         create_menu_item(self.cafe,self.category)
         create_menu_item(self.cafe,self.category)
         create_menu_item(self.cafe,self.category,**{'is_active' : False})
@@ -86,7 +83,7 @@ class PublicTest(TestCase):
         new_cafe = create_cafe(self.province,self.city,new_owner)
         create_menu_item(new_cafe,self.category)
 
-        url = get_menu_item_url_by_slug(self.cafe.slug)
+        url = get_menu_item_url_by_id(self.cafe.id)
         res = self.client.get(url)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
 
@@ -102,7 +99,7 @@ class PublicTest(TestCase):
         new_owner = create_user("09151498721","123456")
         new_cafe = create_cafe(self.province,self.city,new_owner)
 
-        url = get_menu_item_url_by_slug(new_cafe.slug)
+        url = get_menu_item_url_by_id(new_cafe.id)
         res = self.client.get(url)
         self.assertEqual(res.status_code,status.HTTP_204_NO_CONTENT)
 

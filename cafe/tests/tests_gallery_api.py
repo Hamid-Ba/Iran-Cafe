@@ -5,10 +5,9 @@ from django.test import TestCase
 from rest_framework.test import APIClient
 from django.urls import reverse
 from rest_framework import status
-from django.template.defaultfilters import slugify
 from django.contrib.auth import get_user_model
 
-from cafe.models import (Cafe,Category, Gallery,MenuItem)
+from cafe.models import (Cafe, Gallery)
 from PIL import Image
 import tempfile
 
@@ -33,7 +32,6 @@ def create_cafe(province,city,owner,**new_payload):
     payload  = {
         "persian_title" : "تست",
         "english_title" : "Test",
-        "slug" : slugify(owner.phone),
         "phone" : owner.phone,
         "street" : "west coast street",
         "desc" : "test description",
