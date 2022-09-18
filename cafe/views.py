@@ -7,7 +7,7 @@ from drf_spectacular.utils import (
     OpenApiParameter,
     OpenApiTypes
 )
-from rest_framework import (mixins , generics ,viewsets , permissions , authentication ,status)
+from rest_framework import (mixins , generics ,viewsets , permissions , authentication ,status ,views)
 from cafe.models import (Cafe,Category, Gallery, MenuItem)
 from rest_framework.response import Response
 from cafe.serializers import (CafeSerializer, CateogrySerializer, CreateUpdateCafeSerializer,
@@ -39,6 +39,16 @@ class CafeViewSet(BaseMixinView) :
     def perform_create(self, serializer):
         """Register Cafe"""
         return serializer.save(owner=self.request.user)
+
+class CafeIdView(views.APIView):
+    """Cafe Id API View"""
+    def get(self, request,cafe_code):
+        cafe = Cafe.objects.filter(code=cafe_code).first()
+
+        if cafe : 
+            return Response({"id" : cafe.id} , status = status.HTTP_200_OK)
+        
+        return Response({"message" : "کافه ای با این کد یافت نشد"} , status = status.HTTP_404_NOT_FOUND)
 
 @extend_schema_view(
     list=extend_schema(

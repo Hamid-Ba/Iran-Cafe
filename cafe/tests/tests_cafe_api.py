@@ -19,6 +19,10 @@ def get_cafe_province_url(slug):
 def get_cafe_city_url(slug):
     return reverse('cafe:cafes_by_city',kwargs={'city_slug': slug})
 
+def get_cafe_url_by_code(code):
+    """Return Cafe URL By Unique Code."""
+    return reverse("cafe:cafe_id",kwargs={'cafe_code':code})
+
 def create_user(phone,password=None):
     """Helper Function For Create User"""
     return get_user_model().objects.create_user(phone=phone,password=password)
@@ -217,8 +221,31 @@ class PublicTest(TestCase):
 
         cafes = Cafe.objects.get_by_city(self.city.slug)
         self.assertEqual(len(cafes),1)
-        self.assertTrue(cafes.exists())        
+        self.assertTrue(cafes.exists())
 
+    def test_return_cafe_id_by_code(self):
+        """Test Return Cafe Id By Unique Code"""    
+        payload = {
+            "persian_title" : "تست",
+            "code" : "12345",
+            "english_title" : "Test",
+            "phone" : "09151498722",
+            "street" : "west coast street",
+            "desc" : "test description",
+            "type" : "C",
+            "state" : "C",
+        }
+
+        owner_2 = create_user("09151498721")
+        cafe = create_cafe(self.province,self.city,self.owner,**payload)
+        cafe2 = create_cafe(self.province,self.city,owner_2)
+
+        url = get_cafe_url_by_code(cafe.code)
+        res = self.client.get(url)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(cafe.id , res.data['id'])
+        self.assertNotEqual(cafe2.id , res.data['id'])
         
 class PrivateTest(TestCase):
     """Test Those Endpoints Which Need User To Be Authorized"""
