@@ -7,12 +7,11 @@ from drf_spectacular.utils import (
     OpenApiParameter,
     OpenApiTypes
 )
-from django.contrib.auth import (get_user_model)
 from rest_framework import (mixins , generics ,viewsets , permissions , authentication ,status)
-from cafe import serializers
 from cafe.models import (Cafe,Category, Gallery, MenuItem)
 from rest_framework.response import Response
-from cafe.serializers import CafeSerializer, CateogrySerializer, CreateUpdateCafeSerializer, CreateUpdateGallerySerializer, CreateUpdateMenuItemSerializer, GallerySerializer, MenuItemSerializer
+from cafe.serializers import (CafeSerializer, CateogrySerializer, CreateUpdateCafeSerializer,
+ CreateUpdateGallerySerializer, CreateUpdateMenuItemSerializer, GallerySerializer, MenuItemSerializer)
 
 class BaseMixinView(mixins.RetrieveModelMixin,
                     mixins.CreateModelMixin,
@@ -129,8 +128,8 @@ class MenuItemViewSet(mixins.ListModelMixin,BaseMixinView) :
 class MenuItemListView(generics.ListAPIView):
     serializer_class = MenuItemSerializer
     
-    def get(self,request,cafe_slug):        
-        menu_items = MenuItem.objects.get_active_items(cafe_slug)
+    def get(self,request,cafe_id):        
+        menu_items = MenuItem.objects.get_active_items(cafe_id)
 
         if len(menu_items) == 0 : return Response(
             data ={"message" : "آیتمی برای این کافه به ثبت نرسیده است"},

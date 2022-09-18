@@ -10,7 +10,7 @@ class CreateUpdateCafeSerializer(serializers.ModelSerializer):
     class Meta:
         """Meta Class"""
         model = Cafe
-        fields = ['persian_title', 'english_title', 'slug' , 'phone' , 'street',
+        fields = ['persian_title', 'english_title' , 'phone' , 'street',
                     'desc' , 'type' , 'province' , 'city']
 
     def create(self, validated_data):
@@ -73,7 +73,8 @@ class CreateUpdateGallerySerializer(serializers.ModelSerializer):
     class Meta:
         """Meta Class"""
         model = Gallery
-        fields = ['title','image']
+        fields = ['id','title','image']
+        read_only_fields = ['id']
 
 class GallerySerializer(CreateUpdateGallerySerializer):
     """Gallery Serializer"""

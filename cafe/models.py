@@ -8,7 +8,6 @@ from django.conf import settings
 from djmoney.models.fields import MoneyField
 
 from cafe.validators import PhoneValidator
-
 from province.models import (City, Province)
 
 class CafeManager(models.Manager):
@@ -49,14 +48,14 @@ class Cafe(models.Model):
     code = models.CharField(max_length=5,unique=True,null=True, blank=True)
     persian_title = models.CharField(max_length=85,null=False, blank=False)
     english_title = models.CharField(max_length=90,null=False, blank=False)
-    slug = models.SlugField(max_length=200,unique=True,blank=False,null=False)
+    # slug = models.SlugField(max_length=200,unique=True,blank=False,null=False)
     phone = models.CharField(max_length=11,unique=True,validators=[PhoneValidator])
     email = models.EmailField(max_length=125,null=True, blank=True)
-    image_url = models.URLField(max_length=250,blank=True,null=True)
+    image_url = models.URLField(max_length=250,blank=True,null=True , error_messages = {'invalid' : 'مقدار وارد شده صحیح نم باشد'})
     telegram_id = models.CharField(max_length=100,blank=True,null=True)
     instagram_id = models.CharField(max_length=100,blank=True,null=True)
     postal_code = models.CharField(max_length=10,blank=True,null=True)
-    google_map_url = models.URLField(max_length=250,blank=True,null=True)
+    google_map_url = models.URLField(max_length=250,blank=True,null=True,error_messages = {'invalid' : 'مقدار وارد شده صحیح نم باشد'})
     street = models.CharField(max_length=250,null=True, blank=True)
     desc = models.TextField(blank=False,null=False)
     state = models.CharField(max_length=1,
@@ -90,19 +89,16 @@ class Category(models.Model):
 
     def __str__(self) :
         return self.title
-
+ 
 class MenuItemManager(models.Manager):
     """Menu Item Manager"""
-    def get_active_items(self,cafe_slug):
-        return self.filter(cafe__slug=cafe_slug).filter(is_active=True).order_by('-id').values()
-
-    # def get_items_by(self,owner_id):
-    #     return self.filter()
+    def get_active_items(self,cafe_id):
+        return self.filter(cafe__id=cafe_id).filter(is_active=True).order_by('-id').values()
 
 class MenuItem(models.Model):
     """Menu Item model"""
     title = models.CharField(max_length=125,null=False,blank=False)
-    image_url = models.URLField(max_length=250,blank=False,null=False)
+    image_url = models.URLField(max_length=250,blank=False,null=False,error_messages = {'invalid' : 'مقدار وارد شده صحیح نم باشد'})
     desc = models.TextField(null=False,blank=False)
     price = MoneyField(max_digits=10,decimal_places=0,default_currency='IRR',null=False)
     is_active = models.BooleanField(default=True)
