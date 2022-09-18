@@ -10,3 +10,6 @@ class AboutUs(models.Model):
     phones = models.CharField(max_length=60,null=True,blank=True)
     emails = models.CharField(max_length=175,null=True,blank=True)
     address = models.TextField(blank=True,null=True)
+
+    class Meta:
+        verbose_name_plural = 'About Us'

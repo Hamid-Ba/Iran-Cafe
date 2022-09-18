@@ -89,6 +89,9 @@ class Category(models.Model):
 
     def __str__(self) :
         return self.title
+
+    class Meta:
+        verbose_name_plural = 'Categories'
  
 class MenuItemManager(models.Manager):
     """Menu Item Manager"""
@@ -128,6 +131,9 @@ class Gallery(models.Model):
     def __str__(self):
         if self.title : return self.title
         return self.image
+    
+    class Meta:
+        verbose_name_plural = 'Galleries'
 
 class Suggestion(models.Model):
     """Suggestions model"""
