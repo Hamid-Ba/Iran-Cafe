@@ -4,6 +4,8 @@ site info module models
 
 from django.db import models
 
+from account.vaidators import phone_validator
+
 class AboutUs(models.Model):
     """About Us Model"""
     text = models.TextField(blank=True,null=True)
@@ -13,3 +15,12 @@ class AboutUs(models.Model):
 
     class Meta:
         verbose_name_plural = 'About Us'
+
+class ContactUs(models.Model):
+    """Contact Us Model"""
+    full_name = models.CharField(max_length=125,blank=False,null=False)
+    phone = models.CharField(max_length=11,blank=False,null=False,validators=[phone_validator])
+    message = models.TextField(blank=False,null=False)
+
+    class Meta:
+        verbose_name_plural = 'Contact Us'

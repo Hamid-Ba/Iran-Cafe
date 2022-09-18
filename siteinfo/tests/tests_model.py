@@ -4,10 +4,10 @@ Test site info module models
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 
-from siteinfo.models import AboutUs
+from siteinfo.models import (AboutUs, ContactUs)
 
 class AboutUsTest(TestCase):
-    """Test About Us Mode"""
+    """Test About Us Model"""
     def test_create_aboutUs_model_should_work_properly(self):
         """Test Create About Us Model"""
         payload = {
@@ -21,3 +21,18 @@ class AboutUsTest(TestCase):
 
         for(key  , value) in payload.items():
             self.assertEqual(getattr(about_us, key), value)
+
+class ContactUsTest(TestCase):
+    """Test Contact Us Model"""
+    def test_create_contact_us_model_should_work_properly(self):
+        """Test Create Contact Us Model"""
+        payload = {
+            "full_name" : "John Smith",
+            "phone" : "09151498722",
+            "message" : "Thank you for your contact information"
+        }
+
+        contact_us = ContactUs.objects.create(**payload)
+
+        for(key  , value) in payload.items():
+            self.assertEqual(getattr(contact_us, key), value)
