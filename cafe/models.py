@@ -139,13 +139,38 @@ class Suggestion(models.Model):
     def __str__(self):
         return self.cafe.code
 
+class ReservationManager(models.Manager):
+    """Reservation Manager"""
+    def _get_cafe_reservation(self,cafe):
+        return self.filter(cafe=cafe).order_by('-id')
+
+    def _get_user_reservation(self,user):
+        return self.filter(user = user).order_by('-id')
+
+    def get_reservation(self,cafe,user):
+        if cafe :
+            return self._get_cafe_reservation(cafe)
+        elif user :
+            return self._get_user_reservation(user)
+        
+        return None
+
 class Reservation(models.Model):
     """Reservation model"""
+    class ReservationState(models.TextChoices):
+        PENDING = 'P', 'Pending'
+        CONFIRMED = 'C', 'Confirmed'
+        REJECTED = 'R', 'Rejected'
     full_name = models.CharField(max_length=125, blank=False, null=False)
     phone = models.CharField(max_length=11,unique=True,validators=[PhoneValidator])
     date = models.DateField(blank=False, null=False)
     time = models.TimeField(blank=False, null=False)
     message = models.CharField(max_length=500, blank=True, null=True)
+    state = models.CharField(max_length=1,
+                            default=ReservationState.PENDING,
+                            choices=ReservationState.choices)
 
     cafe = models.ForeignKey(Cafe , on_delete=models.CASCADE , related_name='reserve')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name='reserve')
+
+    objects = ReservationManager()

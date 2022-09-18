@@ -10,10 +10,10 @@ from drf_spectacular.utils import (
 )
 from rest_framework import (mixins , generics ,viewsets , permissions , authentication ,status ,views)
 from cafe import serializers
-from cafe.models import (Cafe,Category, Gallery, MenuItem, Suggestion)
+from cafe.models import (Cafe,Category, Gallery, MenuItem, Reservation, Suggestion)
 from rest_framework.response import Response
 from cafe.serializers import (CafeSerializer, CateogrySerializer, CreateUpdateCafeSerializer,
- CreateUpdateGallerySerializer, CreateUpdateMenuItemSerializer, GallerySerializer, MenuItemSerializer, SuggestionSerializer)
+ CreateUpdateGallerySerializer, CreateUpdateMenuItemSerializer, CreateUpdateReservationSerializer, GallerySerializer, MenuItemSerializer, ReservationSerializer, SuggestionSerializer)
 
 class BaseMixinView(mixins.RetrieveModelMixin,
                     mixins.CreateModelMixin,
@@ -187,4 +187,27 @@ class SuggestionView(mixins.ListModelMixin,
     
 class CreateSuggestionApiView(generics.CreateAPIView):
     """Create Suggestion API view"""
-    serializer_class = SuggestionSerializer        
+    serializer_class = SuggestionSerializer
+
+class ReservationViewSet(mixins.ListModelMixin,
+                        mixins.DestroyModelMixin,
+                        BaseMixinView):
+    """Reservation View Set"""
+    serializer_class = ReservationSerializer
+    queryset = Reservation.objects.all()
+
+    def get_queryset(self):
+        is_cafe_exist = Cafe.objects.filter(owner=self.request.user).exists()
+        if is_cafe_exist:
+            return Reservation.objects.get_reservation(cafe=self.request.user.cafe , user=None).order_by('-id')
+        return Reservation.objects.get_reservation(cafe=None , user=self.request.user).order_by('-id')
+    
+    def get_serializer_class(self):
+        """Specify The Serializer class"""
+        if self.action == "create" or self.action == "update" or self.action == "partial_update":
+            self.serializer_class = CreateUpdateReservationSerializer
+
+        return self.serializer_class
+
+    def perform_create(self, serializer):
+        return serializer.save(user=self.request.user)

@@ -3,7 +3,7 @@ Cafe Module Serializers
 """
 from dataclasses import fields
 from rest_framework import serializers
-from cafe.models import Cafe, Category, Gallery, MenuItem, Suggestion
+from cafe.models import Cafe, Category, Gallery, MenuItem, Reservation, Suggestion
 
 class CreateUpdateCafeSerializer(serializers.ModelSerializer):
     """Cafe Serializer For Register Cafe"""
@@ -104,3 +104,17 @@ class SuggestionSerializer(serializers.ModelSerializer):
         # suggest.save()
 
         return suggest
+
+class CreateUpdateReservationSerializer(serializers.ModelSerializer):
+    """Create Or Update Reservation Serializer"""
+    class Meta:
+        """Meta Class"""
+        model = Reservation
+        fields = ['id','cafe','full_name','phone','date','time','message']
+        read_only_fields = ['id']
+
+class ReservationSerializer(CreateUpdateReservationSerializer):
+    """Reservation Serializer"""
+    class Meta(CreateUpdateReservationSerializer.Meta):
+        """Meta Class"""
+        fields = CreateUpdateReservationSerializer.Meta.fields + ['user','state']

@@ -14,10 +14,6 @@ from province.models import (City, Province)
 SUGGESTION_URL = reverse('cafe:suggestion-list')
 CREATE_SUGGESTION_URL = reverse('cafe:send_suggest')
 
-def get_cafe_url(cafe_id):
-    """Get Cafe URL"""
-    return reverse('cafe:send_suggest',kwargs={'cafe_id': cafe_id})
-
 def create_user(phone,password):
     """Helper Function for creating a user"""
     return get_user_model().objects.create_user(phone=phone,password=password)
@@ -64,7 +60,6 @@ class PublicTest(TestCase):
             'cafe' : cafe.id
         }
 
-        # url = get_cafe_url(cafe.id)
         res = self.client.post(CREATE_SUGGESTION_URL,payload,format='json')
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         
