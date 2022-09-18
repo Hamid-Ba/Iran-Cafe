@@ -1,6 +1,6 @@
 from django.contrib import admin
 from account.models import User
-from cafe.models import Cafe, Category, Gallery, MenuItem, Suggestion
+from cafe.models import Cafe, Category, Gallery, MenuItem, Reservation, Suggestion
 
 class CafeAdmin(admin.ModelAdmin):
     """Cafe Admin Model"""
@@ -54,8 +54,8 @@ class MenuItemAdmin(admin.ModelAdmin):
 
     @admin.display(ordering='cafe__owner__phone')
     def cafe_owner(self, obj):
-        return obj.cafe.owner.phone
-    
+        return obj.cafe.owner.phone  
+
 class GalleryAdmin(admin.ModelAdmin):
     """Gallery Admin Model"""
     list_display = ['id','title','cafe','cafe_code','cafe_owner']
@@ -86,8 +86,25 @@ class SuggestionAdmin(admin.ModelAdmin):
     def cafe_owner(self, obj):
         return obj.cafe.owner.phone
 
+class ReservationAdmin(admin.ModelAdmin):
+    """Menu Item Admin Model"""
+    list_display = ['full_name','phone', 'cafe','date','time', 'cafe_code','cafe_owner','user','state']
+    list_display_links = ['full_name','phone','user']
+    list_editable = ['state']
+    list_filter = ['phone','cafe__code','cafe__owner__phone','state']
+    sortable_by = ['full_name', 'date','time']
+    search_fields = ['full_name' , 'phone' , 'date', 'time' , 'cafe__code' , 'cafe__owner__phone']
+    @admin.display(ordering='cafe__code')
+    def cafe_code(self, obj):
+        return obj.cafe.code
+
+    @admin.display(ordering='cafe__owner__phone')
+    def cafe_owner(self, obj):
+        return obj.cafe.owner.phone  
+
 admin.site.register(Cafe , CafeAdmin)
 admin.site.register(Category , CategoryAdmin)
 admin.site.register(MenuItem, MenuItemAdmin)
 admin.site.register(Gallery, GalleryAdmin)
 admin.site.register(Suggestion, SuggestionAdmin)
+admin.site.register(Reservation, ReservationAdmin)
