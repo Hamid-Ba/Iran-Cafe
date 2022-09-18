@@ -4,6 +4,7 @@ Cafe Module Serializers
 from dataclasses import fields
 from rest_framework import serializers
 from cafe.models import Cafe, Category, Gallery, MenuItem, Reservation, Suggestion
+from province.serializers import CitySerializer, ProvinceSerializer
 
 class CreateUpdateCafeSerializer(serializers.ModelSerializer):
     """Cafe Serializer For Register Cafe"""
@@ -24,10 +25,13 @@ class CreateUpdateCafeSerializer(serializers.ModelSerializer):
 
 class CafeSerializer(CreateUpdateCafeSerializer):
     """Cafe Serializer"""
+    province = ProvinceSerializer()
+    city = CitySerializer()
     class Meta(CreateUpdateCafeSerializer.Meta):
         """Meta Class"""
-        fields = ['id'] + CreateUpdateCafeSerializer.Meta.fields + ['image_url', 'instagram_id' , 'telegram_id' ,
-                                                    'postal_code', 'code', 'state' , 'owner' , 'view_count'] 
+        # fields = ['id'] + CreateUpdateCafeSerializer.Meta.fields + ['image_url', 'instagram_id' , 'telegram_id' ,
+        #                                             'postal_code', 'code', 'state' , 'owner' , 'view_count'] 
+        fields = '__all__'
         read_only_fields = ['owner' , 'code' , 'state' , 'view_count']
 
 class UserCafeSerializer(CafeSerializer):

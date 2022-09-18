@@ -11,11 +11,13 @@ class ProvinceSerializer(serializers.ModelSerializer):
     class Meta:
         """Meta Class"""
         model = Province
-        fields = ['id']
+        fields = ['id','name']
+        read_only_fields = ['id']
 
 class CitySerializer(serializers.ModelSerializer):
     """City Serializer"""
     class Meta:
         """City Serializer"""
         model = City
-        fields = ['id']
+        fields = ['id','name']
+        read_only_fields = ['id']
