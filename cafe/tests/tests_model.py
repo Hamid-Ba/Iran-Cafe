@@ -6,7 +6,7 @@ from django.test import TestCase
 from djmoney.money import Money
 
 from django.contrib.auth import get_user_model
-from cafe.models import (Cafe , Category, MenuItem , Gallery)
+from cafe.models import (Cafe , Category, MenuItem , Gallery, Suggestion)
 from province.models import (Province , City)
 
 def create_user(phone,password):
@@ -114,7 +114,7 @@ class GalleryTest(TestCase):
         self.owner = create_user('09151498722','123456')
         self.cafe = create_cafe(self.province,self.city,self.owner)
 
-    def test_gallery_model_should_work_properly(self):
+    def test_create_gallery_model_should_work_properly(self):
         """Test Create Gallery Model"""
         gallery = {
             "title" : "New Pic",
@@ -127,3 +127,20 @@ class GalleryTest(TestCase):
             self.assertEqual(getattr(created_gallery,key),value)
 
         self.assertEqual(created_gallery.cafe , self.cafe)
+
+class SuggestionTest(TestCase):
+    """Test Suggestion Model"""
+    def setUp(self):
+        self.province = create_province('Tehran','Tehran')
+        self.city = create_city('Tehran','Tehran',self.province)
+        self.owner = create_user('09151498722','123456')
+        self.cafe = create_cafe(self.province,self.city,self.owner)
+
+    def test_create_suggestion_model_should_work_properly(self):
+        """Test Create Suggestion Model"""
+        message = "Test Suggestion"
+
+        suggest = Suggestion.objects.create(cafe = self.cafe, message = message)
+
+        self.assertEqual(suggest.cafe , self.cafe)
+        self.assertEqual(suggest.message , message)

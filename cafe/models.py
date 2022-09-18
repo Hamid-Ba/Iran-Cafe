@@ -128,3 +128,10 @@ class Gallery(models.Model):
     def __str__(self):
         if self.title : return self.title
         return self.image
+
+class Suggestion(models.Model):
+    """Suggestions model"""
+    full_name = models.CharField(max_length=125, blank=False, null=False)
+    message = models.TextField(blank=True, null=True)
+
+    cafe = models.ForeignKey(Cafe , on_delete=models.CASCADE,related_name = 'suggest')
