@@ -124,16 +124,17 @@ class ReservationSerializer(CreateUpdateReservationSerializer):
         """Meta Class"""
         fields = CreateUpdateReservationSerializer.Meta.fields + ['user','state']
 
-class CreateOrderItemSerializer(serializers.ModelSerializer):
+class OrderItemSerializer(serializers.ModelSerializer):
     """Create Order Item Serializer"""
     class Meta:
         """Meta Class"""
         model = OrderItem
-        fields = ['item','count']
+        fields = '__all__'
+        read_only_fields = ['id','order']
 
 class CreateOrderSerializer(serializers.ModelSerializer):
     """Create Order Serializer"""
-    items = CreateOrderItemSerializer(many=True,required=True)
+    items = OrderItemSerializer(many=True,required=True)
     class Meta:
         """Meta Class"""
         model = Order
@@ -141,7 +142,14 @@ class CreateOrderSerializer(serializers.ModelSerializer):
 
     def _add_items(self, order,items):
         for item in items:
-            order.items.create(item=item['item'],count=item['count'])
+            order.items.create(
+                menu_item_id=item['menu_item_id'],
+                title=item['title'],
+                image_url=item['image_url'],
+                desc =item['desc'],
+                price=item['price'],
+                count=item['count']
+                )
 
     def create(self, validated_data):
         """Custom Create"""
@@ -154,19 +162,19 @@ class CreateOrderSerializer(serializers.ModelSerializer):
         
         return order
 
-class MenuItemOrderItemSerializer(serializers.ModelSerializer):
-    """Menu Item Order Item Serializer"""
-    class Meta:
-        """Meta Class"""
-        model = MenuItem
-        fields = ['id','title','image_url','price']
+# class MenuItemOrderItemSerializer(serializers.ModelSerializer):
+#     """Menu Item Order Item Serializer"""
+#     class Meta:
+#         """Meta Class"""
+#         model = MenuItem
+#         fields = ['id','title','image_url','price']
 
-class OrderItemSerializer(CreateOrderItemSerializer):
-    """Order Serializer"""
-    item = MenuItemOrderItemSerializer()
-    class Meta(CreateOrderItemSerializer.Meta):
-        """Class Meta"""
-        fields = CreateOrderItemSerializer.Meta.fields
+# class OrderItemSerializer(CreateOrderItemSerializer):
+#     """Order Serializer"""
+#     item = MenuItemOrderItemSerializer()
+#     class Meta(CreateOrderItemSerializer.Meta):
+#         """Class Meta"""
+#         fields = CreateOrderItemSerializer.Meta.fields
 
 class CafeOrderSerializer(serializers.ModelSerializer):
     """Cafe Order Serializer"""

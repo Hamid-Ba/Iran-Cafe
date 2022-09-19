@@ -90,11 +90,19 @@ class PrivateTest(TestCase):
             "total_price" :'30000',
             "items" : [
                 {
-                    "item" : item_1.id,
+                    "menu_item_id" : item_1.id,
+                    "title" : item_1.title,
+                    "image_url" : item_1.image_url,
+                    "desc" : item_1.desc,
+                    "price" : 10000,
                     "count" : 2
                 },
                 {
-                    "item" : item_2.id,
+                    "menu_item_id" : item_2.id,
+                    "title" : item_2.title,
+                    "image_url" : item_2.image_url,
+                    "desc" : item_2.desc,
+                    "price" : 10000,
                     "count" : 1
                 }
             ],

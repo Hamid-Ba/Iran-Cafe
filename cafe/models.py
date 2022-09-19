@@ -209,6 +209,12 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
     """OrderItem model"""
-    item = models.ForeignKey(MenuItem, on_delete=models.DO_NOTHING,related_name='items')
+    # item = models.ForeignKey(MenuItem, on_delete=models.DO_NOTHING,related_name='items')
+    menu_item_id = models.BigIntegerField(null=False,blank=False)
+    title = models.CharField(max_length=125,null=False,blank=False)
+    image_url = models.CharField(max_length=250,null=False,blank=False)
+    desc = models.TextField(null=False,blank=False)
+    price = MoneyField(max_digits=10,decimal_places=0,default_currency='IRR',null=False)
     count = models.IntegerField(default=0)
+
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')

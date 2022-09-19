@@ -198,11 +198,19 @@ class OrderTest(TestCase):
             "total_price" : Money(910000,'IRR'),
             "items" : [
                 {
-                    "id" : item_1.id,
+                    "menu_item_id" : item_1.id,
+                    "title" : item_1.title,
+                    "image_url" : item_1.image_url,
+                    "desc" : item_1.desc,
+                    "price" : item_1.price,
                     "count" : 2
                 },
                 {
-                    "id" : item_2.id,
+                    "menu_item_id" : item_2.id,
+                    "title" : item_2.title,
+                    "image_url" : item_2.image_url,
+                    "desc" : item_2.desc,
+                    "price" : item_2.price,
                     "count" : 1
                 }
             ]
@@ -211,8 +219,15 @@ class OrderTest(TestCase):
         order = Order.objects.create(cafe=self.cafe,user=self.user,total_price=payload['total_price'])
 
         for item in payload['items'] :
-            menu_item = MenuItem.objects.filter(id=item['id']).first()
-            order.items.create(item=menu_item,count=item['count'])
+            # menu_item = MenuItem.objects.filter(id=item['id']).first()
+            order.items.create(
+                menu_item_id=item['menu_item_id'],
+                title=item['title'],
+                image_url=item['image_url'],
+                desc =item['desc'],
+                price=item['price'],
+                count=item['count']
+                )
 
         self.assertEqual(order.items.count(),2)
         self.assertEqual(order.user , self.user)
