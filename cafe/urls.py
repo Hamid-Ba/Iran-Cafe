@@ -23,7 +23,7 @@ urlpatterns = [
     path("menuitem_list/<int:cafe_id>/",views.MenuItemListView.as_view(),name='menuitem_list'),
     path("province_cafes/<str:province_slug>/",views.CafesProvinceListView.as_view(),name='cafes_by_province'),
     path("city_cafes/<str:city_slug>/",views.CafesCityListView.as_view(),name='cafes_by_city'),
-    path("cafe_id/<str:cafe_code>/",views.CafeIdView.as_view(),name='cafe_id'),
+    path("cafe_detail/<str:cafe_code>/",views.CafeView.as_view(),name='cafe_id'),
     path("send_suggest/",views.CreateSuggestionApiView.as_view(),name='send_suggest')
     # path("order/",views.OrderViewSet.as_view(),name='order')
 ]

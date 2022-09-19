@@ -42,7 +42,7 @@ class CafeViewSet(BaseMixinView) :
         """Register Cafe"""
         return serializer.save(owner=self.request.user)
 
-class CafeIdView(views.APIView):
+class CafeView(views.APIView):
     """Cafe Id API View"""
     def get(self, request,cafe_code):
         cafe = Cafe.objects.filter(code=cafe_code).first()
