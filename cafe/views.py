@@ -42,7 +42,7 @@ class CafeViewSet(BaseMixinView) :
         """Register Cafe"""
         return serializer.save(owner=self.request.user)
 
-class CafeView(views.APIView):
+class CafeIdView(views.APIView):
     """Cafe Id API View"""
     def get(self, request,cafe_code):
         cafe = Cafe.objects.filter(code=cafe_code).first()
@@ -50,7 +50,7 @@ class CafeView(views.APIView):
         if cafe : 
             return Response({"id" : cafe.id} , status = status.HTTP_200_OK)
         
-        return Response({"message" : "کافه ای با این کد یافت نشد"} , status = status.HTTP_404_NOT_FOUND)
+        return Response({"message" : "کافه ای با این کد یافت نشد"} , status = status.HTTP_400_BAD_REQUEST)
 
 @extend_schema_view(
     list=extend_schema(
