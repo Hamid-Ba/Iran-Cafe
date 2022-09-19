@@ -1,8 +1,10 @@
 """
 Cafe Module Serializers
 """
+from dataclasses import fields
+from pyexpat import model
 from rest_framework import serializers
-from cafe.models import Cafe, Category, Gallery, MenuItem, Reservation, Suggestion
+from cafe.models import Cafe, Category, Gallery, MenuItem, Order, OrderItem, Reservation, Suggestion
 from province.serializers import CitySerializer, ProvinceSerializer
 
 class CreateUpdateCafeSerializer(serializers.ModelSerializer):
@@ -121,3 +123,61 @@ class ReservationSerializer(CreateUpdateReservationSerializer):
     class Meta(CreateUpdateReservationSerializer.Meta):
         """Meta Class"""
         fields = CreateUpdateReservationSerializer.Meta.fields + ['user','state']
+
+class CreateOrderItemSerializer(serializers.ModelSerializer):
+    """Create Order Item Serializer"""
+    class Meta:
+        """Meta Class"""
+        model = OrderItem
+        fields = ['item','count']
+
+class CreateOrderSerializer(serializers.ModelSerializer):
+    """Create Order Serializer"""
+    items = CreateOrderItemSerializer(many=True,required=True)
+    class Meta:
+        """Meta Class"""
+        model = Order
+        fields = ['total_price','cafe','items']
+
+    def _add_items(self, order,items):
+        for item in items:
+            order.items.create(item=item['item'],count=item['count'])
+
+    def create(self, validated_data):
+        """Custom Create"""
+        cafe = validated_data.pop('cafe', None)
+        items = validated_data.pop('items', [])
+
+        order = Order.objects.create(cafe=cafe,**validated_data)
+        self._add_items(order,items)
+        order.save()
+        
+        return order
+
+class MenuItemOrderItemSerializer(serializers.ModelSerializer):
+    """Menu Item Order Item Serializer"""
+    class Meta:
+        """Meta Class"""
+        model = MenuItem
+        fields = ['id','title','image_url','price']
+
+class OrderItemSerializer(CreateOrderItemSerializer):
+    """Order Serializer"""
+    item = MenuItemOrderItemSerializer()
+    class Meta(CreateOrderItemSerializer.Meta):
+        """Class Meta"""
+        fields = CreateOrderItemSerializer.Meta.fields
+
+class CafeOrderSerializer(serializers.ModelSerializer):
+    """Cafe Order Serializer"""
+    class Meta:
+        model = Cafe
+        fields = ['id','code','persian_title']
+
+class OrderSerializer(CreateOrderSerializer):
+    """Order Serializer"""
+    cafe = CafeOrderSerializer()
+    items = OrderItemSerializer(many=True)
+    class Meta(CreateOrderSerializer.Meta):
+        """Meta Class"""
+        fields = ['id' , 'registered_date'] + CreateOrderSerializer.Meta.fields

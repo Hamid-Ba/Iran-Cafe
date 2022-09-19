@@ -181,6 +181,22 @@ class Reservation(models.Model):
 
     objects = ReservationManager()
 
+class OrderManager(models.Manager):
+    """Order Manager"""
+    def _get_cafe_order(self,cafe):
+        return self.filter(cafe=cafe).order_by('-registered_date')
+
+    def _get_user_order(self,user):
+        return self.filter(user = user).order_by('-registered_date')
+
+    def get_order(self,cafe,user):
+        if cafe :
+            return self._get_cafe_order(cafe)
+        elif user :
+            return self._get_user_order(user)
+        
+        return None
+
 class Order(models.Model):
     """Order model"""
     total_price = MoneyField(max_digits=10,decimal_places=0,default_currency='IRR',null=False)
@@ -189,8 +205,10 @@ class Order(models.Model):
     cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE , related_name='order')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name='order')
 
+    objects = OrderManager()
+
 class OrderItem(models.Model):
     """OrderItem model"""
-    item = models.ForeignKey(MenuItem, on_delete=models.DO_NOTHING,related_name='menu_items')
+    item = models.ForeignKey(MenuItem, on_delete=models.DO_NOTHING,related_name='items')
     count = models.IntegerField(default=0)
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')

@@ -13,6 +13,7 @@ router.register('menuitems' , views.MenuItemViewSet)
 router.register('galleries' , views.GalleryViewSet)
 router.register('suggestions' , views.SuggestionView)
 router.register('reservations' , views.ReservationViewSet)
+router.register('order' , views.OrderViewSet)
 
 app_name = "cafe"
 
@@ -24,4 +25,5 @@ urlpatterns = [
     path("city_cafes/<str:city_slug>/",views.CafesCityListView.as_view(),name='cafes_by_city'),
     path("cafe_id/<str:cafe_code>/",views.CafeIdView.as_view(),name='cafe_id'),
     path("send_suggest/",views.CreateSuggestionApiView.as_view(),name='send_suggest')
+    # path("order/",views.OrderViewSet.as_view(),name='order')
 ]

@@ -9,11 +9,11 @@ from drf_spectacular.utils import (
     OpenApiTypes
 )
 from rest_framework import (mixins , generics ,viewsets , permissions , authentication ,status ,views)
-from cafe import serializers
-from cafe.models import (Cafe,Category, Gallery, MenuItem, Reservation, Suggestion)
+from cafe.models import (Cafe,Category, Gallery, MenuItem, Order, Reservation, Suggestion)
 from rest_framework.response import Response
-from cafe.serializers import (CafeSerializer, CateogrySerializer, CreateUpdateCafeSerializer,
- CreateUpdateGallerySerializer, CreateUpdateMenuItemSerializer, CreateUpdateReservationSerializer, GallerySerializer, MenuItemSerializer, ReservationSerializer, SuggestionSerializer)
+from cafe.serializers import (CafeSerializer, CateogrySerializer, CreateOrderSerializer, CreateUpdateCafeSerializer,
+ CreateUpdateGallerySerializer, CreateUpdateMenuItemSerializer, CreateUpdateReservationSerializer, GallerySerializer, MenuItemSerializer, OrderSerializer
+ , ReservationSerializer, SuggestionSerializer)
 
 class BaseMixinView(mixins.RetrieveModelMixin,
                     mixins.CreateModelMixin,
@@ -144,7 +144,7 @@ class MenuItemListView(generics.ListAPIView):
         menu_items = MenuItem.objects.get_active_items(cafe_id)
 
         if len(menu_items) == 0 : return Response(
-            data ={"message" : "آیتمی برای این کافه به ثبت نرسیده است"},
+            {None},
             status = status.HTTP_204_NO_CONTENT)
 
         return Response(menu_items)
@@ -206,6 +206,32 @@ class ReservationViewSet(mixins.ListModelMixin,
         """Specify The Serializer class"""
         if self.action == "create" or self.action == "update" or self.action == "partial_update":
             self.serializer_class = CreateUpdateReservationSerializer
+
+        return self.serializer_class
+
+    def perform_create(self, serializer):
+        return serializer.save(user=self.request.user)
+
+class OrderViewSet(mixins.ListModelMixin,
+                    mixins.RetrieveModelMixin,
+                    mixins.CreateModelMixin,
+                    viewsets.GenericViewSet):
+    """Order ViewSet"""
+    authentication_classes = (authentication.TokenAuthentication ,)
+    permission_classes = (permissions.IsAuthenticated ,)
+    serializer_class = OrderSerializer
+    queryset = Order.objects.all()
+
+    def get_queryset(self):
+        is_cafe_exist = Cafe.objects.filter(owner=self.request.user).exists()
+        if is_cafe_exist:
+            return Order.objects.get_order(cafe=self.request.user.cafe , user=None)
+        return Order.objects.get_order(cafe=None , user=self.request.user)
+
+    def get_serializer_class(self):
+        """Specify The Serializer class"""
+        if self.action == "create" :
+            self.serializer_class = CreateOrderSerializer
 
         return self.serializer_class
 
