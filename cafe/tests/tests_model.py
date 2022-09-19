@@ -6,7 +6,7 @@ from django.test import TestCase
 from djmoney.money import Money
 from datetime import (datetime , time)
 from django.contrib.auth import get_user_model
-from cafe.models import (Cafe , Category, MenuItem , Gallery, Suggestion , Reservation)
+from cafe.models import (Cafe , Category, MenuItem , Gallery, Order, Suggestion , Reservation)
 from province.models import (Province , City)
 
 def create_user(phone,password):
@@ -145,7 +145,7 @@ class SuggestionTest(TestCase):
         self.assertEqual(suggest.cafe , self.cafe)
         self.assertEqual(suggest.message , message)
 
-class ReservationTestCase(TestCase):
+class ReservationTest(TestCase):
     """Test Reservation Model"""
     def setUp(self):
         self.province = create_province('Tehran','Tehran')
@@ -171,3 +171,49 @@ class ReservationTestCase(TestCase):
 
         self.assertTrue(reserve.user)
         self.assertEqual(reserve.cafe , self.cafe)
+
+class OrderTest(TestCase):
+    """Test Order Model"""
+    def setUp(self):
+        self.province = create_province('Tehran','Tehran')
+        self.city = create_city('Tehran','Tehran',self.province)
+        self.owner = create_user('09151498722','123456')
+        self.user = create_user('09151498721','123456')
+        self.cafe = create_cafe(self.province,self.city,self.owner)
+
+    def test_create_order_should_work_properly(self):
+        """Test Create Order Model"""
+        category_1 = create_category('Hot Baverage')
+        category_2 = create_category('Cold Liquid')
+        menu_item = {
+            'image_url' : 'https://no_image.png',
+            'title' : 'test title',
+            'desc' : 'test description',
+            'price' : Money(10,'IRR')
+        }
+        item_1 = MenuItem.objects.create(category=category_1,cafe=self.cafe,**menu_item)
+        item_2 = MenuItem.objects.create(category=category_2,cafe=self.cafe,**menu_item)
+        item_3 = MenuItem.objects.create(category=category_1,cafe=self.cafe,**menu_item)
+        payload = {
+            "total_price" : Money(910000,'IRR'),
+            "items" : [
+                {
+                    "id" : item_1.id,
+                    "count" : 2
+                },
+                {
+                    "id" : item_2.id,
+                    "count" : 1
+                }
+            ]
+        }
+
+        order = Order.objects.create(cafe=self.cafe,user=self.user,total_price=payload['total_price'])
+
+        for item in payload['items'] :
+            menu_item = MenuItem.objects.filter(id=item['id']).first()
+            order.items.create(item=menu_item,count=item['count'])
+
+        self.assertEqual(order.items.count(),2)
+        self.assertEqual(order.user , self.user)
+        self.assertEqual(order.cafe , self.cafe)

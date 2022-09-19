@@ -180,3 +180,17 @@ class Reservation(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name='reserve')
 
     objects = ReservationManager()
+
+class Order(models.Model):
+    """Order model"""
+    total_price = MoneyField(max_digits=10,decimal_places=0,default_currency='IRR',null=False)
+    registered_date = models.DateTimeField(auto_now_add=True,editable=False)
+    
+    cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE , related_name='order')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name='order')
+
+class OrderItem(models.Model):
+    """OrderItem model"""
+    item = models.ForeignKey(MenuItem, on_delete=models.DO_NOTHING,related_name='menu_items')
+    count = models.IntegerField(default=0)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
