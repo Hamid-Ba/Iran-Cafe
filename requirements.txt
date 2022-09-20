@@ -1,4 +1,5 @@
 Django
 djangorestframework
+drf-spectacular
 pillow
 psycopg2
