@@ -24,5 +24,6 @@ urlpatterns = [
     path("province_cafes/<str:province_slug>/",views.CafesProvinceListView.as_view(),name='cafes_by_province'),
     path("city_cafes/<str:city_slug>/",views.CafesCityListView.as_view(),name='cafes_by_city'),
     path("cafe_detail/<str:cafe_code>/",views.CafeIdView.as_view(),name='cafe_id'),
+    path("cafe_detail_page/<int:cafe_id>/",views.CafeDetailView.as_view(),name='cafe_detail_page'),
     path("send_suggest/",views.CreateSuggestionApiView.as_view(),name='send_suggest')
 ]
