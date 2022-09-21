@@ -3,3 +3,5 @@ djangorestframework
 drf-spectacular
 pillow
 psycopg2
+django-cors-headers
+django-money
