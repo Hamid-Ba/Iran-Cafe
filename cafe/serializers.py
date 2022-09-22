@@ -3,6 +3,7 @@ Cafe Module Serializers
 """
 from dataclasses import fields
 from pyexpat import model
+from uuid import uuid4
 from rest_framework import serializers
 from cafe.models import Cafe, Category, Gallery, MenuItem, Order, OrderItem, Reservation, Suggestion
 from province.serializers import CitySerializer, ProvinceSerializer
@@ -155,8 +156,9 @@ class CreateOrderSerializer(serializers.ModelSerializer):
         """Custom Create"""
         cafe = validated_data.pop('cafe', None)
         items = validated_data.pop('items', [])
+        code = str(uuid4())[:5]
 
-        order = Order.objects.create(cafe=cafe,**validated_data)
+        order = Order.objects.create(cafe=cafe,code=code,**validated_data)
         self._add_items(order,items)
         order.save()
         
@@ -174,4 +176,4 @@ class OrderSerializer(CreateOrderSerializer):
     items = OrderItemSerializer(many=True)
     class Meta(CreateOrderSerializer.Meta):
         """Meta Class"""
-        fields = ['id' , 'registered_date'] + CreateOrderSerializer.Meta.fields
+        fields = ['id','code','state', 'registered_date'] + CreateOrderSerializer.Meta.fields

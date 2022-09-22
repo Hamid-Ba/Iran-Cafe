@@ -116,4 +116,5 @@ class PrivateTest(TestCase):
         self.assertEqual(order.items.count(),2)
         self.assertEqual(order.cafe , self.cafe)
         self.assertEqual(order.user , self.user)
+        self.assertEqual(len(order.code),5)
         self.assertEqual(order.total_price , Money(30000,'IRR'))

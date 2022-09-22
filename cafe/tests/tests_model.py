@@ -1,6 +1,7 @@
 """
 Test Cafe Module Models
 """
+from uuid import uuid4
 from django.test import TestCase
 # from decimal import Decimal
 from djmoney.money import Money
@@ -196,6 +197,8 @@ class OrderTest(TestCase):
         item_3 = MenuItem.objects.create(category=category_1,cafe=self.cafe,**menu_item)
         payload = {
             "total_price" : Money(910000,'IRR'),
+            "code" : str(uuid4())[:5],
+            "state" : 'P',
             "items" : [
                 {
                     "menu_item_id" : item_1.id,
@@ -216,7 +219,8 @@ class OrderTest(TestCase):
             ]
         }
 
-        order = Order.objects.create(cafe=self.cafe,user=self.user,total_price=payload['total_price'])
+        order = Order.objects.create(cafe=self.cafe,user=self.user,
+        total_price=payload['total_price'],code = payload['code'], state=payload['state'])
 
         for item in payload['items'] :
             # menu_item = MenuItem.objects.filter(id=item['id']).first()

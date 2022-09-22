@@ -199,6 +199,13 @@ class OrderManager(models.Manager):
 
 class Order(models.Model):
     """Order model"""
+    class OrderState(models.TextChoices):
+        PENDING = 'P', 'Pending'
+        CONFIRMED = 'D', 'Delivered'
+        REJECTED = 'C', 'Cancelled'
+
+    code = models.CharField(max_length=5,blank=False,null=True)
+    state = models.CharField(max_length=1 , default=OrderState.PENDING ,choices=OrderState.choices)
     total_price = MoneyField(max_digits=10,decimal_places=0,default_currency='IRR',null=False)
     registered_date = models.DateTimeField(auto_now_add=True,editable=False)
     
