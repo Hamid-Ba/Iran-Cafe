@@ -1,6 +1,7 @@
 """
 Test Order Endpoints
 """
+from uuid import uuid4
 from django.test import TestCase
 from rest_framework.test import APIClient
 from django.urls import reverse
@@ -12,6 +13,9 @@ from cafe.models import (Cafe,Category,MenuItem, Order)
 from province.models import (City, Province)
 
 ORDER_URL = reverse('cafe:order-list')
+
+def order_detail_url(order_id):
+    return reverse('cafe:order-detail', args=(order_id,))
 
 def create_user(phone,password):
     """Helper Function for creating a user"""
@@ -45,6 +49,40 @@ def create_cafe(province,city,owner,**new_payload):
     }
     payload.update(new_payload)
     return Cafe.objects.create(**payload)
+
+def create_order(cafe,user):
+    """Helper Function To Create Order"""
+    payload = {
+            "total_price" : 2000,
+            "code" : str(uuid4())[:5],
+            "state" : 'P',
+            "items" : [
+                {
+                    "menu_item_id" : 1,
+                    "title" : "test",
+                    "image_url" : "https://imgae.jpg",
+                    "desc" : "test description",
+                    "price" : 1000,
+                    "count" : 2
+                }
+            ]
+        }
+    
+    order = Order.objects.create(cafe=cafe,user=user,
+        total_price=payload['total_price'],code = payload['code'], state=payload['state'])
+
+    for item in payload['items'] :
+        # menu_item = MenuItem.objects.filter(id=item['id']).first()
+        order.items.create(
+            menu_item_id=item['menu_item_id'],
+            title=item['title'],
+            image_url=item['image_url'],
+            desc =item['desc'],
+            price=item['price'],
+            count=item['count']
+            )
+
+    return order
 
 class PublicTest(TestCase):
     """Tests Which Does Not Need User To Be Authenticated"""
@@ -118,3 +156,17 @@ class PrivateTest(TestCase):
         self.assertEqual(order.user , self.user)
         self.assertEqual(len(order.code),5)
         self.assertEqual(order.total_price , Money(30000,'IRR'))
+
+    def test_change_order_state_should_work_properly(self):
+        """Test Changing order state should work"""
+        self.client.force_authenticate(self.owner)
+        order = create_order(self.cafe,self.user)
+        payload = {
+            'state' : 'D'
+        }
+
+        url = order_detail_url(order.id)
+        res = self.client.patch(url, payload=payload,format='json')
+
+        order.refresh_from_db()
+        self.assertEqual(res.status_code, status.HTTP_200_OK)

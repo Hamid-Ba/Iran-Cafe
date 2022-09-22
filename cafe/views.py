@@ -13,7 +13,7 @@ from cafe import serializers
 from cafe.models import (Cafe,Category, Gallery, MenuItem, Order, Reservation, Suggestion)
 from rest_framework.response import Response
 from cafe.serializers import (CafeSerializer, CateogrySerializer, CreateOrderSerializer, CreateUpdateCafeSerializer,
- CreateUpdateGallerySerializer, CreateUpdateMenuItemSerializer, CreateUpdateReservationSerializer, GallerySerializer, MenuItemSerializer, OrderSerializer
+ CreateUpdateGallerySerializer, CreateUpdateMenuItemSerializer, CreateUpdateReservationSerializer, GallerySerializer, MenuItemSerializer, OrderSerializer, PatchOrderSerializer
  , ReservationSerializer, SuggestionSerializer)
 
 class BaseMixinView(mixins.RetrieveModelMixin,
@@ -222,12 +222,8 @@ class ReservationViewSet(mixins.ListModelMixin,
         return serializer.save(user=self.request.user)
 
 class OrderViewSet(mixins.ListModelMixin,
-                    mixins.RetrieveModelMixin,
-                    mixins.CreateModelMixin,
-                    viewsets.GenericViewSet):
+                    BaseMixinView):
     """Order ViewSet"""
-    authentication_classes = (authentication.TokenAuthentication ,)
-    permission_classes = (permissions.IsAuthenticated ,)
     serializer_class = OrderSerializer
     queryset = Order.objects.all()
 
@@ -241,6 +237,9 @@ class OrderViewSet(mixins.ListModelMixin,
         """Specify The Serializer class"""
         if self.action == "create" :
             self.serializer_class = CreateOrderSerializer
+        
+        if self.action == "update" or self.action == "partial_update":
+            self.serializer_class = PatchOrderSerializer
 
         return self.serializer_class
 

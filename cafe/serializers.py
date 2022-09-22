@@ -1,7 +1,7 @@
 """
 Cafe Module Serializers
 """
-from dataclasses import fields
+from dataclasses import field, fields
 from pyexpat import model
 from uuid import uuid4
 from rest_framework import serializers
@@ -177,3 +177,10 @@ class OrderSerializer(CreateOrderSerializer):
     class Meta(CreateOrderSerializer.Meta):
         """Meta Class"""
         fields = ['id','code','state', 'registered_date'] + CreateOrderSerializer.Meta.fields
+
+class PatchOrderSerializer(serializers.ModelSerializer):
+    """Patch Order Serializer"""
+    class Meta:
+        """Meta Class"""
+        model = Order
+        fields = ['id','state']
