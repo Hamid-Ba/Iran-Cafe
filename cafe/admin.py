@@ -1,6 +1,6 @@
 from django.contrib import admin
 from account.models import User
-from cafe.models import Cafe, Category, Gallery, MenuItem, Reservation, Suggestion
+from cafe.models import Cafe, Category, Gallery, MenuItem, Order, OrderItem, Reservation, Suggestion
 
 class CafeAdmin(admin.ModelAdmin):
     """Cafe Admin Model"""
@@ -102,9 +102,36 @@ class ReservationAdmin(admin.ModelAdmin):
     def cafe_owner(self, obj):
         return obj.cafe.owner.phone  
 
+class OrderItemInline(admin.StackedInline):
+    model = OrderItem
+    max_num = 1
+
+class OrderAdmin(admin.ModelAdmin):
+    """Order Admin Model"""
+    list_display = ['code','total_price' , 'state', 'registered_date' , 'user' , 'user_phone' ,'cafe','cafe_code','cafe_owner']
+    list_display_links = ['code','total_price']
+    list_editable = ['state']
+    list_filter = ['code','cafe__code','state']
+    sortable_by = ['registered_date', 'code']
+    search_fields = ['code' , 'total_price' , 'registered_date', 'user_phone' , 'cafe__code' , 'cafe__owner__phone']
+    inlines = [OrderItemInline]
+      
+    @admin.display(ordering='cafe__code')
+    def cafe_code(self, obj):
+        return obj.cafe.code
+
+    @admin.display(ordering='cafe__owner__phone')
+    def cafe_owner(self, obj):
+        return obj.cafe.owner.phone  
+
+    @admin.display(ordering='user__phone')
+    def user_phone(self, obj):
+        return obj.user.phone
+
 admin.site.register(Cafe , CafeAdmin)
 admin.site.register(Category , CategoryAdmin)
 admin.site.register(MenuItem, MenuItemAdmin)
 admin.site.register(Gallery, GalleryAdmin)
 admin.site.register(Suggestion, SuggestionAdmin)
 admin.site.register(Reservation, ReservationAdmin)
+admin.site.register(Order, OrderAdmin)
