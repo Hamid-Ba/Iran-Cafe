@@ -101,7 +101,7 @@ class PublicTest(TestCase):
 
         url = get_menu_item_url_by_id(new_cafe.id)
         res = self.client.get(url)
-        self.assertEqual(res.status_code,status.HTTP_204_NO_CONTENT)
+        self.assertEqual(res.status_code,status.HTTP_200_OK)
 
         menuitems = MenuItem.objects.filter(cafe_id=new_cafe.id).filter(is_active=True).order_by('-id').values()
 
