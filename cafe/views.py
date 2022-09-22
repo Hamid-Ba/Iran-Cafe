@@ -154,10 +154,6 @@ class MenuItemListView(generics.ListAPIView):
     def get(self,request,cafe_id):        
         menu_items = MenuItem.objects.get_active_items(cafe_id)
 
-        # if len(menu_items) == 0 : return Response(
-        #     {None},
-        #     status = status.HTTP_204_NO_CONTENT)
-
         if len(menu_items) == 0 : return Response([])
 
         return Response(menu_items)

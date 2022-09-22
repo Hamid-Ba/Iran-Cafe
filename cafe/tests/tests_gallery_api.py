@@ -1,6 +1,7 @@
 """
 Test Menu Item Endpoints
 """
+import os
 from django.test import TestCase
 from rest_framework.test import APIClient
 from django.urls import reverse
@@ -14,6 +15,9 @@ import tempfile
 from province.models import (City, Province)
 
 GALLERY_URL = reverse('cafe:gallery-list')
+
+def gallery_detail_url(gallery_id):
+    return reverse('cafe:gallery-detail', args=(gallery_id,))
 
 def create_user(phone,password):
     """Helper Function for creating a user"""
@@ -105,3 +109,14 @@ class PrivateTest(TestCase):
 
             gallery = Gallery.objects.filter(cafe_id = self.cafe.id).first()
             self.assertEqual(gallery.cafe , self.cafe)
+
+    def test_delete_gallery_should_work_properly(self):
+        """Test Delete Gallery Should Work Properly"""
+        gallery = create_gallery(self.cafe)
+        old_img = gallery.image.path
+        
+        url = gallery_detail_url(gallery.id)
+        res = self.client.delete(url)
+        
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(os.path.exists(old_img))
