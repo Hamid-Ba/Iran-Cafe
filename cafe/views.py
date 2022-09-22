@@ -228,10 +228,16 @@ class OrderViewSet(mixins.ListModelMixin,
     queryset = Order.objects.all()
 
     def get_queryset(self):
+        state = 'all'
+        try :
+            if self.request.query_params['state'].strip() != "":
+                state = self.request.query_params['state']
+        except : None
+
         is_cafe_exist = Cafe.objects.filter(owner=self.request.user).exists()
         if is_cafe_exist:
-            return Order.objects.get_order(cafe=self.request.user.cafe , user=None)
-        return Order.objects.get_order(cafe=None , user=self.request.user)
+            return Order.objects.get_order(state=state,cafe=self.request.user.cafe , user=None)
+        return Order.objects.get_order(state=state,cafe=None , user=self.request.user)
 
     def get_serializer_class(self):
         """Specify The Serializer class"""

@@ -189,13 +189,23 @@ class OrderManager(models.Manager):
     def _get_user_order(self,user):
         return self.filter(user = user).order_by('-registered_date')
 
-    def get_order(self,cafe,user):
+    def get_order(self,state,cafe,user):
         if cafe :
-            return self._get_cafe_order(cafe)
+            orders = self._get_cafe_order(cafe)
+            if state != 'all' or not state :
+                return orders.filter(state = state)
+            return orders
         elif user :
-            return self._get_user_order(user)
-        
+            orders =  self._get_user_order(user).filter(state = state)
+            if state != 'all' or not state :
+                return orders.filter(state = state)
+            return orders
+            
         return None
+
+    # def get_by_state(self,state):
+    #     """Returns a list of orders by passed state"""
+    #     return self.filter(state=state).order_by('-registered_date').values()    
 
 class Order(models.Model):
     """Order model"""
@@ -213,6 +223,7 @@ class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name='order')
 
     objects = OrderManager()
+
 
 class OrderItem(models.Model):
     """OrderItem model"""

@@ -50,12 +50,12 @@ def create_cafe(province,city,owner,**new_payload):
     payload.update(new_payload)
     return Cafe.objects.create(**payload)
 
-def create_order(cafe,user):
+def create_order(cafe,user,state):
     """Helper Function To Create Order"""
     payload = {
             "total_price" : 2000,
             "code" : str(uuid4())[:5],
-            "state" : 'P',
+            "state" : state,
             "items" : [
                 {
                     "menu_item_id" : 1,
@@ -160,7 +160,7 @@ class PrivateTest(TestCase):
     def test_change_order_state_should_work_properly(self):
         """Test Changing order state should work"""
         self.client.force_authenticate(self.owner)
-        order = create_order(self.cafe,self.user)
+        order = create_order(self.cafe,self.user,'P')
         payload = {
             'state' : 'D'
         }
@@ -170,3 +170,42 @@ class PrivateTest(TestCase):
 
         order.refresh_from_db()
         self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+    def test_get_pendings_order(self):
+        """Test Get Pending Orders"""
+        self.client.force_authenticate(self.owner)
+        create_order(self.cafe,self.user,'P')
+        create_order(self.cafe,self.user,'D')
+        create_order(self.cafe,self.user,'C')
+
+        params = {"state":"P"}
+        res = self.client.get(ORDER_URL,params)
+
+        self.assertEqual(len(res.data),1)
+
+    def test_get_delivered_order(self):
+        """Test Get Pending Orders"""
+        self.client.force_authenticate(self.owner)
+        create_order(self.cafe,self.user,'P')
+        create_order(self.cafe,self.user,'D')
+        create_order(self.cafe,self.user,'D')
+        create_order(self.cafe,self.user,'D')
+        create_order(self.cafe,self.user,'C')
+
+        params = {"state":"D"}
+        res = self.client.get(ORDER_URL,params)
+
+        self.assertEqual(len(res.data),3)
+
+    def test_get_canceled_order(self):
+        """Test Get Pending Orders"""
+        self.client.force_authenticate(self.owner)
+        create_order(self.cafe,self.user,'P')
+        create_order(self.cafe,self.user,'D')
+        create_order(self.cafe,self.user,'C')
+        create_order(self.cafe,self.user,'C')
+
+        params = {"state":"C"}
+        res = self.client.get(ORDER_URL,params)
+
+        self.assertEqual(len(res.data),2)
