@@ -1,8 +1,7 @@
 """
 Cafe Module Serializers
 """
-from dataclasses import field, fields
-from pyexpat import model
+from django_jalali.serializers.serializerfield import JDateField, JDateTimeField
 from uuid import uuid4
 from rest_framework import serializers
 from cafe.models import Cafe, Category, Gallery, MenuItem, Order, OrderItem, Reservation, Suggestion
@@ -129,6 +128,7 @@ class PatchReservationSerializer(serializers.ModelSerializer):
 
 class ReservationSerializer(CreateReservationSerializer):
     """Reservation Serializer"""
+    date = JDateField()
     class Meta(CreateReservationSerializer.Meta):
         """Meta Class"""
         fields = CreateReservationSerializer.Meta.fields + ['user','state']
@@ -183,6 +183,7 @@ class OrderSerializer(CreateOrderSerializer,serializers.ModelSerializer):
     cafe = CafeOrderSerializer()
     items = OrderItemSerializer(many=True)
     is_owner = serializers.SerializerMethodField()
+    registered_date = JDateTimeField()
 
     def get_is_owner(self,obj):
         request = self.context.get('request', None)

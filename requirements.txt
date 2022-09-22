@@ -5,3 +5,4 @@ pillow
 psycopg2
 django-cors-headers
 django-money
+django_jalali
