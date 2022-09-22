@@ -170,13 +170,19 @@ class CafeOrderSerializer(serializers.ModelSerializer):
         model = Cafe
         fields = ['id','code','persian_title']
 
-class OrderSerializer(CreateOrderSerializer):
+class OrderSerializer(CreateOrderSerializer,serializers.ModelSerializer):
     """Order Serializer"""
     cafe = CafeOrderSerializer()
     items = OrderItemSerializer(many=True)
+    is_owner = serializers.SerializerMethodField()
+
+    def get_is_owner(self,obj):
+        request = self.context.get('request', None)
+        return Cafe.objects.filter(owner=request.user).exists()
+
     class Meta(CreateOrderSerializer.Meta):
         """Meta Class"""
-        fields = ['id','code','state', 'registered_date'] + CreateOrderSerializer.Meta.fields
+        fields = ['id','code','state', 'registered_date','is_owner'] + CreateOrderSerializer.Meta.fields
 
 class PatchOrderSerializer(serializers.ModelSerializer):
     """Patch Order Serializer"""
