@@ -13,6 +13,21 @@ from province.models import (City, Province)
 
 RESERVATION_URL = reverse('cafe:reservation-list')
 
+def reservation_detail_url(reserve_id):
+    return reverse('cafe:reservation-detail', args=(reserve_id,))
+
+def create_reservation(user,cafe):
+    """Helper Function to create a reservation"""
+    payload = {
+            "full_name" : "Afagh Balalzadeh",
+            "phone" : user.phone,
+            "date" : date(2023,2,5),
+            "time" : time(17,35),
+            "message" : "Hi I Want To Book a Table In This Date Time",
+        }
+    return Reservation.objects.create(user=user,cafe=cafe,**payload)
+
+
 def create_user(phone,password):
     """Helper Function for creating a user"""
     return get_user_model().objects.create_user(phone=phone,password=password)
@@ -90,3 +105,19 @@ class PrivateTest(TestCase):
             else : self.assertEqual(getattr(reserve,key),value)
 
         self.assertEqual(reserve.user , self.user)
+
+    def test_change_reservation_state_should_work_properly(self):
+        """Test Change Reservation State"""
+        self.client.force_authenticate(self.owner)
+        reservation = create_reservation(self.user, self.cafe)
+
+        payload = {
+            "state" : 'C'
+        }
+
+        url = reservation_detail_url(reservation.id)
+        res = self.client.patch(url,payload)
+        self.assertEqual(res.status_code,status.HTTP_200_OK)
+        
+        reservation.refresh_from_db()
+        self.assertEqual(reservation.state , payload["state"])

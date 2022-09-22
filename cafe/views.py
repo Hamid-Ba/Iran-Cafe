@@ -13,7 +13,7 @@ from cafe import serializers
 from cafe.models import (Cafe,Category, Gallery, MenuItem, Order, Reservation, Suggestion)
 from rest_framework.response import Response
 from cafe.serializers import (CafeSerializer, CateogrySerializer, CreateOrderSerializer, CreateUpdateCafeSerializer,
- CreateUpdateGallerySerializer, CreateUpdateMenuItemSerializer, CreateUpdateReservationSerializer, GallerySerializer, MenuItemSerializer, OrderSerializer, PatchOrderSerializer
+ CreateUpdateGallerySerializer, CreateUpdateMenuItemSerializer, CreateReservationSerializer, GallerySerializer, MenuItemSerializer, OrderSerializer, PatchOrderSerializer, PatchReservationSerializer
  , ReservationSerializer, SuggestionSerializer)
 
 class BaseMixinView(mixins.RetrieveModelMixin,
@@ -213,9 +213,12 @@ class ReservationViewSet(mixins.ListModelMixin,
     
     def get_serializer_class(self):
         """Specify The Serializer class"""
-        if self.action == "create" or self.action == "update" or self.action == "partial_update":
-            self.serializer_class = CreateUpdateReservationSerializer
+        if self.action == "create":
+            self.serializer_class = CreateReservationSerializer
 
+        if self.action == "update" or self.action == "partial_update":
+            self.serializer_class = PatchReservationSerializer
+            
         return self.serializer_class
 
     def perform_create(self, serializer):

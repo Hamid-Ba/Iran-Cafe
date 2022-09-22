@@ -111,19 +111,27 @@ class SuggestionSerializer(serializers.ModelSerializer):
 
         return suggest
 
-class CreateUpdateReservationSerializer(serializers.ModelSerializer):
-    """Create Or Update Reservation Serializer"""
+class CreateReservationSerializer(serializers.ModelSerializer):
+    """Create Reservation Serializer"""
     class Meta:
         """Meta Class"""
         model = Reservation
         fields = ['id','cafe','full_name','phone','date','time','message']
         read_only_fields = ['id']
 
-class ReservationSerializer(CreateUpdateReservationSerializer):
-    """Reservation Serializer"""
-    class Meta(CreateUpdateReservationSerializer.Meta):
+class PatchReservationSerializer(serializers.ModelSerializer):
+    """Patch Reservation Serializer"""
+    class Meta:
         """Meta Class"""
-        fields = CreateUpdateReservationSerializer.Meta.fields + ['user','state']
+        model = Reservation
+        fields = ['id','state']
+        read_only_fields = ['id']
+
+class ReservationSerializer(CreateReservationSerializer):
+    """Reservation Serializer"""
+    class Meta(CreateReservationSerializer.Meta):
+        """Meta Class"""
+        fields = CreateReservationSerializer.Meta.fields + ['user','state']
 
 class OrderItemSerializer(serializers.ModelSerializer):
     """Create Order Item Serializer"""
