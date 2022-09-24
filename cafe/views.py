@@ -8,7 +8,7 @@ from drf_spectacular.utils import (
     OpenApiTypes
 )
 from rest_framework import (mixins , generics ,viewsets , permissions , authentication ,status ,views)
-from cafe import serializers
+from cafe.pagination import StandardPagination
 from cafe.models import (Cafe,Category, Gallery, MenuItem, Order, Reservation, Suggestion)
 from rest_framework.response import Response
 from cafe.serializers import (CafeSerializer, CateogrySerializer, CreateOrderSerializer, CreateUpdateCafeSerializer,
@@ -134,6 +134,7 @@ class CategoryView(generics.ListAPIView):
 class MenuItemViewSet(mixins.ListModelMixin,mixins.DestroyModelMixin,BaseMixinView) :
     serializer_class = MenuItemSerializer
     queryset = MenuItem.objects.all()
+    pagination_class = StandardPagination
 
     def get_queryset(self):
         return self.queryset.filter(cafe__owner=self.request.user).order_by('-id')
@@ -164,6 +165,7 @@ class GalleryViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = GallerySerializer
     queryset = Gallery.objects.all()
+    pagination_class = StandardPagination
 
     def get_queryset(self):
         """Customize QuerySet"""
@@ -187,6 +189,7 @@ class SuggestionView(mixins.ListModelMixin,
     permission_classes = (permissions.IsAuthenticated ,)
     serializer_class = SuggestionSerializer
     queryset = Suggestion.objects.all()
+    pagination_class = StandardPagination
     
     def get_queryset(self):
         cafe = Cafe.objects.filter(owner=self.request.user).exists()
@@ -204,6 +207,7 @@ class ReservationViewSet(mixins.ListModelMixin,
     """Reservation View Set"""
     serializer_class = ReservationSerializer
     queryset = Reservation.objects.all()
+    pagination_class = StandardPagination
 
     def get_queryset(self):
         is_cafe_exist = Cafe.objects.filter(owner=self.request.user).exists()
@@ -229,6 +233,7 @@ class OrderViewSet(mixins.ListModelMixin,
     """Order ViewSet"""
     serializer_class = OrderSerializer
     queryset = Order.objects.all()
+    pagination_class = StandardPagination
 
     def get_queryset(self):
         state = 'all'

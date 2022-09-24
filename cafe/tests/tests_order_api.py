@@ -181,10 +181,10 @@ class PrivateTest(TestCase):
         params = {"state":"P"}
         res = self.client.get(ORDER_URL,params)
 
-        self.assertEqual(len(res.data),1)
+        self.assertEqual(len(res.data['results']),1)
 
     def test_get_delivered_order(self):
-        """Test Get Pending Orders"""
+        """Test Get Deliverd Orders"""
         self.client.force_authenticate(self.owner)
         create_order(self.cafe,self.user,'P')
         create_order(self.cafe,self.user,'D')
@@ -195,10 +195,10 @@ class PrivateTest(TestCase):
         params = {"state":"D"}
         res = self.client.get(ORDER_URL,params)
 
-        self.assertEqual(len(res.data),3)
+        self.assertEqual(len(res.data['results']),3)
 
     def test_get_canceled_order(self):
-        """Test Get Pending Orders"""
+        """Test Get Cancelled Orders"""
         self.client.force_authenticate(self.owner)
         create_order(self.cafe,self.user,'P')
         create_order(self.cafe,self.user,'D')
@@ -208,4 +208,4 @@ class PrivateTest(TestCase):
         params = {"state":"C"}
         res = self.client.get(ORDER_URL,params)
 
-        self.assertEqual(len(res.data),2)
+        self.assertEqual(len(res.data['results']),2)

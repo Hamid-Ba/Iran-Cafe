@@ -91,7 +91,7 @@ class PrivateTest(TestCase):
         
         galleries = Gallery.objects.filter(cafe_id=self.cafe.id).order_by('-id').values()
         # self.assertIn(galleries.first(),res.data)
-        self.assertEqual(len(res.data),2)
+        self.assertEqual(len(res.data['results']),2)
     
     def test_create_gallery_should_work_properly(self):
         """Test Create Gallery Should Work Properly"""
