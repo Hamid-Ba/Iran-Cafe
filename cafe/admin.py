@@ -25,7 +25,7 @@ class CafeAdmin(admin.ModelAdmin):
         }),
         ('Address Info', {
             'classes': ('collapse',),
-            'fields': ('province', 'city', 'street', 'postal_code' , 'google_map_url'),
+            'fields': ('province', 'city', 'street' , 'google_map_url'),
         }),
         ('Extra Info', {
             'classes': ('collapse',),

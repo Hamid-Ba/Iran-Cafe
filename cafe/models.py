@@ -54,7 +54,6 @@ class Cafe(models.Model):
     image_url = models.URLField(max_length=250,blank=True,null=True , error_messages = {'invalid' : 'مقدار وارد شده صحیح نم باشد'})
     telegram_id = models.CharField(max_length=100,blank=True,null=True)
     instagram_id = models.CharField(max_length=100,blank=True,null=True)
-    postal_code = models.CharField(max_length=10,blank=True,null=True)
     google_map_url = models.URLField(max_length=250,blank=True,null=True,error_messages = {'invalid' : 'مقدار وارد شده صحیح نم باشد'})
     street = models.CharField(max_length=250,null=True, blank=True)
     desc = models.TextField(blank=False,null=False)
