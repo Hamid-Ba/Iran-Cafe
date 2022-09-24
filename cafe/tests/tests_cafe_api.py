@@ -23,6 +23,10 @@ def get_cafe_url_by_code(code):
     """Return Cafe URL By Unique Code."""
     return reverse("cafe:cafe_id",kwargs={'cafe_code':code})
 
+def get_cafe_url_by_id(cafe_id):
+    """Return Cafe URL By Unique Code."""
+    return reverse("cafe:cafe_detail_page",kwargs={'cafe_id':cafe_id})
+
 def create_user(phone,password=None):
     """Helper Function For Create User"""
     return get_user_model().objects.create_user(phone=phone,password=password)
@@ -164,8 +168,7 @@ class PublicTest(TestCase):
         self.assertEqual(len(res.data),1)
         self.assertEqual(s1.data['id'],res.data[0]['id'])
         self.assertNotEqual(s2.data['id'],res.data[0]['id'])
-        self.assertNotEqual(s3.data['id'],res.data[0]['id'])
-        
+        self.assertNotEqual(s3.data['id'],res.data[0]['id'])    
 
     def test_get_cafe_by_city_should_work_properly(self):
         """Test Get Cafe List Filterd By City"""
@@ -246,6 +249,17 @@ class PublicTest(TestCase):
 
         self.assertEqual(cafe.id , res.data['id'])
         self.assertNotEqual(cafe2.id , res.data['id'])
+
+    def test_add_cafe_view_count(self):
+        """Test Add View Count"""
+        cafe = create_cafe(self.province,self.city,self.owner)
+
+        url = get_cafe_url_by_id(cafe.id)
+        res = self.client.get(url)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+        cafe.refresh_from_db()
+        self.assertEqual(cafe.view_count, 1)
         
 class PrivateTest(TestCase):
     """Test Those Endpoints Which Need User To Be Authorized"""

@@ -50,6 +50,7 @@ class CafeDetailView(views.APIView):
         if not cafe :
             return Response({"message" : "کافه ای با این کد یافت نشد"} , status = status.HTTP_400_BAD_REQUEST)
         
+        cafe.add_view()
         serializer = CafeSerializer(cafe)
         return Response(serializer.data)
 

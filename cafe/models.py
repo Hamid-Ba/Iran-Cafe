@@ -75,6 +75,10 @@ class Cafe(models.Model):
     def __str__(self) -> str:
         return self.persian_title
 
+    def add_view(self):
+        self.view_count += 1
+        self.save()
+
 def category_image_file_path(instance,filename):
     """Generate file path for category image"""
     ext = os.path.splitext(filename)[1]

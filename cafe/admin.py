@@ -1,5 +1,4 @@
 from django.contrib import admin
-from account.models import User
 from cafe.models import Cafe, Category, Gallery, MenuItem, Order, OrderItem, Reservation, Suggestion
 
 class CafeAdmin(admin.ModelAdmin):
