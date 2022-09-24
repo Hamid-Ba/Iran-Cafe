@@ -1,7 +1,6 @@
 """
 Cafe Module Views
 """
-from operator import ge
 from drf_spectacular.utils import (
     extend_schema,
     extend_schema_view,
