@@ -1,6 +1,7 @@
 """
 Cafe Module Models
 """
+from email.policy import default
 import os
 from uuid import (uuid4)
 from django.db import models
@@ -221,7 +222,9 @@ class Order(models.Model):
     state = models.CharField(max_length=1 , default=OrderState.PENDING ,choices=OrderState.choices)
     total_price = MoneyField(max_digits=10,decimal_places=0,default_currency='IRR',null=False)
     registered_date = models.DateTimeField(auto_now_add=True,editable=False)
-    
+    phone = models.CharField(max_length=11,blank=False,null=False,validators=[PhoneValidator],default="09151498722")
+    desc = models.CharField(max_length=500,blank=True,null=True)
+
     cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE , related_name='order')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name='order')
 

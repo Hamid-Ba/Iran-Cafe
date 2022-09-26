@@ -126,6 +126,8 @@ class PrivateTest(TestCase):
 
         payload = {
             "total_price" :'30000',
+            "desc" : 'test description',
+            "phone" : "09151498722",
             "items" : [
                 {
                     "menu_item_id" : item_1.id,

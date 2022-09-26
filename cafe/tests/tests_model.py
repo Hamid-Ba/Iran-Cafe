@@ -199,6 +199,8 @@ class OrderTest(TestCase):
             "total_price" : Money(910000,'IRR'),
             "code" : str(uuid4())[:5],
             "state" : 'P',
+            "desc" : "test description",
+            "phone" : "09151498722",
             "items" : [
                 {
                     "menu_item_id" : item_1.id,
@@ -220,7 +222,8 @@ class OrderTest(TestCase):
         }
 
         order = Order.objects.create(cafe=self.cafe,user=self.user,
-        total_price=payload['total_price'],code = payload['code'], state=payload['state'])
+        total_price=payload['total_price'],code = payload['code'], state=payload['state'],desc=payload['desc']
+        ,phone=payload['phone'])
 
         for item in payload['items'] :
             # menu_item = MenuItem.objects.filter(id=item['id']).first()
