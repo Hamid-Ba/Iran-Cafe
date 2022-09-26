@@ -21,3 +21,7 @@ class Plan(models.Model):
     image = models.ImageField(null=False,upload_to=plan_image_file_path)
     desc = models.TextField(blank=False,null=False)
     is_active = models.BooleanField(default=True)
+
+    def __str__(self) :
+        return self.title
+        
