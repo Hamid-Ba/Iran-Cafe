@@ -230,6 +230,10 @@ class Order(models.Model):
 
     objects = OrderManager()
 
+    def __str__(self) :
+        return self.user.phone
+        
+
 
 class OrderItem(models.Model):
     """OrderItem model"""

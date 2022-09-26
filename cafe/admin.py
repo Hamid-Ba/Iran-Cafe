@@ -9,7 +9,7 @@ class CafeAdmin(admin.ModelAdmin):
     list_filter = ['province' , 'state' , 'type']
     sortable_by = ['state', 'type','view_count']
     
-    search_fields = ['code' , 'owner' , 'persian_title' , 'english_title']
+    search_fields = ['code' , 'owner__fullName' , 'persian_title' , 'english_title']
 
     fieldsets = (
         ('General Info', {
@@ -112,7 +112,7 @@ class OrderAdmin(admin.ModelAdmin):
     list_editable = ['state']
     list_filter = ['code','cafe__code','state']
     sortable_by = ['registered_date', 'code']
-    search_fields = ['code' , 'total_price' , 'registered_date', 'user_phone' , 'cafe__code' , 'cafe__owner__phone']
+    search_fields = ['code' , 'total_price' , 'registered_date', 'user__phone' , 'cafe__code' , 'cafe__owner__phone']
     inlines = [OrderItemInline]
       
     @admin.display(ordering='cafe__code')

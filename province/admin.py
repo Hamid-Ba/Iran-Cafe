@@ -6,11 +6,13 @@ from province.models import (Province,City)
 class ProvinceAdmin(admin.ModelAdmin):
     list_display = ['id','name']
     list_display_links = ['id','name']
+    search_fields = ['name']
 
 class CityAdmin(admin.ModelAdmin):
     list_display = ['id','name','province']
-    list_display_links = ['name']
+    list_display_links = ['id','name']
     list_filter = ['province']
+    search_fields = ['name' , 'province__name']
 
 admin.site.register(Province,ProvinceAdmin)
 admin.site.register(City,CityAdmin)
