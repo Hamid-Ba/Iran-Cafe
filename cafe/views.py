@@ -257,5 +257,14 @@ class OrderViewSet(mixins.ListModelMixin,
 
         return self.serializer_class
 
-    def perform_create(self, serializer):
-        return serializer.save(user=self.request.user)
+    def create(self, request, *args, **kwargs):
+        """Create a New Order For Authenticated Normal User"""
+        serializer = CreateOrderSerializer(data=request.data)
+        if serializer.is_valid():
+            if Cafe.objects.filter(owner=self.request.user).exists():    
+                    return Response(data = {
+                        "message" : "شما قادر به ثبت سفارش نمی باشید"
+                    },status=status.HTTP_400_BAD_REQUEST)
+            
+            serializer.save(user=self.request.user)
+            return Response(serializer.data,status=status.HTTP_201_CREATED)

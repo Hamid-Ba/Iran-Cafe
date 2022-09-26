@@ -159,6 +159,33 @@ class PrivateTest(TestCase):
         self.assertEqual(len(order.code),5)
         self.assertEqual(order.total_price , Money(30000,'IRR'))
 
+    def test_cafe_owner_can_not_register_order(self):
+        """Test That Cafe Owner Can Not Register Order"""
+        self.client.force_authenticate(self.user)
+        create_cafe(self.province,self.city,self.user)
+
+        payload = {
+            "total_price" :'20000',
+            "desc" : 'test description',
+            "phone" : "09151498720",
+            "items" : [
+                {
+                    "menu_item_id" : 1,
+                    "title" : 'test',
+                    "image_url" : "https://noimage.png",
+                    "desc" : "test description",
+                    "price" : 10000,
+                    "count" : 2
+                },
+            ],
+            'cafe' : self.cafe.id
+        }
+
+        res = self.client.post(ORDER_URL,payload,format='json')
+        self.assertEqual(res.status_code,status.HTTP_400_BAD_REQUEST)
+
+        self.assertTrue(Cafe.objects.filter(owner=self.user).exists())
+
     def test_change_order_state_should_work_properly(self):
         """Test Changing order state should work"""
         self.client.force_authenticate(self.owner)
