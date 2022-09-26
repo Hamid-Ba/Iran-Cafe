@@ -11,7 +11,7 @@ def plan_image_file_path(instance,filename):
     ext = os.path.splitext(filename)[1]
     filename = f'{uuid4()}.{ext}'
 
-    return os.path.join('uploads','category',filename)
+    return os.path.join('uploads','plans',filename)
 
 class Plan(models.Model):
     """Plan Model"""
