@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'siteinfo',
     'cafe.apps.CafeConfig',
     'corsheaders',
-    'djmoney'
+    'djmoney',
+    'plan'
 ]
 
 MIDDLEWARE = [
