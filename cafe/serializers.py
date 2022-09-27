@@ -148,7 +148,7 @@ class CreateOrderSerializer(serializers.ModelSerializer):
     class Meta:
         """Meta Class"""
         model = Order
-        fields = ['total_price','cafe','items','desc','phone']
+        fields = ['total_price','cafe','items','desc','phone', 'num_of_table']
 
     def _add_items(self, order,items):
         for item in items:

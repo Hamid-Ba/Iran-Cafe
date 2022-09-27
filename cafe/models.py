@@ -224,6 +224,7 @@ class Order(models.Model):
     registered_date = models.DateTimeField(auto_now_add=True,editable=False)
     phone = models.CharField(max_length=11,blank=False,null=False,validators=[PhoneValidator],default="09151498722")
     desc = models.CharField(max_length=500,blank=True,null=True)
+    num_of_table = models.IntegerField(default=0)
 
     cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE , related_name='order')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name='order')
