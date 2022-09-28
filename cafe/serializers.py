@@ -34,7 +34,7 @@ class CafeSerializer(CreateUpdateCafeSerializer):
         # fields = ['id'] + CreateUpdateCafeSerializer.Meta.fields + ['image_url', 'instagram_id' , 'telegram_id' ,
         #                                             'postal_code', 'code', 'state' , 'owner' , 'view_count'] 
         fields = '__all__'
-        read_only_fields = ['owner' , 'code' , 'state' , 'view_count']
+        read_only_fields = ['owner' , 'code' , 'state' , 'view_count','charge_expired_date']
 
 class UserCafeSerializer(CafeSerializer):
     """User Cafe Serializer"""
