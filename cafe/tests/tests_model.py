@@ -56,6 +56,7 @@ class CafeTest(TestCase):
             "desc" : "test description",
             "type" : "C"
         }
+        
         owner = create_user("09151498722","123456")
         province = create_province("Tehran" , "Tehran")
         city = create_city("Tehran" , "Tehran", province)

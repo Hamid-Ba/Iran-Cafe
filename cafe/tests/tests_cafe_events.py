@@ -3,6 +3,7 @@ Test Cafe Module Events
 """
 from django.test import TestCase
 from django.contrib.auth import get_user_model
+from datetime import (datetime , timedelta)
 
 from cafe.models import Cafe
 from province.models import City, Province
@@ -57,3 +58,17 @@ class CafeEventsTest(TestCase):
         self.assertEqual(confirmed_cafe.state , "C")
         self.assertEqual(confirmed_cafe.id , self.cafe.id)
         self.assertTrue(len(self.cafe.code) == 5)
+
+    def test_add_free_period_expired_date_to_cafe(self):
+        """Test Add Free Period Expired Date To Cafe When Its Get Confirmed For First Time."""
+        self.cafe.state = 'C'
+        self.assertFalse(self.cafe.charge_expired_date)
+
+        self.cafe.charge_cafe(31,is_first=True)
+
+        self.cafe.save()
+        self.cafe.refresh_from_db()
+
+        self.assertEqual(self.cafe.state , "C")
+        self.assertTrue(self.cafe.charge_expired_date)
+        self.assertEqual(self.cafe.charge_expired_date.date(), (datetime.now() + timedelta(days=31)).date())

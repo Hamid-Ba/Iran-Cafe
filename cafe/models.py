@@ -1,6 +1,7 @@
 """
 Cafe Module Models
 """
+from datetime import datetime, timedelta
 from email.policy import default
 import os
 from uuid import (uuid4)
@@ -31,6 +32,7 @@ class CafeManager(models.Manager):
         if cafe.state == 'C':
             if not cafe.code :
                 cafe.code =  str(10000 + cafe_id)
+                cafe.charge_cafe(days=31,is_first=True)
                 cafe.save()
         return cafe
 
@@ -65,6 +67,7 @@ class Cafe(models.Model):
                             default=CafeType.CAFE,
                             choices=CafeType.choices)
     view_count = models.BigIntegerField(default = 0)
+    charge_expired_date = models.DateTimeField(null=True,blank=True)
     
     owner = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name='cafe')
     province = models.ForeignKey(Province, on_delete=models.DO_NOTHING)
@@ -77,6 +80,21 @@ class Cafe(models.Model):
 
     def add_view(self):
         self.view_count += 1
+        self.save()
+    
+    def charge_cafe(self,days,is_first=False):
+        """Charge Cafe Date By Given Days"""
+        # First Free Charge
+        if is_first and not self.charge_expired_date:
+            self.charge_expired_date = datetime.now() + timedelta(days=days)
+        # When Purchesd Plan
+        elif not is_first :
+            # When Date is expired
+            if self.charge_expired_date and self.charge_expired_date < datetime.now():
+                self.charge_expired_date = datetime.now() + timedelta(days=days)
+            # When has charge but want to charge
+            else:
+                self.charge_expired_date += timedelta(days=days)
         self.save()
 
 def category_image_file_path(instance,filename):
@@ -233,8 +251,6 @@ class Order(models.Model):
 
     def __str__(self) :
         return self.user.phone
-        
-
 
 class OrderItem(models.Model):
     """OrderItem model"""
