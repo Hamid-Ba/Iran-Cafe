@@ -12,7 +12,6 @@ class ProvinceSerializer(serializers.ModelSerializer):
         """Meta Class"""
         model = Province
         fields = ['id','name']
-        read_only_fields = ['id']
 
 class CitySerializer(serializers.ModelSerializer):
     """City Serializer"""
@@ -20,4 +19,3 @@ class CitySerializer(serializers.ModelSerializer):
         """City Serializer"""
         model = City
         fields = ['id','name']
-        read_only_fields = ['id']

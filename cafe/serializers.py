@@ -1,14 +1,13 @@
 """
 Cafe Module Serializers
 """
-from urllib import request
 from django_jalali.serializers.serializerfield import JDateField, JDateTimeField
 from uuid import uuid4
 from rest_framework import serializers
 from cafe.models import Cafe, Category, Gallery, MenuItem, Order, OrderItem, Reservation, Suggestion
 from province.serializers import CitySerializer, ProvinceSerializer
 
-class CreateUpdateCafeSerializer(serializers.ModelSerializer):
+class CreateCafeSerializer(serializers.ModelSerializer):
     """Cafe Serializer For Register Cafe"""
     class Meta:
         """Meta Class"""
@@ -25,11 +24,18 @@ class CreateUpdateCafeSerializer(serializers.ModelSerializer):
 
         return cafe
 
-class CafeSerializer(CreateUpdateCafeSerializer):
+class UpdateCafeSerializer(CreateCafeSerializer):
+    """Cafe Serializer"""
+    class Meta(CreateCafeSerializer.Meta):
+        """Meta Class"""
+        fields = '__all__'
+        read_only_fields = ['owner' , 'code' , 'state' , 'view_count','charge_expired_date']
+
+class CafeSerializer(CreateCafeSerializer):
     """Cafe Serializer"""
     province = ProvinceSerializer()
     city = CitySerializer()
-    class Meta(CreateUpdateCafeSerializer.Meta):
+    class Meta(CreateCafeSerializer.Meta):
         """Meta Class"""
         # fields = ['id'] + CreateUpdateCafeSerializer.Meta.fields + ['image_url', 'instagram_id' , 'telegram_id' ,
         #                                             'postal_code', 'code', 'state' , 'owner' , 'view_count'] 

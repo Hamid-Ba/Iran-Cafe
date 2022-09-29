@@ -11,7 +11,7 @@ from rest_framework import (mixins , generics ,viewsets , permissions , authenti
 from cafe.pagination import StandardPagination
 from cafe.models import (Cafe,Category, Gallery, MenuItem, Order, Reservation, Suggestion)
 from rest_framework.response import Response
-from cafe.serializers import (CafeSerializer, CateogrySerializer, CreateOrderSerializer, CreateUpdateCafeSerializer,
+from cafe.serializers import (CafeSerializer, CateogrySerializer, CreateOrderSerializer, CreateCafeSerializer,UpdateCafeSerializer,
  CreateUpdateGallerySerializer, CreateUpdateMenuItemSerializer, CreateReservationSerializer, GallerySerializer, MenuItemSerializer, OrderSerializer, PatchOrderSerializer, PatchReservationSerializer
  , ReservationSerializer, SuggestionSerializer)
 
@@ -34,7 +34,10 @@ class CafeViewSet(BaseMixinView) :
     def get_serializer_class(self):
         """Specify The Serializer class"""
         if self.action == "create":
-            self.serializer_class = CreateUpdateCafeSerializer
+            self.serializer_class = CreateCafeSerializer
+
+        if self.action == "update" or self.action == "partial_update":
+            self.serializer_class = UpdateCafeSerializer
 
         return self.serializer_class
 
