@@ -68,6 +68,8 @@ class Cafe(models.Model):
                             choices=CafeType.choices)
     view_count = models.BigIntegerField(default = 0)
     charge_expired_date = models.DateTimeField(null=True,blank=True)
+    latitude = models.CharField(max_length=125, blank= True,null=True)
+    longitude = models.CharField(max_length=125, blank= True,null=True)
     
     owner = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name='cafe')
     province = models.ForeignKey(Province, on_delete=models.DO_NOTHING)
