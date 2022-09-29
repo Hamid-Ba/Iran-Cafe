@@ -3,7 +3,7 @@ from cafe.models import Cafe, Category, Gallery, MenuItem, Order, OrderItem, Res
 
 class CafeAdmin(admin.ModelAdmin):
     """Cafe Admin Model"""
-    list_display = ['code' ,'owner','persian_title' , 'english_title' , 'charge_expired_date' , 'view_count' ,'state' , 'type' , 'province' ,'city']
+    list_display = ['code' ,'owner','persian_title' , 'english_title' , 'charge_expired_date' , 'view_count' ,'state' ,'is_open', 'type' , 'province' ,'city']
     list_display_links = ['code' , 'owner' , 'persian_title' , 'english_title']
     list_editable = ['state']
     list_filter = ['province' , 'state' , 'type' , 'charge_expired_date']

@@ -74,6 +74,7 @@ class Cafe(models.Model):
     owner = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name='cafe')
     province = models.ForeignKey(Province, on_delete=models.DO_NOTHING)
     city = models.ForeignKey(City, on_delete=models.DO_NOTHING)
+    is_open = models.BooleanField(default=False)
     
     objects = CafeManager()
 
