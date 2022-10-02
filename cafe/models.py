@@ -266,3 +266,7 @@ class OrderItem(models.Model):
     count = models.IntegerField(default=0)
 
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
+
+class Bartender(models.Model):
+    """Bartender model"""
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name='bartender')

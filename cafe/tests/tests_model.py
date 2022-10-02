@@ -7,7 +7,7 @@ from django.test import TestCase
 from djmoney.money import Money
 from datetime import (datetime , time)
 from django.contrib.auth import get_user_model
-from cafe.models import (Cafe , Category, MenuItem , Gallery, Order, Suggestion , Reservation)
+from cafe.models import (Bartender, Cafe , Category, MenuItem , Gallery, Order, Suggestion , Reservation)
 from province.models import (Province , City)
 
 def create_user(phone,password):
@@ -241,3 +241,15 @@ class OrderTest(TestCase):
         self.assertEqual(order.items.count(),2)
         self.assertEqual(order.user , self.user)
         self.assertEqual(order.cafe , self.cafe)
+
+class BartnederTest(TestCase):
+    """Bartneder Model Test"""
+    def test_create_bartender_should_work_properly(self):
+        """Test Create Bartneder Model"""
+        user = create_user('09151498722','123456')
+
+        bartender = Bartender.objects.create(user=user)
+        is_bartender_user = get_user_model().objects.filter(bartender=bartender).exists()
+
+        self.assertTrue(is_bartender_user)
+        self.assertEqual(bartender.user , user)
