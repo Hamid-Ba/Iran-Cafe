@@ -270,3 +270,4 @@ class OrderItem(models.Model):
 class Bartender(models.Model):
     """Bartender model"""
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name='bartender')
+    cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE , related_name='bartender')

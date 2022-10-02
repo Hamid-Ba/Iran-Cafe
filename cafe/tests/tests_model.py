@@ -244,12 +244,19 @@ class OrderTest(TestCase):
 
 class BartnederTest(TestCase):
     """Bartneder Model Test"""
+    def setUp(self):
+        self.province = create_province('Tehran','Tehran')
+        self.city = create_city('Tehran','Tehran',self.province)
+        self.owner = create_user('09151498722','123456')
+        self.cafe = create_cafe(self.province,self.city,self.owner)
+
     def test_create_bartender_should_work_properly(self):
         """Test Create Bartneder Model"""
-        user = create_user('09151498722','123456')
+        user = create_user('09151498721','123456')
 
-        bartender = Bartender.objects.create(user=user)
+        bartender = Bartender.objects.create(user=user,cafe=self.cafe)
         is_bartender_user = get_user_model().objects.filter(bartender=bartender).exists()
 
         self.assertTrue(is_bartender_user)
         self.assertEqual(bartender.user , user)
+        self.assertEqual(bartender.cafe , self.cafe)
