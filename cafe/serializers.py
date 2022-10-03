@@ -259,7 +259,7 @@ class BartnederSerializer(serializers.ModelSerializer):
         model = Bartender
         fields = '__all__'
         read_only_fields = ['id','user','cafe']
-
+   
     def create(self, validated_data):
         phone = validated_data.get('phone',None)
         otp = str(randint(100000,999999))
@@ -279,6 +279,11 @@ class BartnederSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(msg)
 
         user , created = get_user_model().objects.get_or_create(phone=phone)
+
+        if user.is_staff or user.is_superuser:
+            msg = 'شما قادر به ثبت این کاربر نمی باشید'
+            raise serializers.ValidationError(msg)
+
         user.set_password(otp)
         user.save()
 
@@ -286,6 +291,34 @@ class BartnederSerializer(serializers.ModelSerializer):
         bartender.save()
         
         return bartender
+
+    def update(self, instance, validated_data):
+        phone = validated_data.get('phone',None)
+        old_phone = instance.phone
+
+        if phone :
+            if get_user_model().objects.filter(phone=phone).exists():
+                msg = 'همچین کاربری وجود دارد'
+                raise serializers.ValidationError(msg)
+
+            if Cafe.objects.filter(owner__phone=phone).exists():
+                msg = 'این کاربر ، کافه دار است'
+                raise serializers.ValidationError(msg)
+
+            if Bartender.objects.filter(user__phone=phone).exists():
+                msg = 'شما قادر به ثبت این بارتندر نمی باشید'
+                raise serializers.ValidationError(msg)
+        
+            bartender = Bartender.objects.get(phone=old_phone)
+            bartender.phone = phone
+            
+            user = get_user_model().objects.get(phone=old_phone)
+            user.phone = phone
+            user.save()
+        
+        instance.is_active = validated_data.get('is_active', instance.is_active)
+        
+        return instance
     
     def to_representation(self, instance):
         response = super().to_representation(instance)

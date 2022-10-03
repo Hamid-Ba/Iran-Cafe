@@ -274,3 +274,6 @@ class Bartender(models.Model):
     
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name='bartender')
     cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE , related_name='bartender')
+
+    def __str__(self) -> str:
+        return self.phone

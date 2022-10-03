@@ -128,7 +128,7 @@ class OrderAdmin(admin.ModelAdmin):
         return obj.user.phone
 
 class BartenderAdmin(admin.ModelAdmin):
-    list_display = ['user','user_fullname','phone','cafe','cafe_code','is_active','user_last_login']
+    list_display = ['user_fullname','phone','cafe','cafe_code','is_active','user_last_login']
     list_editable = ['is_active']
     list_display_links = ['user_fullname','phone','cafe_code']
     ordering = ["id"]
@@ -142,7 +142,7 @@ class BartenderAdmin(admin.ModelAdmin):
     
     @admin.display(ordering='user__fullName')
     def user_fullname(self, obj):
-        return obj.user.last_login
+        return obj.user.fullName
 
     @admin.display(ordering='user__last_login')
     def user_last_login(self, obj):
