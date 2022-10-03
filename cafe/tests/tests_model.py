@@ -254,9 +254,10 @@ class BartnederTest(TestCase):
         """Test Create Bartneder Model"""
         user = create_user('09151498721','123456')
 
-        bartender = Bartender.objects.create(user=user,cafe=self.cafe)
+        bartender = Bartender.objects.create(phone=user.phone,user=user,cafe=self.cafe)
         is_bartender_user = get_user_model().objects.filter(bartender=bartender).exists()
 
         self.assertTrue(is_bartender_user)
         self.assertEqual(bartender.user , user)
+        self.assertEqual(bartender.phone,user.phone)
         self.assertEqual(bartender.cafe , self.cafe)

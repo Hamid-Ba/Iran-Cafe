@@ -4,7 +4,9 @@ Cafe Module Serializers
 from django_jalali.serializers.serializerfield import JDateField, JDateTimeField
 from uuid import uuid4
 from rest_framework import serializers
-from cafe.models import Cafe, Category, Gallery, MenuItem, Order, OrderItem, Reservation, Suggestion
+from django.contrib.auth import (get_user_model)
+from random import (randint)
+from cafe.models import Bartender, Cafe, Category, Gallery, MenuItem, Order, OrderItem, Reservation, Suggestion
 from province.serializers import CitySerializer, ProvinceSerializer
 
 class CreateCafeSerializer(serializers.ModelSerializer):
@@ -206,3 +208,84 @@ class PatchOrderSerializer(serializers.ModelSerializer):
         """Meta Class"""
         model = Order
         fields = ['id','state']
+
+class CreateBartenderSerializer(serializers.Serializer):
+    """Create Bartneder Serializer"""
+    phone = serializers.CharField(max_length=11,required=True,error_messages={
+        'blank': 'موبایل خود را وارد نمایید',
+        'required': 'موبایل خود را وارد نمایید',
+        })
+
+    def validate(self, attrs):
+        phone = attrs.get('phone')
+
+        if not phone.isdigit() : return super().validate(attrs)
+
+        return attrs
+
+    def create(self, validated_data):
+        phone = validated_data.get('phone',None)
+        otp = str(randint(100000,999999))
+        
+        owner = self.context.get('request').user
+        print("YOOHAAÅAAA")
+        print(owner)
+        # if owner.cafe == None:
+        #     msg = 'اول کافه خود را ثبت نمایید'
+        #     raise serializers.ValidationError(msg)
+
+        if Cafe.objects.filter(owner__phone=phone).exists():
+            msg = 'این کاربر ، کافه دار است'
+            raise serializers.ValidationError(msg)
+
+        if Bartender.objects.filter(user__phone=phone).exists():
+            msg = 'شما قادر به ثبت این بارتندر نمی باشید'
+            raise serializers.ValidationError(msg)
+
+        user , created = get_user_model().objects.get_or_create(phone=phone)
+        user.set_password(otp)
+        user.save()
+
+        bartender = Bartender.objects.create(user=user,cafe=owner.cafe)
+        
+        return bartender
+
+class BartnederSerializer(serializers.ModelSerializer):
+    """Bartneder Serializer"""
+    class Meta:
+        """Meta Class"""
+        model = Bartender
+        fields = '__all__'
+        read_only_fields = ['id','user','cafe']
+
+    def create(self, validated_data):
+        phone = validated_data.get('phone',None)
+        otp = str(randint(100000,999999))
+        
+        owner = self.context.get('request').user
+        
+        if owner.cafe == None:
+            msg = 'اول کافه خود را ثبت نمایید'
+            raise serializers.ValidationError(msg)
+
+        if Cafe.objects.filter(owner__phone=phone).exists():
+            msg = 'این کاربر ، کافه دار است'
+            raise serializers.ValidationError(msg)
+
+        if Bartender.objects.filter(user__phone=phone).exists():
+            msg = 'شما قادر به ثبت این بارتندر نمی باشید'
+            raise serializers.ValidationError(msg)
+
+        user , created = get_user_model().objects.get_or_create(phone=phone)
+        user.set_password(otp)
+        user.save()
+
+        bartender = Bartender.objects.create(phone=phone,user=user,cafe=owner.cafe)
+        bartender.save()
+        
+        return bartender
+    
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['phone'] = instance.user.phone
+        return response

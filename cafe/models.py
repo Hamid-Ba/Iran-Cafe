@@ -269,5 +269,7 @@ class OrderItem(models.Model):
 
 class Bartender(models.Model):
     """Bartender model"""
+    phone = models.CharField(max_length=11,unique=True,validators=[PhoneValidator])
+    
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name='bartender')
     cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE , related_name='bartender')

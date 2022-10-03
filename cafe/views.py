@@ -9,9 +9,9 @@ from drf_spectacular.utils import (
 )
 from rest_framework import (mixins , generics ,viewsets , permissions , authentication ,status ,views)
 from cafe.pagination import StandardPagination
-from cafe.models import (Cafe,Category, Gallery, MenuItem, Order, Reservation, Suggestion)
+from cafe.models import (Bartender, Cafe,Category, Gallery, MenuItem, Order, Reservation, Suggestion)
 from rest_framework.response import Response
-from cafe.serializers import (CafeSerializer, CateogrySerializer, CreateOrderSerializer, CreateCafeSerializer,UpdateCafeSerializer,
+from cafe.serializers import (BartnederSerializer, CafeSerializer, CateogrySerializer, CreateBartenderSerializer, CreateOrderSerializer, CreateCafeSerializer,UpdateCafeSerializer,
  CreateUpdateGallerySerializer, CreateUpdateMenuItemSerializer, CreateReservationSerializer, GallerySerializer, MenuItemSerializer, OrderSerializer, PatchOrderSerializer, PatchReservationSerializer
  , ReservationSerializer, SuggestionSerializer)
 
@@ -272,3 +272,36 @@ class OrderViewSet(mixins.ListModelMixin,
             serializer.save(user=self.request.user)
             return Response(serializer.data,status=status.HTTP_201_CREATED)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+class BartenderViewSet(mixins.ListModelMixin,
+                        BaseMixinView):
+    """Bartender View Set."""
+    serializer_class = BartnederSerializer
+    queryset = Bartender.objects.all()
+    pagination_class = StandardPagination
+
+    def get_queryset(self):
+        return self.queryset.filter(cafe__owner = self.request.user).order_by('-id')
+
+    def get_serializer_class(self):
+        """Specify The Serializer class"""
+        if self.action == "create" or self.action == "update" or self.action == "partial_update":
+            self.serializer_class = CreateBartenderSerializer
+
+        return self.serializer_class
+
+class BartenderviewSet(viewsets.ModelViewSet):
+    serializer_class = BartnederSerializer
+    queryset = Bartender.objects.all()
+    authentication_classes = (authentication.TokenAuthentication ,)
+    permission_classes = (permissions.IsAuthenticated ,)
+
+    def get_queryset(self):
+        return self.queryset.filter(cafe__owner = self.request.user).order_by('-id')
+
+    # def get_serializer_class(self):
+    #     """Specify The Serializer class"""
+    #     if self.action == "create" or self.action == "update" or self.action == "partial_update":
+    #         self.serializer_class = CreateBartenderSerializer
+
+    #     return self.serializer_class
