@@ -59,7 +59,7 @@ class Cafe(models.Model):
     instagram_id = models.CharField(max_length=100,blank=True,null=True)
     google_map_url = models.URLField(max_length=250,blank=True,null=True,error_messages = {'invalid' : 'مقدار وارد شده صحیح نم باشد'})
     street = models.CharField(max_length=250,null=True, blank=True)
-    desc = models.TextField(blank=False,null=False)
+    desc = models.TextField(blank=True,null=True)
     state = models.CharField(max_length=1,
                             default=CafeState.PENDING,
                             choices=CafeState.choices)

@@ -108,15 +108,11 @@ class SuggestionSerializer(serializers.ModelSerializer):
         """Custom Create"""
         cafe = validated_data.pop('cafe',None)
 
-        # cafe = Cafe.objects.filter(id=cafe_id).first()
-
         if cafe.state != 'C' :
             msg = 'کافه نامعتبر است'
             raise serializers.ValidationError(msg,code='Bad Request')
         
         suggest = Suggestion.objects.create(cafe=cafe,**validated_data)
-        # suggest.save()
-
         return suggest
 
 class CreateReservationSerializer(serializers.ModelSerializer):
@@ -138,9 +134,15 @@ class PatchReservationSerializer(serializers.ModelSerializer):
 class ReservationSerializer(CreateReservationSerializer):
     """Reservation Serializer"""
     date = JDateField()
+    is_owner = serializers.SerializerMethodField()
+    
+    def get_is_owner(self,obj):
+        request = self.context.get('request', None)
+        return Cafe.objects.filter(owner=request.user).exists()
+
     class Meta(CreateReservationSerializer.Meta):
         """Meta Class"""
-        fields = CreateReservationSerializer.Meta.fields + ['user','state']
+        fields = CreateReservationSerializer.Meta.fields + ['user','state','is_owner']
 
 class OrderItemSerializer(serializers.ModelSerializer):
     """Create Order Item Serializer"""
