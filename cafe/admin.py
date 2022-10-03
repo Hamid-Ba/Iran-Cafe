@@ -1,5 +1,5 @@
 from django.contrib import admin
-from cafe.models import Cafe, Category, Gallery, MenuItem, Order, OrderItem, Reservation, Suggestion
+from cafe.models import Bartender, Cafe, Category, Gallery, MenuItem, Order, OrderItem, Reservation, Suggestion
 
 class CafeAdmin(admin.ModelAdmin):
     """Cafe Admin Model"""
@@ -127,6 +127,27 @@ class OrderAdmin(admin.ModelAdmin):
     def user_phone(self, obj):
         return obj.user.phone
 
+class BartenderAdmin(admin.ModelAdmin):
+    list_display = ['user','user_fullname','phone','cafe','cafe_code','is_active','user_last_login']
+    list_editable = ['is_active']
+    list_display_links = ['user_fullname','phone','cafe_code']
+    ordering = ["id"]
+
+    list_filter = ['is_active','cafe']
+    search_fields = ['phone','cafe_code']
+
+    @admin.display(ordering='cafe__code')
+    def cafe_code(self, obj):
+        return obj.cafe.code
+    
+    @admin.display(ordering='user__fullName')
+    def user_fullname(self, obj):
+        return obj.user.last_login
+
+    @admin.display(ordering='user__last_login')
+    def user_last_login(self, obj):
+        return obj.user.last_login
+
 admin.site.register(Cafe , CafeAdmin)
 admin.site.register(Category , CategoryAdmin)
 admin.site.register(MenuItem, MenuItemAdmin)
@@ -134,3 +155,4 @@ admin.site.register(Gallery, GalleryAdmin)
 admin.site.register(Suggestion, SuggestionAdmin)
 admin.site.register(Reservation, ReservationAdmin)
 admin.site.register(Order, OrderAdmin)
+admin.site.register(Bartender,BartenderAdmin)
