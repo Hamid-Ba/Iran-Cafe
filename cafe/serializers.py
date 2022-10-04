@@ -81,7 +81,6 @@ class MenuItemSerializer(CreateUpdateMenuItemSerializer):
         """Meta Class"""
         fields = ['id'] + CreateUpdateMenuItemSerializer.Meta.fields
 
-
 class CreateUpdateGallerySerializer(serializers.ModelSerializer):
     """Create or Update Gallery Serializer"""
     class Meta:
@@ -138,7 +137,9 @@ class ReservationSerializer(CreateReservationSerializer):
     
     def get_is_owner(self,obj):
         request = self.context.get('request', None)
-        return Cafe.objects.filter(owner=request.user).exists()
+        if Cafe.objects.filter(owner=request.user).exists(): return 'O'
+        elif Bartender.objects.filter(user=request.user).exists(): return 'B'
+        else : return 'U'
 
     class Meta(CreateReservationSerializer.Meta):
         """Meta Class"""
@@ -198,7 +199,9 @@ class OrderSerializer(CreateOrderSerializer,serializers.ModelSerializer):
 
     def get_is_owner(self,obj):
         request = self.context.get('request', None)
-        return Cafe.objects.filter(owner=request.user).exists()
+        if Cafe.objects.filter(owner=request.user).exists(): return 'O'
+        elif Bartender.objects.filter(user=request.user).exists(): return 'B'
+        else : return 'U'
 
     class Meta(CreateOrderSerializer.Meta):
         """Meta Class"""

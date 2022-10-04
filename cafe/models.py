@@ -2,7 +2,7 @@
 Cafe Module Models
 """
 from datetime import datetime, timedelta
-from email.policy import default
+from django.db.models import Q
 import os
 from uuid import (uuid4)
 from django.db import models
@@ -176,7 +176,7 @@ class ReservationManager(models.Manager):
         return self.filter(cafe=cafe).order_by('-id')
 
     def _get_user_reservation(self,user):
-        return self.filter(user = user).order_by('-id')
+        return self.filter(Q(user = user) | Q(cafe__bartender__user = user)).order_by('-id')
 
     def get_reservation(self,cafe,user):
         if cafe :
@@ -212,7 +212,7 @@ class OrderManager(models.Manager):
         return self.filter(cafe=cafe).order_by('-registered_date')
 
     def _get_user_order(self,user):
-        return self.filter(user=user).order_by('-registered_date')
+        return self.filter(Q(user = user) | Q(cafe__bartender__user = user)).order_by('-registered_date')
 
     def get_order(self,state,cafe,user):
         if cafe :
@@ -227,10 +227,6 @@ class OrderManager(models.Manager):
             return orders
             
         return None
-
-    # def get_by_state(self,state):
-    #     """Returns a list of orders by passed state"""
-    #     return self.filter(state=state).order_by('-registered_date').values()    
 
 class Order(models.Model):
     """Order model"""
