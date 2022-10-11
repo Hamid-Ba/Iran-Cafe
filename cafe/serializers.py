@@ -233,8 +233,6 @@ class CreateBartenderSerializer(serializers.Serializer):
         otp = str(randint(100000,999999))
         
         owner = self.context.get('request').user
-        print("YOOHAAÅAAA")
-        print(owner)
         # if owner.cafe == None:
         #     msg = 'اول کافه خود را ثبت نمایید'
         #     raise serializers.ValidationError(msg)

@@ -273,3 +273,20 @@ class Bartender(models.Model):
 
     def __str__(self) -> str:
         return self.phone
+
+class CustomerClub(models.Model):
+    """Customer Club model"""
+    cafe = models.OneToOneField(Cafe,on_delete=models.CASCADE,related_name='club')
+    users = models.ManyToManyField(settings.AUTH_USER_MODEL,related_name='clubs')
+
+    def __str__(self) -> str:
+        return self.cafe.code
+
+    def add_user(self,user):
+        """Add user to club"""
+        if not self.users.contains(user):
+            self.users.add(user)
+            self.save()
+        else : 
+            raise ValueError('کاربر مدنظر در کلاب این کافه عضو هست')    
+        return self
