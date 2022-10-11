@@ -273,35 +273,29 @@ class OrderViewSet(mixins.ListModelMixin,
             return Response(serializer.data,status=status.HTTP_201_CREATED)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
-class BartenderViewSet(mixins.ListModelMixin,
-                        BaseMixinView):
-    """Bartender View Set."""
-    serializer_class = BartnederSerializer
-    queryset = Bartender.objects.all()
-    pagination_class = StandardPagination
+# class BartenderViewSet(mixins.ListModelMixin,
+#                         BaseMixinView):
+#     """Bartender View Set."""
+#     serializer_class = BartnederSerializer
+#     queryset = Bartender.objects.all()
+#     pagination_class = StandardPagination
 
-    def get_queryset(self):
-        return self.queryset.filter(cafe__owner = self.request.user).order_by('-id')
+#     def get_queryset(self):
+#         return self.queryset.filter(cafe__owner = self.request.user).order_by('-id')
 
-    def get_serializer_class(self):
-        """Specify The Serializer class"""
-        if self.action == "create" or self.action == "update" or self.action == "partial_update":
-            self.serializer_class = CreateBartenderSerializer
+#     def get_serializer_class(self):
+#         """Specify The Serializer class"""
+#         if self.action == "create" or self.action == "update" or self.action == "partial_update":
+#             self.serializer_class = CreateBartenderSerializer
 
-        return self.serializer_class
+#         return self.serializer_class
 
-class BartenderviewSet(viewsets.ModelViewSet):
+class BartenderViewSet(viewsets.ModelViewSet):
     serializer_class = BartnederSerializer
     queryset = Bartender.objects.all()
     authentication_classes = (authentication.TokenAuthentication ,)
     permission_classes = (permissions.IsAuthenticated ,)
+    pagination_class = StandardPagination
 
     def get_queryset(self):
         return self.queryset.filter(cafe__owner = self.request.user).order_by('-id')
-
-    # def get_serializer_class(self):
-    #     """Specify The Serializer class"""
-    #     if self.action == "create" or self.action == "update" or self.action == "partial_update":
-    #         self.serializer_class = CreateBartenderSerializer
-
-    #     return self.serializer_class

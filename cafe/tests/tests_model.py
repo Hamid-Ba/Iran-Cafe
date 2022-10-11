@@ -7,7 +7,7 @@ from django.test import TestCase
 from djmoney.money import Money
 from datetime import (datetime , time)
 from django.contrib.auth import get_user_model
-from cafe.models import (Bartender, Cafe , Category, CustomerClub, MenuItem , Gallery, Order, Suggestion , Reservation)
+from cafe.models import (Bartender, Cafe , Category, MenuItem , Gallery, Order, Suggestion , Reservation)
 from province.models import (Province , City)
 
 def create_user(phone,password):
@@ -42,10 +42,6 @@ def create_cafe(province,city,owner,**new_payload):
     }
     payload.update(new_payload)
     return Cafe.objects.create(**payload)
-
-def create_club(cafe):
-    """Helper Function To Create Customer Club"""
-    return CustomerClub.objects.create(cafe=cafe)
 
 class CafeTest(TestCase):
     """Test Cafe Model"""
@@ -265,38 +261,3 @@ class BartnederTest(TestCase):
         self.assertEqual(bartender.user , user)
         self.assertEqual(bartender.phone,user.phone)
         self.assertEqual(bartender.cafe , self.cafe)
-
-class CustomerClubTest(TestCase):
-    """Customer Club Test"""
-    def setUp(self):
-        self.province = create_province('Tehran','Tehran')
-        self.city = create_city('Tehran','Tehran',self.province)
-        self.owner = create_user('09151498722','123456')
-        self.cafe = create_cafe(self.province,self.city,self.owner)
-    
-    def test_create_customer_club_should_work_properly(self):
-        """Test Create Customer Club Model"""
-        club = CustomerClub.objects.create(cafe=self.cafe)
-        
-        self.assertEqual(club.cafe , self.cafe)
-    
-    def test_add_user_to_club(self):
-        """Test Add User To Customer Club"""
-        club = create_club(cafe=self.cafe)
-        customer = create_user('09151498721','123456')
-
-        club.add_user(customer)
-
-        club.refresh_from_db()
-        self.assertIn(customer , club.users.all())
-
-    def test_avoid_to_add_existing_user(self):
-        """Test Avoid To Add Existing User"""
-        club = create_club(cafe=self.cafe)
-        customer = create_user('09151498721','123456')
-        club.add_user(customer)
-        club.refresh_from_db()
-
-        with self.assertRaises(ValueError):
-            club.add_user(customer)
-        
