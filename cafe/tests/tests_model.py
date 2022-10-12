@@ -5,9 +5,9 @@ from uuid import uuid4
 from django.test import TestCase
 # from decimal import Decimal
 from djmoney.money import Money
-from datetime import (datetime , time)
+from datetime import (datetime , time,date)
 from django.contrib.auth import get_user_model
-from cafe.models import (Bartender, Cafe , Category, MenuItem , Gallery, Order, Suggestion , Reservation)
+from cafe.models import (Bartender, Cafe , Category, Customer, MenuItem , Gallery, Order, Suggestion , Reservation)
 from province.models import (Province , City)
 
 def create_user(phone,password):
@@ -261,3 +261,28 @@ class BartnederTest(TestCase):
         self.assertEqual(bartender.user , user)
         self.assertEqual(bartender.phone,user.phone)
         self.assertEqual(bartender.cafe , self.cafe)
+
+class CustomerTest(TestCase):
+    """Customer Model Test"""
+    def setUp(self):
+        self.province = create_province('Tehran','Tehran')
+        self.city = create_city('Tehran','Tehran',self.province)
+        self.owner = create_user('09151498722','123456')
+        self.cafe = create_cafe(self.province,self.city,self.owner)
+
+    def test_create_customer_should_work_properly(self):
+        """Test Create Customer Model"""
+        self.user = create_user('09151498721','123456')
+        payload = {
+            "firstName" : "Hamid",
+            "lastName" : "Balalzadeh",
+            "birthdate" : date(2000,2,5)
+        }
+
+        customer = Customer.objects.create(cafe=self.cafe,user=self.user,phone=self.user.phone,**payload)
+
+        self.assertEqual(customer.cafe,self.cafe)
+        self.assertEqual(customer.user,self.user)
+        
+        for (key , value) in payload.items():
+            self.assertEqual(getattr(customer,key), value)

@@ -273,3 +273,13 @@ class Bartender(models.Model):
 
     def __str__(self) -> str:
         return self.phone
+
+class Customer(models.Model):
+    """Customer model"""
+    phone = models.CharField(max_length=11,null=False,blank=False,validators=[PhoneValidator])
+    firstName = models.CharField(max_length=65,blank=False,null=False)
+    lastName = models.CharField(max_length=85,blank=False,null=False)
+    birthdate = models.DateField(null=False, blank=False)
+
+    cafe = models.ForeignKey(Cafe,on_delete=models.CASCADE,related_name='customers')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name='customers')
