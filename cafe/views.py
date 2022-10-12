@@ -9,9 +9,9 @@ from drf_spectacular.utils import (
 )
 from rest_framework import (mixins , generics ,viewsets , permissions , authentication ,status ,views)
 from cafe.pagination import StandardPagination
-from cafe.models import (Bartender, Cafe,Category, Gallery, MenuItem, Order, Reservation, Suggestion)
+from cafe.models import (Bartender, Cafe,Category, Customer, Gallery, MenuItem, Order, Reservation, Suggestion)
 from rest_framework.response import Response
-from cafe.serializers import (BartnederSerializer, CafeSerializer, CateogrySerializer, CreateBartenderSerializer, CreateOrderSerializer, CreateCafeSerializer,UpdateCafeSerializer,
+from cafe.serializers import (BartnederSerializer, CafeSerializer, CateogrySerializer, CreateBartenderSerializer, CreateOrderSerializer, CreateCafeSerializer, CustomerSerializer,UpdateCafeSerializer,
  CreateUpdateGallerySerializer, CreateUpdateMenuItemSerializer, CreateReservationSerializer, GallerySerializer, MenuItemSerializer, OrderSerializer, PatchOrderSerializer, PatchReservationSerializer
  , ReservationSerializer, SuggestionSerializer)
 
@@ -273,23 +273,6 @@ class OrderViewSet(mixins.ListModelMixin,
             return Response(serializer.data,status=status.HTTP_201_CREATED)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
-# class BartenderViewSet(mixins.ListModelMixin,
-#                         BaseMixinView):
-#     """Bartender View Set."""
-#     serializer_class = BartnederSerializer
-#     queryset = Bartender.objects.all()
-#     pagination_class = StandardPagination
-
-#     def get_queryset(self):
-#         return self.queryset.filter(cafe__owner = self.request.user).order_by('-id')
-
-#     def get_serializer_class(self):
-#         """Specify The Serializer class"""
-#         if self.action == "create" or self.action == "update" or self.action == "partial_update":
-#             self.serializer_class = CreateBartenderSerializer
-
-#         return self.serializer_class
-
 class BartenderViewSet(viewsets.ModelViewSet):
     serializer_class = BartnederSerializer
     queryset = Bartender.objects.all()
@@ -299,3 +282,36 @@ class BartenderViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return self.queryset.filter(cafe__owner = self.request.user).order_by('-id')
+
+class CustomerViewSet(viewsets.ModelViewSet):
+    serializer_class = CustomerSerializer
+    queryset = Customer.objects.all()
+    permission_classes = (permissions.IsAuthenticated ,)
+    authentication_classes = (authentication.TokenAuthentication ,)
+    pagination_class = StandardPagination
+    http_method_names = ['get', 'post', 'head']
+    
+    def get_queryset(self):
+        is_cafe_exist = Cafe.objects.filter(owner=self.request.user).exists()
+        if is_cafe_exist:
+            return Customer.objects.filter(cafe=self.request.user.cafe).order_by('-id')
+        return Customer.objects.filter(user=self.request.user).order_by('-id')
+
+    def create(self, request, *args, **kwargs):
+        serializer = CustomerSerializer(data=request.data,context={'request' : request})
+
+        if serializer.is_valid():
+                if Cafe.objects.filter(owner=self.request.user).exists():    
+                    return Response(data = {
+                        "message" : "شما نمیتوانید عضو شوید"
+                    },status=status.HTTP_400_BAD_REQUEST)
+                    
+                elif Customer.objects.filter(user=self.request.user,cafe=request.data['cafe']).exists() :
+                    return Response(data = {
+                        "message" : "شما قبلا عضو باشگاه کاربران این کافه شده اید"
+                    },status=status.HTTP_400_BAD_REQUEST)
+
+                serializer.save()
+                return Response(serializer.data,status = status.HTTP_201_CREATED)
+
+        return Response(serializer.errors,status = status.HTTP_400_BAD_REQUEST)

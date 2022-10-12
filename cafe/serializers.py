@@ -1,14 +1,12 @@
 """
 Cafe Module Serializers
 """
-from urllib import response
 from django_jalali.serializers.serializerfield import JDateField, JDateTimeField
 from uuid import uuid4
-from rest_framework.fields import CurrentUserDefault
 from rest_framework import serializers
 from django.contrib.auth import (get_user_model)
 from random import (randint)
-from cafe.models import Bartender, Cafe, Category, Gallery, MenuItem, Order, OrderItem, Reservation, Suggestion
+from cafe.models import Bartender, Cafe, Category, Customer, Gallery, MenuItem, Order, OrderItem, Reservation, Suggestion
 from province.serializers import CitySerializer, ProvinceSerializer
 
 class CreateCafeSerializer(serializers.ModelSerializer):
@@ -327,3 +325,33 @@ class BartnederSerializer(serializers.ModelSerializer):
         response = super().to_representation(instance)
         response['phone'] = instance.user.phone
         return response
+
+class CustomerSerializer(serializers.ModelSerializer):
+    """Customer Serializer"""
+    class Meta:
+        model = Customer
+        fields = '__all__'
+        read_only_fields = ['id','user','phone']
+
+    # def validate(self, data):
+    #     cafe = data.get('cafe', None)
+    #     user = self.context['request'].user
+
+    #     if Cafe.objects.filter(owner=user).exists() :
+    #         msg = 'شما نمیتوانید عضو شوید'
+    #         raise serializers.ValidationError(msg)
+
+    #     if Customer.objects.filter(user=user,cafe=cafe).exists() :
+    #         msg = 'شما نمیتوانید عضو شوید'
+    #         raise serializers.ValidationError(msg)
+
+    #     return data
+
+    def create(self,validated_data):
+        cafe = validated_data.pop('cafe', None)
+        user = self.context['request'].user
+
+        customer = Customer.objects.create(user=user,cafe=cafe,phone=user.phone,**validated_data)
+        customer.save()
+
+        return customer
