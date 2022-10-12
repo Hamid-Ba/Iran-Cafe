@@ -283,3 +283,6 @@ class Customer(models.Model):
 
     cafe = models.ForeignKey(Cafe,on_delete=models.CASCADE,related_name='customers')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name='customers')
+
+    def __str__(self) -> str:
+        return f'{self.firstName} {self.lastName}'
