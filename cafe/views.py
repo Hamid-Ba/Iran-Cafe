@@ -126,6 +126,44 @@ class CafesCityListView(generics.ListAPIView):
 
         return Response(cafes) 
 
+class CafesSearchView(views.APIView):
+    """Cafes Search View Set.(Second Page)"""
+    def get(self,request):
+        cafes = Cafe.objects.all().order_by('-view_count').values()
+       
+        try :
+            if request.query_params['code'].strip() != "":
+                cafes = cafes.filter(code=request.query_params['code']).first()
+                return Response(cafes,status= status.HTTP_200_OK) 
+        except : None
+
+        try :
+            if request.query_params['title'].strip() != "":
+                cafes = cafes.filter(persian_title__contains=request.query_params['title'])
+        except : None
+        
+        try:
+            if request.query_params['province'].strip() != "":
+                cafes = cafes.filter(province__id=request.query_params['province'])
+        except : None    
+
+        try :
+            if request.query_params['city']:
+                cafes = cafes.filter(city__id = request.query_params['city'])
+        except : None
+
+        try :
+            if request.query_params['type']:
+                cafes = cafes.filter(type = request.query_params['type'])
+        except : None
+
+        if len(cafes) == 0 : return Response(
+            data ={"message" : "کافه ای با این مشخصات یافت نشد"},
+            status = status.HTTP_204_NO_CONTENT)
+
+        return Response(cafes,status= status.HTTP_200_OK) 
+
+
 class CategoryView(generics.ListAPIView):
     """Category List View."""
     serializer_class = CateogrySerializer
