@@ -355,3 +355,11 @@ class CustomerSerializer(serializers.ModelSerializer):
         customer.save()
 
         return customer
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['cafe'] = instance.cafe.persian_title
+        response['cafe_id'] = instance.cafe.id
+        response['cafe_code'] = instance.cafe.code
+        
+        return response
