@@ -318,7 +318,7 @@ class BartnederSerializer(serializers.ModelSerializer):
             user.save()
         
         instance.is_active = validated_data.get('is_active', instance.is_active)
-        
+        instance.save()
         return instance
     
     def to_representation(self, instance):
@@ -332,20 +332,6 @@ class CustomerSerializer(serializers.ModelSerializer):
         model = Customer
         fields = '__all__'
         read_only_fields = ['id','user','phone']
-
-    # def validate(self, data):
-    #     cafe = data.get('cafe', None)
-    #     user = self.context['request'].user
-
-    #     if Cafe.objects.filter(owner=user).exists() :
-    #         msg = 'شما نمیتوانید عضو شوید'
-    #         raise serializers.ValidationError(msg)
-
-    #     if Customer.objects.filter(user=user,cafe=cafe).exists() :
-    #         msg = 'شما نمیتوانید عضو شوید'
-    #         raise serializers.ValidationError(msg)
-
-    #     return data
 
     def create(self,validated_data):
         cafe = validated_data.pop('cafe', None)
