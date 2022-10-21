@@ -254,6 +254,11 @@ class ReservationViewSet(mixins.ListModelMixin,
         is_cafe_exist = Cafe.objects.filter(owner=self.request.user).exists()
         if is_cafe_exist:
             return Reservation.objects.get_reservation(cafe=self.request.user.cafe , user=None).order_by('-id')
+        
+        is_bartender_exist = Bartender.objects.filter(user=self.request.user,is_active=True).exists()
+        if is_bartender_exist:
+            return Reservation.objects.get_reservation(cafe=None,user=None,bartender=self.request.user.bartender).order_by('-id')
+
         return Reservation.objects.get_reservation(cafe=None , user=self.request.user).order_by('-id')
     
     def get_serializer_class(self):
@@ -286,6 +291,12 @@ class OrderViewSet(mixins.ListModelMixin,
         is_cafe_exist = Cafe.objects.filter(owner=self.request.user).exists()
         if is_cafe_exist:
             return Order.objects.get_order(state=state,cafe=self.request.user.cafe , user=None)
+
+        is_bartender_exist = Bartender.objects.filter(user=self.request.user , is_active=True)
+        if is_bartender_exist.exists():
+            bartender = is_bartender_exist.first()
+            return Order.objects.get_order(state=state,cafe=None , user=None,bartender=bartender)
+
         return Order.objects.get_order(state=state,cafe=None , user=self.request.user)
 
     def get_serializer_class(self):

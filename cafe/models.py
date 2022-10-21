@@ -176,14 +176,16 @@ class ReservationManager(models.Manager):
         return self.filter(cafe=cafe).order_by('-id')
 
     def _get_user_reservation(self,user):
-        return self.filter(Q(user = user) | Q(cafe__bartender__user = user)).order_by('-id')
+        return self.filter(user = user).order_by('-id')
 
-    def get_reservation(self,cafe,user):
+    def get_reservation(self,cafe,user,bartender=None):
         if cafe :
             return self._get_cafe_reservation(cafe)
         elif user :
             return self._get_user_reservation(user)
-        
+        elif bartender :
+            return self._get_cafe_reservation(bartender.cafe)
+
         return None
 
 class Reservation(models.Model):
@@ -193,7 +195,7 @@ class Reservation(models.Model):
         CONFIRMED = 'C', 'Confirmed'
         REJECTED = 'R', 'Rejected'
     full_name = models.CharField(max_length=125, blank=False, null=False)
-    phone = models.CharField(max_length=11,unique=True,validators=[PhoneValidator])
+    phone = models.CharField(max_length=11,validators=[PhoneValidator])
     date = models.DateField(blank=False, null=False)
     time = models.TimeField(blank=False, null=False)
     message = models.CharField(max_length=500, blank=True, null=True)
@@ -212,9 +214,9 @@ class OrderManager(models.Manager):
         return self.filter(cafe=cafe).order_by('-registered_date')
 
     def _get_user_order(self,user):
-        return self.filter(Q(user = user) | Q(cafe__bartender__user = user)).order_by('-registered_date')
+        return self.filter(user = user).order_by('-registered_date')
 
-    def get_order(self,state,cafe,user):
+    def get_order(self,state,cafe,user,bartender=None):
         if cafe :
             orders = self._get_cafe_order(cafe)
             if state != 'all' or not state :
@@ -222,6 +224,11 @@ class OrderManager(models.Manager):
             return orders
         elif user :
             orders =  self._get_user_order(user)
+            if state != 'all' or not state :
+                return orders.filter(state = state)
+            return orders
+        elif bartender :
+            orders = self._get_cafe_order(bartender.cafe)
             if state != 'all' or not state :
                 return orders.filter(state = state)
             return orders
