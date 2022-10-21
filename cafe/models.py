@@ -184,7 +184,9 @@ class ReservationManager(models.Manager):
         elif user :
             return self._get_user_reservation(user)
         elif bartender :
-            return self._get_cafe_reservation(bartender.cafe)
+            cafe_reserves = self._get_cafe_reservation(bartender.cafe)
+            user_reserves = self._get_user_reservation(bartender.user)
+            return cafe_reserves | user_reserves
 
         return None
 
@@ -228,7 +230,9 @@ class OrderManager(models.Manager):
                 return orders.filter(state = state)
             return orders
         elif bartender :
-            orders = self._get_cafe_order(bartender.cafe)
+            cafe_orders = self._get_cafe_order(bartender.cafe)
+            user_orders = self._get_user_order(bartender.user)
+            orders = cafe_orders | user_orders
             if state != 'all' or not state :
                 return orders.filter(state = state)
             return orders

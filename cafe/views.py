@@ -41,6 +41,12 @@ class CafeViewSet(BaseMixinView) :
 
         return self.serializer_class
 
+    def create(self, request, *args, **kwargs):
+        is_bartender_exist = Bartender.objects.filter(user=self.request.user , is_active=True).exists()
+        if is_bartender_exist:
+            return Response({"message" : "بارتندر عزیز ، شما قادر به ثبت کافه نمی باشید"},status= status.HTTP_403_FORBIDDEN)
+        return super().create(request, *args, **kwargs)
+
     def perform_create(self, serializer):
         """Register Cafe"""
         return serializer.save(owner=self.request.user)

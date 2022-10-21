@@ -6,7 +6,7 @@ from rest_framework.test import APIClient
 from django.urls import reverse
 from rest_framework import status
 from django.contrib.auth import get_user_model
-from cafe.models import Cafe
+from cafe.models import Bartender, Cafe
 from cafe.serializers import CafeSerializer
 
 from province.models import City, Province
@@ -55,6 +55,10 @@ def create_cafe(province,city,owner,**new_payload):
     }
     payload.update(new_payload)
     return Cafe.objects.create(**payload)
+
+def create_bartender(phone , cafe):
+    user = create_user(phone,'123456')
+    return Bartender.objects.create(phone=phone,user=user,cafe=cafe)
 
 class PublicTest(TestCase):
     """Test Those Endpoints Which Don't Need User To Be Authorized"""
@@ -266,12 +270,13 @@ class PrivateTest(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.owner = create_user("09151498722")
-        self.client.force_authenticate(self.owner)
+        self.province = create_province("Tehran" , "Tehran")
+        self.city = create_city("Tehran" , "Tehran",self.province)
     
     def test_register_cafe_should_work_properly(self):
         """Test Registering The Cafe By User"""
-        province = create_province("Tehran" , "Tehran")
-        city = create_city("Tehran" , "Tehran",province)
+        self.client.force_authenticate(self.owner)
+        
         payload = {
             # "code" : str(uuid.uuid1())[0:5],
             "persian_title" : "تست",
@@ -280,11 +285,32 @@ class PrivateTest(TestCase):
             "street" : "west coast street",
             "desc" : "test description",
             "type" : "C",
-            "province" : province.id,
-            "city" : city.id
+            "province" : self.province.id,
+            "city" : self.city.id
         }
         
         res = self.client.post(CAFE_URL, payload , format='json')
 
         self.assertEqual(res.status_code,status.HTTP_201_CREATED)
         self.assertTrue(Cafe.objects.filter(owner=self.owner).exists())
+
+    def test_bartender_can_not_register_cafe(self):
+        """Test Bartander Can Not Register Cafe"""
+        cafe = Cafe.objects.create(owner=self.owner,province=self.province,city=self.city)
+        bartender = create_bartender("09151498721",cafe)
+        self.client.force_authenticate(bartender.user)
+        payload = {
+            # "code" : str(uuid.uuid1())[0:5],
+            "persian_title" : "تست",
+            "english_title" : "Test",
+            "phone" : "09151498721",
+            "street" : "west coast street",
+            "desc" : "test description",
+            "type" : "C",
+            "province" : self.province.id,
+            "city" : self.city.id
+        }
+        
+        res = self.client.post(CAFE_URL, payload , format='json')
+        self.assertEqual(res.status_code,status.HTTP_403_FORBIDDEN)
+        self.assertFalse(Cafe.objects.filter(owner=bartender.user).exists())
