@@ -6,6 +6,7 @@ from django.contrib.auth import (get_user_model , authenticate)
 from random import (randint)
 
 from cafe.serializers import UserCafeSerializer
+from notifications import KavenegarSMS
 
 class UserSerializer(serializers.ModelSerializer):
     """User Serializer"""
@@ -44,6 +45,11 @@ class AuthenticationSerializer(serializers.Serializer):
         user.fullName = otp
         user.save()
 
+        # Send Otp Code
+        kavenegar = KavenegarSMS()
+        kavenegar.otp(user.phone,otp)
+        kavenegar.send()
+        
         return user
 
 class AuthTokenSerializer(serializers.Serializer):
