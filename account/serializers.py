@@ -1,6 +1,7 @@
 """
 Account Module Serializers
 """
+from datetime import datetime
 from rest_framework import serializers
 from django.contrib.auth import (get_user_model , authenticate)
 from random import (randint)
@@ -66,10 +67,13 @@ class AuthTokenSerializer(serializers.Serializer):
             username = phone,
             password = password
         )
-
+        
         if not user :
             msg = 'کد وارد شده نامعتبر است'
             raise serializers.ValidationError(msg,code='authorization')
 
+        user.last_login = datetime.now()
+        user.save()
+        
         attrs['user'] = user
         return attrs
