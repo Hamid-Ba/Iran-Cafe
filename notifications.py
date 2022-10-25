@@ -7,14 +7,6 @@ class KavenegarSMS:
     def __init__(self):
         self.api = KavenegarAPI(settings.KAVENEGAR_API_KEY)
 
-    def register(self, receptor=None, code=None, password=None):
-        self.params = {
-            'receptor': receptor,
-            'template': 'register',
-            'token': code,
-            'type': 'sms'
-        }
-
     def otp(self, receptor=None,code=None):
         self.params = {
         'receptor': receptor,
@@ -23,6 +15,30 @@ class KavenegarSMS:
         'type': 'sms'
         }
 
+    def confirm(self, receptor=None,code=None):
+        self.params = {
+        'receptor': receptor,
+        'template': 'irancafeconfrim',
+        'token': code,
+        'type': 'sms'
+        }
+
+    def reject(self, receptor=None):
+        self.params = {
+        'receptor': receptor,
+        'template': 'irancafereject',
+        'token': receptor,
+        'type': 'sms'
+        }
+
+    def register(self, receptor=None):
+        self.params = {
+        'receptor': receptor,
+        'template': 'irancaferegister',
+        'token': receptor,
+        'type': 'sms'
+        }
+        
     def send(self):
         flag = True
         for i, j in self.params.items():
@@ -35,5 +51,5 @@ class KavenegarSMS:
                 return e
             except HTTPException as e:
                 return e
-        else:
-            raise APIException
+        # else:
+        #     raise APIException

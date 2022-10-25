@@ -8,6 +8,7 @@ from django.contrib.auth import (get_user_model)
 from random import (randint)
 from cafe.models import Bartender, Cafe, Category, Customer, Gallery, MenuItem, Order, OrderItem, Reservation, Suggestion
 from province.serializers import CitySerializer, ProvinceSerializer
+from notifications import KavenegarSMS
 
 class CreateCafeSerializer(serializers.ModelSerializer):
     """Cafe Serializer For Register Cafe"""
@@ -23,6 +24,11 @@ class CreateCafeSerializer(serializers.ModelSerializer):
         city = validated_data.pop('city' , None)
         
         cafe = Cafe.objects.create(province=province,city=city,**validated_data)
+
+        # Send SMS
+        kavenegar = KavenegarSMS()
+        kavenegar.register(cafe.phone)
+        kavenegar.send()
 
         return cafe
 

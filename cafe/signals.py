@@ -2,12 +2,22 @@ from django.db.models.signals import (post_save,post_delete,pre_save)
 from django.dispatch import receiver
 
 from cafe.models import Cafe, Gallery
+from notifications import KavenegarSMS
 
 @receiver(post_save ,sender = Cafe, dispatch_uid = 'fille_unique_code')
 def fill_cafe_unique_code(sender, instance, created, **kwargs):
     """Fill Cafe Unique Code After Confirmed"""
+    # Send SMS
+    kavenegar = KavenegarSMS()
+    
     if instance.state == 'C':
         sender.objects.fill_unique_code(instance.id)
+        kavenegar.confirm(instance.phone,instance.code)
+        kavenegar.send()
+
+    if instance.state == 'R':
+        kavenegar.reject(instance.phone)
+        kavenegar.send()
 
 @receiver(post_delete, sender=Gallery)
 def post_save_image(sender, instance, *args, **kwargs):
