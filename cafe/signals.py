@@ -6,18 +6,14 @@ from notifications import KavenegarSMS
 
 @receiver(post_save ,sender = Cafe, dispatch_uid = 'fille_unique_code')
 def fill_cafe_unique_code(sender, instance, created, **kwargs):
-    """Fill Cafe Unique Code After Confirmed"""
-    # Send SMS
-    kavenegar = KavenegarSMS()
-    
+    """Fill Cafe Unique Code After Confirmed"""    
     if instance.state == 'C':
         sender.objects.fill_unique_code(instance.id)
-        kavenegar.confirm(instance.phone,instance.code)
-        kavenegar.send()
-
-    if instance.state == 'R':
-        kavenegar.reject(instance.phone)
-        kavenegar.send()
+        
+    if instance.state == 'R' and not instance.code :
+            kavenegar = KavenegarSMS()
+            kavenegar.reject(instance.phone)
+            kavenegar.send()
 
 @receiver(post_delete, sender=Gallery)
 def post_save_image(sender, instance, *args, **kwargs):

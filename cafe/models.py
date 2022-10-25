@@ -10,6 +10,7 @@ from django.conf import settings
 from djmoney.models.fields import MoneyField
 
 from cafe.validators import PhoneValidator
+from notifications import KavenegarSMS
 from province.models import (City, Province)
 
 class CafeManager(models.Manager):
@@ -34,6 +35,12 @@ class CafeManager(models.Manager):
                 cafe.code =  str(10000 + cafe_id)
                 cafe.charge_cafe(days=31,is_first=True)
                 cafe.save()
+                
+                # Send Confirm SMS
+                kavenegar = KavenegarSMS()
+                kavenegar.confirm(cafe.phone,cafe.code)
+                kavenegar.send()
+
         return cafe
 
 class Cafe(models.Model):
@@ -70,11 +77,11 @@ class Cafe(models.Model):
     charge_expired_date = models.DateTimeField(null=True,blank=True)
     latitude = models.CharField(max_length=125, blank= True,null=True)
     longitude = models.CharField(max_length=125, blank= True,null=True)
-    
+    is_open = models.BooleanField(default=False)
+
     owner = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name='cafe')
     province = models.ForeignKey(Province, on_delete=models.DO_NOTHING)
     city = models.ForeignKey(City, on_delete=models.DO_NOTHING)
-    is_open = models.BooleanField(default=False)
     
     objects = CafeManager()
 
