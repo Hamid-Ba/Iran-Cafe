@@ -18,7 +18,7 @@ class KavenegarSMS:
     def confirm(self, receptor=None,code=None):
         self.params = {
         'receptor': receptor,
-        'template': 'irancafeconfrim',
+        'template': 'irancafeconfirm',
         'token': code,
         'type': 'sms'
         }
