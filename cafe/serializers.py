@@ -177,6 +177,10 @@ class CreateOrderSerializer(serializers.ModelSerializer):
                 price=item['price'],
                 count=item['count']
                 )
+            
+            menu_item = MenuItem.objects.filter(id=item['menu_item_id'])
+            if menu_item.exists() :
+                menu_item.first().ordered(item['count'])
 
     def create(self, validated_data):
         """Custom Create"""

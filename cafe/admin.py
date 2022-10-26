@@ -42,7 +42,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 class MenuItemAdmin(admin.ModelAdmin):
     """Menu Item Admin Model"""
-    list_display = ['title','price', 'cafe', 'cafe_code','cafe_owner','is_active']
+    list_display = ['title','price', 'cafe', 'cafe_code','cafe_owner','order_count','is_active']
     list_display_links = ['title','price']
     list_editable = ['is_active']
     list_filter = ['is_active' ,'cafe__code','cafe__owner__phone']

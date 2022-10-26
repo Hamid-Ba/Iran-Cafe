@@ -2,6 +2,7 @@
 Cafe Module Models
 """
 from datetime import datetime, timedelta
+from email.policy import default
 from django.db.models import Q
 import os
 from uuid import (uuid4)
@@ -128,7 +129,7 @@ class Category(models.Model):
 class MenuItemManager(models.Manager):
     """Menu Item Manager"""
     def get_active_items(self,cafe_id):
-        return self.filter(cafe__id=cafe_id).filter(is_active=True).order_by('-id').values()
+        return self.filter(cafe__id=cafe_id).filter(is_active=True).order_by('-id').values()    
 
 class MenuItem(models.Model):
     """Menu Item model"""
@@ -137,6 +138,7 @@ class MenuItem(models.Model):
     desc = models.TextField(null=False,blank=False)
     price = MoneyField(max_digits=10,decimal_places=0,default_currency='IRR',null=False)
     is_active = models.BooleanField(default=True)
+    order_count = models.IntegerField(default=0)
 
     cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE,related_name='menu_items')
     category = models.ForeignKey(Category, on_delete=models.CASCADE,related_name='menu_items')
@@ -145,6 +147,10 @@ class MenuItem(models.Model):
 
     def __str__(self) :
         return self.title
+
+    def ordered(self,count):
+        self.order_count += count
+        self.save()
 
 def gallery_image_file_path(instance,filename):
     """Generate file path for category image"""
