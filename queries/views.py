@@ -1,9 +1,9 @@
 """
 Iran Cafe Query Views
 """
-from rest_framework import (mixins , generics ,viewsets , permissions , authentication ,status ,views)
+from rest_framework import (permissions , authentication ,status ,views)
 from rest_framework.response import Response
-from cafe.models import Order, OrderItem
+from cafe.models import MenuItem, Order
 from django.db.models import Sum
 
 from config.permissions import HasCafe
@@ -17,7 +17,7 @@ class OrderQueryView(views.APIView):
         """Get Action"""
         res = {}
         orders = Order.objects.filter(cafe=request.user.cafe)
-        items = OrderItem.objects.all()
+        items = MenuItem.objects.filter(cafe=request.user.cafe).order_by('-order_count')[:3]
 
         try :
             if request.query_params['start_date'] :
@@ -33,22 +33,22 @@ class OrderQueryView(views.APIView):
 
         # Process On Query
         res = orders.aggregate(total_prices = Sum('total_price'))
-        res['most_purchesd'] =[]
+        res['most_purchesd'] = items.values()
         res['orders'] = orders.values()
 
         # Calculate Most Item Purchesd
-        items = items.order_by('-count').values()
-        most_purchesd_item = {}
-        for item in items:
-            if item['menu_item_id'] in most_purchesd_item.keys(): most_purchesd_item[item['menu_item_id']] += item['count']
-            else : most_purchesd_item[item['menu_item_id']] = item['count']
+        # items = items.order_by('-count').values()
+        # most_purchesd_item = {}
+        # for item in items:
+        #     if item['menu_item_id'] in most_purchesd_item.keys(): most_purchesd_item[item['menu_item_id']] += item['count']
+        #     else : most_purchesd_item[item['menu_item_id']] = item['count']
         
         
-        if most_purchesd_item :
-            most_purchesd_item_id = list(most_purchesd_item)[:3]
-            for item_id in most_purchesd_item_id:
-                item = items.filter(menu_item_id=item_id).first()
-                item['count'] = most_purchesd_item[item_id]
-                res['most_purchesd'].append(item)
+        # if most_purchesd_item :
+        #     most_purchesd_item_id = list(most_purchesd_item)[:3]
+        #     for item_id in most_purchesd_item_id:
+        #         item = items.filter(menu_item_id=item_id).first()
+        #         item['count'] = most_purchesd_item[item_id]
+        #         res['most_purchesd'].append(item)
                 
         return Response(res ,status=status.HTTP_200_OK)
