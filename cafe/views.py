@@ -11,7 +11,7 @@ from rest_framework import (mixins , generics ,viewsets , permissions , authenti
 from cafe.pagination import StandardPagination
 from cafe.models import (Bartender, Cafe,Category, Customer, Gallery, MenuItem, Order, Reservation, Suggestion)
 from rest_framework.response import Response
-from cafe.serializers import (BartnederSerializer, CafeSerializer, CateogrySerializer, CreateBartenderSerializer, CreateOrderSerializer, CreateCafeSerializer, CustomerSerializer,UpdateCafeSerializer,
+from cafe.serializers import (BartnederSerializer, CafeSerializer, CateogrySerializer, CreateOrderSerializer, CreateCafeSerializer, CustomerSerializer,UpdateCafeSerializer,
  CreateUpdateGallerySerializer, CreateUpdateMenuItemSerializer, CreateReservationSerializer, GallerySerializer, MenuItemSerializer, OrderSerializer, PatchOrderSerializer, PatchReservationSerializer
  , ReservationSerializer, SuggestionSerializer)
 
@@ -95,7 +95,7 @@ class CafeIdView(views.APIView):
 )
 class CafesProvinceListView(generics.ListAPIView):
     serializer_class = CafeSerializer
-        
+
     def get(self, request, province_slug):
         cafes = Cafe.objects.get_by_province(province_slug)
         
