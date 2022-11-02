@@ -23,6 +23,15 @@ from drf_spectacular.views import (
 
 from django.contrib import admin
 from django.urls import (path,include)
+from django.contrib.sitemaps.views import sitemap
+
+from config.sitemaps import CafesSitemap ,CafeSitemap, StaticSitemap
+
+sitemaps = {
+    'static' : StaticSitemap,
+    'cafes' : CafesSitemap,
+    'cafe' : CafeSitemap
+}
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,6 +41,7 @@ urlpatterns = [
         SpectacularSwaggerView.as_view(url_name ='api-schema'),
         name = 'api-docs',
     ),
+    path('sitemap.xml',sitemap,{'sitemaps' : sitemaps}),
     path('api/account/',include('account.urls')),
     path('api/cafe/',include('cafe.urls')),
     path('api/siteinfo/',include('siteinfo.urls')),

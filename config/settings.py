@@ -28,6 +28,14 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+SITE_ID = 1
+
+SITE = {
+    'front': {
+        'protocol': 'https',
+        'url': 'cafesiran.ir'
+    }
+}
 
 # Application definition
 
@@ -38,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'django_jalali',
     'rest_framework',
     'rest_framework.authtoken',
@@ -49,7 +58,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'djmoney',
     'plan',
-    'queries'
+    'queries',
+    'django.contrib.sitemaps'
 ]
 
 MIDDLEWARE = [

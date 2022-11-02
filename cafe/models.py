@@ -1,13 +1,11 @@
 """
 Cafe Module Models
 """
-from datetime import datetime, timedelta
-from email.policy import default
-from django.db.models import Q
 import os
 from uuid import (uuid4)
 from django.db import models
 from django.conf import settings
+from datetime import datetime, timedelta
 from djmoney.models.fields import MoneyField
 
 from cafe.validators import PhoneValidator

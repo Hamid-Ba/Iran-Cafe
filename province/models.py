@@ -2,6 +2,7 @@
 Province Module Models
 """
 from django.db import models
+from django.shortcuts import reverse
 
 class Province(models.Model):
     """Province Model"""
@@ -10,6 +11,10 @@ class Province(models.Model):
 
     def __str__(self) :
         return self.name
+    
+    def get_absolute_url(self):
+        return reverse('cafe:cafes_by_province',kwargs={'province_slug': self.slug})
+    
         
 class City(models.Model):
     """City Model"""
