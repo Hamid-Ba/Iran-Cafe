@@ -25,7 +25,8 @@ from django.contrib import admin
 from django.urls import (path,include)
 from django.contrib.sitemaps.views import sitemap
 
-from config.sitemaps import CafesSitemap ,CafeSitemap, StaticSitemap
+from config.sitemaps import CafesSitemap ,CafeSitemap, StaticSitemap , build_sitemap
+from siteinfo.views import RobotsView
 
 sitemaps = {
     'static' : StaticSitemap,
@@ -41,7 +42,8 @@ urlpatterns = [
         SpectacularSwaggerView.as_view(url_name ='api-schema'),
         name = 'api-docs',
     ),
-    path('sitemap.xml',sitemap,{'sitemaps' : sitemaps}),
+    path('sitemap.xml',sitemap,{'sitemaps' : build_sitemap()}),
+    path('robots.txt', RobotsView.as_view(), name='robots.txt'),
     path('api/account/',include('account.urls')),
     path('api/cafe/',include('cafe.urls')),
     path('api/siteinfo/',include('siteinfo.urls')),

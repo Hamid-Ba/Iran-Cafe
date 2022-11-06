@@ -25,3 +25,14 @@ class ContactUs(models.Model):
     class Meta:
         verbose_name = 'contactus'
         verbose_name_plural = 'Contact Us'
+
+class Robots(models.Model):
+    """Robot Model"""
+    name = models.CharField(max_length=50)
+    text = models.TextField()
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = 'Robots'

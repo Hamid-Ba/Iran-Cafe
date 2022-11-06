@@ -9,7 +9,9 @@ SITE = getattr(settings, 'SITE')
 
 def build_sitemap():
     sitemap = {
-        'cafes': CafesSitemap()
+        'static' : StaticSitemap,
+        'cafes' : CafesSitemap,
+        'cafe' : CafeSitemap
     }
     return sitemap
 
