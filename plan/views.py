@@ -9,8 +9,8 @@ from plan.serializers import PlanSerializer
 
 class PlanListView(generics.ListAPIView):
     """Plan List View"""
-    authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (permissions.IsAuthenticated,)
+    # authentication_classes = (authentication.TokenAuthentication,)
+    # permission_classes = (permissions.IsAuthenticated,)
     serializer_class = PlanSerializer
     queryset = Plan.objects.all()
 

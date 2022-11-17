@@ -30,7 +30,7 @@ class CafeAdmin(admin.ModelAdmin):
         }),
         ('Extra Info', {
             'classes': ('collapse',),
-            'fields': ('desc',),
+            'fields': ('desc','view_count',),
         }),
     )
 
