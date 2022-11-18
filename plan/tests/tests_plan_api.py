@@ -31,15 +31,15 @@ def create_plan(**new_payload):
     payload.update(**new_payload)
     return Plan.objects.create(**payload)
 
-class PublicTest(TestCase):
-    """Tests Which Does Not Need User To Be Authenticated"""
-    def setUp(self):
-        self.client = APIClient()
+# class PublicTest(TestCase):
+#     """Tests Which Does Not Need User To Be Authenticated"""
+#     def setUp(self):
+#         self.client = APIClient()
 
-    def test_return_unauthorized(self):
-        """Test if user is unauthorized"""
-        res = self.client.get(PLAN_URL)
-        self.assertEqual(res.status_code,status.HTTP_401_UNAUTHORIZED)
+#     def test_return_unauthorized(self):
+#         """Test if user is unauthorized"""
+#         res = self.client.get(PLAN_URL)
+#         self.assertEqual(res.status_code,status.HTTP_401_UNAUTHORIZED)
 
 class PrivateTest(TestCase):
     """Tests Which Need User To Be Authenticated"""

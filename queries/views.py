@@ -7,6 +7,7 @@ from cafe.models import MenuItem, Order
 from django.db.models import Sum
 
 from config.permissions import HasCafe
+from queries.pagination import StandardPagination
 
 class OrderQueryView(views.APIView):
     """Order Query View"""
@@ -34,8 +35,8 @@ class OrderQueryView(views.APIView):
         # Process On Query
         res = orders.aggregate(total_prices = Sum('total_price'))
         res['most_purchesd'] = items.values()
-        res['orders'] = orders.values()
-
+        paginator = StandardPagination()
+        res['orders'] = paginator.paginate_queryset(orders.values(), request)
         # Calculate Most Item Purchesd
         # items = items.order_by('-count').values()
         # most_purchesd_item = {}
