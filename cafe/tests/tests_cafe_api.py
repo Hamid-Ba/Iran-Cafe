@@ -264,7 +264,37 @@ class PublicTest(TestCase):
 
         cafe.refresh_from_db()
         self.assertEqual(cafe.view_count, 1)
+
+    def test_fast_register(self):
+        """Test Register User Within Cafe Concurrently"""
+        payload = {
+            # "code" : str(uuid.uuid1())[0:5],
+            "persian_title" : "تست",
+            "english_title" : "Test",
+            "phone" : "09151498722",
+            "street" : "west coast street",
+            "desc" : "test description",
+            "type" : "C",
+            "province" : self.province.id,
+            "city" : self.city.id
+        }
+
+        url = reverse('cafe:fast_register')
+        res = self.client.post(url,payload,format='json')
+        self.assertEqual(res.status_code , status.HTTP_201_CREATED)
+
+        owner = get_user_model().objects.filter(phone=payload["phone"]).first()
+        cafe = Cafe.objects.filter(owner=owner).first()
+
+        self.assertTrue(owner)
+        self.assertTrue(cafe)
         
+        for (key,value) in payload.items():
+            if not(key == "province" or key == "city"):
+                self.assertEqual(getattr(cafe,key),value)
+
+        self.assertEqual(cafe.state,'P')
+
 class PrivateTest(TestCase):
     """Test Those Endpoints Which Need User To Be Authorized"""
     def setUp(self):

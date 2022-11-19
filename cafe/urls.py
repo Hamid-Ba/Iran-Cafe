@@ -28,5 +28,6 @@ urlpatterns = [
     path("city_cafes/<str:city_slug>/",views.CafesCityListView.as_view(),name='cafes_by_city'),
     path("cafe_detail/<str:cafe_code>/",views.CafeIdView.as_view(),name='cafe_id'),
     path("cafe_detail_page/<int:cafe_id>/",views.CafeDetailView.as_view(),name='cafe_detail_page'),
-    path("send_suggest/",views.CreateSuggestionApiView.as_view(),name='send_suggest')
+    path("fast_register/",views.CafeFastRegisterView.as_view(),name='fast_register'),
+    path("send_suggest/",views.CreateSuggestionApiView.as_view(),name='send_suggest'),   
 ]

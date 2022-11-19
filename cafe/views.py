@@ -1,12 +1,14 @@
 """
 Cafe Module Views
 """
+from random import randint
 from drf_spectacular.utils import (
     extend_schema,
     extend_schema_view,
     OpenApiParameter,
     OpenApiTypes
 )
+from django.contrib.auth import (get_user_model)
 from rest_framework import (mixins , generics ,viewsets , permissions , authentication ,status ,views)
 from cafe.pagination import StandardPagination
 from cafe.models import (Bartender, Cafe,Category, Customer, Gallery, MenuItem, Order, Reservation, Suggestion)
@@ -14,6 +16,7 @@ from rest_framework.response import Response
 from cafe.serializers import (BartnederSerializer, CafeSerializer, CateogrySerializer, CreateOrderSerializer, CreateCafeSerializer, CustomerSerializer,UpdateCafeSerializer,
  CreateUpdateGallerySerializer, CreateUpdateMenuItemSerializer, CreateReservationSerializer, GallerySerializer, MenuItemSerializer, OrderSerializer, PatchOrderSerializer, PatchReservationSerializer
  , ReservationSerializer, SuggestionSerializer)
+from config.permissions import AllowToFastRegister
 
 class BaseMixinView(mixins.RetrieveModelMixin,
                     mixins.CreateModelMixin,
@@ -50,6 +53,24 @@ class CafeViewSet(BaseMixinView) :
     def perform_create(self, serializer):
         """Register Cafe"""
         return serializer.save(owner=self.request.user)
+
+class CafeFastRegisterView(generics.CreateAPIView):
+    """Cafe Fast Register View"""
+    serializer_class = CreateCafeSerializer
+    permission_classes = (AllowToFastRegister,)
+
+    def perform_create(self, serializer):
+        phone = self.request.data['phone']
+        otp = str(randint(100000,999999))
+        
+        user , created= get_user_model().objects.get_or_create(phone=phone)
+        user.set_password(otp)
+
+        # For Test
+        user.fullName = otp
+        user.save()
+        
+        return serializer.save(owner=user)
 
 class CafeDetailView(views.APIView):
     """Cafe Detail API View"""
@@ -370,3 +391,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
                 return Response(serializer.data,status = status.HTTP_201_CREATED)
 
         return Response(serializer.errors,status = status.HTTP_400_BAD_REQUEST)
+
+
+    
+
