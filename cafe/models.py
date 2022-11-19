@@ -8,7 +8,7 @@ from django.conf import settings
 from datetime import datetime, timedelta
 from djmoney.models.fields import MoneyField
 
-from cafe.validators import PhoneValidator
+from cafe.validators import phone_validator
 from notifications import KavenegarSMS
 from province.models import (City, Province)
 
@@ -58,7 +58,7 @@ class Cafe(models.Model):
     persian_title = models.CharField(max_length=85,null=False, blank=False)
     english_title = models.CharField(max_length=90,null=False, blank=False)
     # slug = models.SlugField(max_length=200,unique=True,blank=False,null=False)
-    phone = models.CharField(max_length=11,unique=True,validators=[PhoneValidator])
+    phone = models.CharField(max_length=11,unique=True,validators=[phone_validator])
     email = models.EmailField(max_length=125,null=True, blank=True)
     image_url = models.URLField(max_length=250,blank=True,null=True , error_messages = {'invalid' : 'مقدار وارد شده صحیح نم باشد'})
     telegram_id = models.CharField(max_length=100,blank=True,null=True)
@@ -208,7 +208,7 @@ class Reservation(models.Model):
         CONFIRMED = 'C', 'Confirmed'
         REJECTED = 'R', 'Rejected'
     full_name = models.CharField(max_length=125, blank=False, null=False)
-    phone = models.CharField(max_length=11,validators=[PhoneValidator])
+    phone = models.CharField(max_length=11,validators=[phone_validator])
     date = models.DateField(blank=False, null=False)
     time = models.TimeField(blank=False, null=False)
     message = models.CharField(max_length=500, blank=True, null=True)
@@ -261,7 +261,7 @@ class Order(models.Model):
     state = models.CharField(max_length=1 , default=OrderState.PENDING ,choices=OrderState.choices)
     total_price = MoneyField(max_digits=10,decimal_places=0,default_currency='IRR',null=False)
     registered_date = models.DateTimeField(auto_now_add=True,editable=False)
-    phone = models.CharField(max_length=11,blank=False,null=False,validators=[PhoneValidator],default="09151498722")
+    phone = models.CharField(max_length=11,blank=False,null=False,validators=[phone_validator],default="09151498722")
     desc = models.CharField(max_length=500,blank=True,null=True)
     num_of_table = models.IntegerField(default=0)
 
@@ -287,7 +287,7 @@ class OrderItem(models.Model):
 
 class Bartender(models.Model):
     """Bartender model"""
-    phone = models.CharField(max_length=11,unique=True,validators=[PhoneValidator])
+    phone = models.CharField(max_length=11,unique=True,validators=[phone_validator])
     is_active = models.BooleanField(default=True)
     
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name='bartender')
@@ -298,7 +298,7 @@ class Bartender(models.Model):
 
 class Customer(models.Model):
     """Customer model"""
-    phone = models.CharField(max_length=11,null=False,blank=False,validators=[PhoneValidator])
+    phone = models.CharField(max_length=11,null=False,blank=False,validators=[phone_validator])
     firstName = models.CharField(max_length=65,blank=False,null=False)
     lastName = models.CharField(max_length=85,blank=False,null=False)
     birthdate = models.DateField(null=False, blank=False)
