@@ -59,7 +59,8 @@ INSTALLED_APPS = [
     'djmoney',
     'plan',
     'queries',
-    'django.contrib.sitemaps'
+    'django.contrib.sitemaps',
+    'comment'
 ]
 
 MIDDLEWARE = [
