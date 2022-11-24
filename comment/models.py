@@ -11,3 +11,7 @@ class Comment(models.Model):
 
     response = models.OneToOneField('self',on_delete=models.CASCADE,null=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name='user')
+
+    def __str__(self) :
+        return f'{self.user} - item : {self.item_id}'
+        

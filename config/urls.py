@@ -46,6 +46,7 @@ urlpatterns = [
     path('robots.txt', RobotsView.as_view(), name='robots.txt'),
     path('api/account/',include('account.urls')),
     path('api/cafe/',include('cafe.urls')),
+    path('api/comment/',include('comment.urls')),
     path('api/siteinfo/',include('siteinfo.urls')),
     path('api/plan/',include('plan.urls')),
     path('api/queries/',include('queries.urls'))
