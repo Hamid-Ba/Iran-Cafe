@@ -14,5 +14,6 @@ app_name = "comment"
 
 urlpatterns = [
     # path("",include(router.urls)), 
-    path("create/",views.CreateCommentView.as_view(),name="create_comment")
+    path("create/",views.CreateCommentView.as_view(),name="create_comment"),
+    path("item_comments/<int:item_id>",views.MenuItemCommentView.as_view(),name="item_comments")
 ]

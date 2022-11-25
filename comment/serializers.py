@@ -37,3 +37,19 @@ class CreateCommentSerializer(serializers.ModelSerializer):
         except : 
             msg = 'مشکلی ایجاد شده'
             raise serializers.ValidationError(msg)
+
+class CommentSerializer(serializers.ModelSerializer):
+    """Comment Serializer"""
+    class Meta:
+        model = Comment
+        fields = '__all__'
+        # read_only_fields = '__all__'
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['user'] = instance.user.fullName
+        try:
+            item = MenuItem.objects.filter(id=instance.item_id).first()
+            response['item'] = item.title
+        except : None
+        return response
