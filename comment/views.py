@@ -37,11 +37,24 @@ class SingleCommentView(BaseAuthView,views.APIView):
             comment = Comment.objects.filter(id=id).first()
             cafe = Cafe.objects.filter(id=comment.cafe_id).first()
             is_bartender = Bartender.objects.filter(cafe=cafe , user=request.user).exists()
-            print(is_bartender)
 
             if cafe.owner == request.user or is_bartender:
                 serializer = CommentSerializer(comment)
                 return Response({'data' : serializer.data},status=status.HTTP_200_OK)
+            
+            return Response({'data' : 'به کامنت های دیگران دسترسی مجاز نیست'},status=status.HTTP_404_NOT_FOUND)
+        except :
+            return Response({'message' : 'مشکلی ایجاد شده'},status = status.HTTP_400_BAD_REQUEST)
+
+    def delete(self,request,id):
+        try:
+            comment = Comment.objects.filter(id=id).first()
+            cafe = Cafe.objects.filter(id=comment.cafe_id).first()
+            is_bartender = Bartender.objects.filter(cafe=cafe , user=request.user).exists()
+    
+            if cafe.owner == request.user or is_bartender:
+                comment.delete()
+                return Response({'data' : 'کامنت با موفقیت حذف شد'},status=status.HTTP_200_OK)
             
             return Response({'data' : 'به کامنت های دیگران دسترسی مجاز نیست'},status=status.HTTP_404_NOT_FOUND)
         except :
