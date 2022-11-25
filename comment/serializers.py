@@ -4,7 +4,7 @@ Comment Module Serializer
 from rest_framework import serializers
 from datetime import date
 
-from cafe.models import MenuItem
+from cafe.models import Bartender, MenuItem
 from comment.models import Comment
 
 class CreateCommentSerializer(serializers.ModelSerializer):
@@ -23,8 +23,10 @@ class CreateCommentSerializer(serializers.ModelSerializer):
             msg = 'این آیتم وجود ندارد'
             raise serializers.ValidationError(msg)
         cafe = menu_item.cafe
+
+        is_bartender = Bartender.objects.filter(cafe=cafe, user=user).exists()
         
-        if user == cafe.owner :
+        if user == cafe.owner or is_bartender:
             msg = 'برای خودتون میخواین کامنت بذارید ؟'
             raise serializers.ValidationError(msg)
 

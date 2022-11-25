@@ -3,7 +3,7 @@ Comment Module Views
 """
 from rest_framework import (mixins , generics ,viewsets , permissions , authentication ,status ,views)
 from rest_framework.response import Response
-from cafe.models import Cafe
+from cafe.models import Bartender, Cafe
 
 from comment.models import Comment
 
@@ -36,8 +36,10 @@ class SingleCommentView(BaseAuthView,views.APIView):
         try:
             comment = Comment.objects.filter(id=id).first()
             cafe = Cafe.objects.filter(id=comment.cafe_id).first()
+            is_bartender = Bartender.objects.filter(cafe=cafe , user=request.user).exists()
+            print(is_bartender)
 
-            if cafe.owner == request.user :
+            if cafe.owner == request.user or is_bartender:
                 serializer = CommentSerializer(comment)
                 return Response({'data' : serializer.data},status=status.HTTP_200_OK)
             
