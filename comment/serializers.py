@@ -13,24 +13,37 @@ class CreateCommentSerializer(serializers.ModelSerializer):
         model = Comment
         fields = ['item_id' , 'text']
 
+    def validate(self, attrs):
+        item_id = attrs.get('item_id')
+        
+        user = self.context.get('request').user
+        menu_item = MenuItem.objects.filter(id=item_id).first()
+
+        if not menu_item :
+            msg = 'این آیتم وجود ندارد'
+            raise serializers.ValidationError(msg)
+        cafe = menu_item.cafe
+        
+        if user == cafe.owner :
+            msg = 'برای خودتون میخواین کامنت بذارید ؟'
+            raise serializers.ValidationError(msg)
+
+        return attrs
+   
     def create(self, validated_data):
         user = self.context.get('request').user
-        item_id = validated_data.pop('item_id')
+        item_id = validated_data.get('item_id')
         
         try:
             menu_item = MenuItem.objects.filter(id=item_id).first()
             cafe = menu_item.cafe
-
-            if user == cafe.owner :
-                msg = 'برای خودتون میخواین کامنت بذارید ؟'
-                raise serializers.ValidationError(msg)
-
+            
             now_date = date.today()
-
+            
             comment = Comment.objects.create(
-                user=user, item_id=item_id,
-                cafe_id=cafe.id,is_cafe=False,
-                date=now_date,**validated_data)
+                user=user,cafe_id=cafe.id
+                ,is_cafe=False,date=now_date
+                ,**validated_data)
             comment.save()
             return comment
             
