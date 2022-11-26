@@ -113,13 +113,14 @@ class CommentSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         response = super().to_representation(instance)
-        response['user'] = instance.user.fullName
+        response['name'] = instance.user.fullName
         try:
             item = MenuItem.objects.filter(id=instance.item_id).first()
             response['item'] = item.title
             
             if instance.response :
                 response['response'] = {
+                    'name' : instance.response.user.fullName,
                     'date' : instance.response.date,
                     'text' : instance.response.text
                 }
