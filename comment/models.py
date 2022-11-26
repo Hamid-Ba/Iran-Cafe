@@ -9,9 +9,8 @@ class Comment(models.Model):
     cafe_id = models.PositiveBigIntegerField(null=False, blank=False)
     item_id = models.PositiveBigIntegerField(null=False, blank=False)
 
-    response = models.OneToOneField('self',on_delete=models.CASCADE,null=True)
+    response = models.OneToOneField('self',on_delete=models.SET_NULL,null=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name='user')
 
     def __str__(self) :
         return f'{self.user} - item : {self.item_id}'
-        

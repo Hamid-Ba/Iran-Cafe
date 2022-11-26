@@ -7,7 +7,7 @@ from cafe.models import Bartender, Cafe
 
 from comment.models import Comment
 
-from comment.serializers import CommentSerializer, CreateCommentSerializer
+from comment.serializers import CommentSerializer, CreateCommentSerializer, ResponseCommentSerializer
 
 class BaseAuthView:
     """Base Mixin View Class"""
@@ -22,7 +22,7 @@ class MenuItemCommentView(views.APIView):
     """Menu Item Comment View"""
     def get(self,request, item_id):
         try:
-            comments = Comment.objects.filter(item_id=item_id).order_by('-date')
+            comments = Comment.objects.filter(item_id=item_id,is_cafe=False).order_by('-date')
             if not comments : 
                 return Response({'message' : 'کامنتی ثبت نشده است'} , status = status.HTTP_404_NOT_FOUND)
             serializer = CommentSerializer(comments,many=True)
@@ -36,7 +36,7 @@ class SingleCommentView(BaseAuthView,views.APIView):
         try:
             comment = Comment.objects.filter(id=id).first()
             cafe = Cafe.objects.filter(id=comment.cafe_id).first()
-            is_bartender = Bartender.objects.filter(cafe=cafe , user=request.user).exists()
+            is_bartender = Bartender.objects.filter(cafe=cafe , user=request.user,is_active=True).exists()
 
             if cafe.owner == request.user or is_bartender:
                 serializer = CommentSerializer(comment)
@@ -50,7 +50,7 @@ class SingleCommentView(BaseAuthView,views.APIView):
         try:
             comment = Comment.objects.filter(id=id).first()
             cafe = Cafe.objects.filter(id=comment.cafe_id).first()
-            is_bartender = Bartender.objects.filter(cafe=cafe , user=request.user).exists()
+            is_bartender = Bartender.objects.filter(cafe=cafe , user=request.user,is_active=True).exists()
     
             if cafe.owner == request.user or is_bartender:
                 comment.delete()
@@ -59,3 +59,7 @@ class SingleCommentView(BaseAuthView,views.APIView):
             return Response({'data' : 'به کامنت های دیگران دسترسی مجاز نیست'},status=status.HTTP_404_NOT_FOUND)
         except :
             return Response({'message' : 'مشکلی ایجاد شده'},status = status.HTTP_400_BAD_REQUEST)
+
+class ResponseCommentView(BaseAuthView,generics.CreateAPIView):
+    """Response Comment View"""
+    serializer_class = ResponseCommentSerializer
