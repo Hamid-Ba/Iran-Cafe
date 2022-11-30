@@ -115,6 +115,7 @@ def category_image_file_path(instance,filename):
 
 class Category(models.Model):
     """Category model"""
+    order = models.IntegerField(null=True, blank=True,default=1)
     title = models.CharField(max_length=72,null=False,blank=False)
     image = models.ImageField(null=False,upload_to=category_image_file_path)
 

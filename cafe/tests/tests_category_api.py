@@ -10,9 +10,9 @@ from cafe.serializers import CateogrySerializer
 
 CATEGORY_LIST = reverse('cafe:category_list')
 
-def create_category(title):
+def create_category(title,order):
     """Helper Function For Create Category"""
-    return Category.objects.create(title=title)
+    return Category.objects.create(title=title,order=order)
 
 class PublicTest(TestCase):
     """Test Category Public Endpoints"""
@@ -21,13 +21,13 @@ class PublicTest(TestCase):
 
     def test_get_category_list_should_work_properly(self):
         """Test Get Category List"""
-        category1 = create_category('category1')
-        category2 = create_category('category2')
+        category1 = create_category('category1',order=1)
+        category2 = create_category('category2',order=2)
 
         res = self.client.get(CATEGORY_LIST)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
 
-        categories = Category.objects.all().order_by('-id')
+        categories = Category.objects.all().order_by('order')
         serializer = CateogrySerializer(categories,many=True)
 
         self.assertEqual(serializer.data,res.data)

@@ -76,11 +76,13 @@ class CategoryTest(TestCase):
         """Test creating The Category Model"""
         title = 'test category'
         image = 'test.jpg'
+        order = 1
 
-        category = Category.objects.create(title=title, image=image)
+        category = Category.objects.create(title=title, image=image, order=order)
 
         self.assertEqual(category.title, title)
         self.assertEqual(category.image, image)
+        self.assertEqual(category.order, order)
 
 class MenuItemTest(TestCase):
     """Test Item Menu Model."""

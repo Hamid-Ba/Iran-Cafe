@@ -36,9 +36,9 @@ class CafeAdmin(admin.ModelAdmin):
 
 class CategoryAdmin(admin.ModelAdmin):
     """Category Admin Model"""
-    list_display = ['title']
+    list_display = ['title','order']
     list_display_links = ['title']
-    sortable_by = ['title']
+    sortable_by = ['title','order']
 
 class MenuItemAdmin(admin.ModelAdmin):
     """Menu Item Admin Model"""
