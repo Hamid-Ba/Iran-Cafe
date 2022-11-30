@@ -18,4 +18,5 @@ urlpatterns = [
     path("item_comments/<int:item_id>",views.MenuItemCommentView.as_view(),name="item_comments"),
     path("comment/<int:id>",views.SingleCommentView.as_view(),name="comment"),
     path("response_comment",views.ResponseCommentView.as_view(),name="response"),
+    path("cafes_comments",views.CafesCommentView.as_view(),name="cafes_comments"),
 ]

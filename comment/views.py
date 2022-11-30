@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from cafe.models import Bartender, Cafe
 
 from comment.models import Comment
+from comment.pagination import CommentPagination
 
 from comment.serializers import CommentSerializer, CreateCommentSerializer, ResponseCommentSerializer
 
@@ -63,3 +64,23 @@ class SingleCommentView(BaseAuthView,views.APIView):
 class ResponseCommentView(BaseAuthView,generics.CreateAPIView):
     """Response Comment View"""
     serializer_class = ResponseCommentSerializer
+
+class CafesCommentView(BaseAuthView,generics.ListAPIView):
+    """Cafes Comment View"""
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    pagination_class = CommentPagination
+
+    def get_queryset(self):
+        user = self.request.user
+        cafe = Cafe.objects.filter(owner=user)
+        if cafe.exists() :
+            return self.queryset.filter(cafe_id=cafe.first().id,is_cafe = False).order_by('-date')
+
+        bartender = Bartender.objects.filter(user=user,is_active=True)
+        if bartender.exists() :
+            return self.queryset.filter(cafe_id=bartender.first().cafe.id,is_cafe = False).order_by('-date')
+
+        return []
+
+        
