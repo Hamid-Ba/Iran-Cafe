@@ -7,8 +7,8 @@ from django.urls import reverse
 from rest_framework import status
 from django.contrib.auth import get_user_model
 
-AUTH_URL = reverse('account:auth-login-or-register')
-LOGOUT_URL = reverse('account:auth-logout')
+AUTH_URL = reverse('account:otp')
+LOGOUT_URL = reverse('account:logout')
 TOKEN_URL = reverse('account:token')
 ME_USER_URL = reverse("account:me")
 
@@ -28,7 +28,7 @@ class PublicTests(TestCase):
         }
 
         res = self.client.post(AUTH_URL,payload)
-        self.assertEqual(res.status_code,status.HTTP_200_OK)
+        self.assertEqual(res.status_code,status.HTTP_201_CREATED)
 
         is_user_exist = get_user_model().objects.filter(phone=payload['phone']).exists()
         self.assertTrue(is_user_exist)
@@ -42,7 +42,7 @@ class PublicTests(TestCase):
         old_password = user.password
 
         res = self.client.post(AUTH_URL,payload)
-        self.assertEqual(res.status_code,status.HTTP_200_OK)
+        self.assertEqual(res.status_code,status.HTTP_201_CREATED)
 
         user.refresh_from_db()
         self.assertNotEqual(user.password , old_password)
@@ -90,7 +90,7 @@ class PrivateTest(TestCase):
 
     def test_logout_user(self):
         """Test Logout User"""
-        res = self.client.post(LOGOUT_URL)
+        res = self.client.get(LOGOUT_URL)
 
         self.assertNotIn(self.user,res.request)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
