@@ -9,12 +9,25 @@ from datetime import (date)
 from django.contrib.auth import get_user_model
 
 from cafe.models import (Cafe, Customer)
+from cafe import serializers
 from province.models import (City, Province)
 
 CUSTOMER_URL = reverse('cafe:customer-list')
+USER_CLUBS_URL = reverse('cafe:user_clubs')
 
 def gallery_detail_url(gallery_id):
     return reverse('cafe:gallery-detail', args=(gallery_id,))
+
+def create_customer(cafe,user,**new_payload):
+    """Helper Function for creating a customer"""
+    payload = {
+        'phone' : user.phone,
+        'firstName' : 'Hamid',
+        'lastName' : 'Balalzadeh',
+        'birthdate' : date.today()
+    }
+    payload.update(new_payload)
+    return Customer.objects.create(user=user,cafe=cafe,**payload)
 
 def create_user(phone,password):
     """Helper Function for creating a user"""
@@ -82,3 +95,28 @@ class PrivateTest(TestCase):
         for (key , value) in payload.items():
             if key == 'cafe' : continue
             self.assertEqual(getattr(customer,key), value)
+
+    def test_get_user_cafes_which_has_been_joined(self):
+        """Test List Of Cafe Which has been joined"""
+        user = create_user("09151498721",'123456')
+        user_2 = create_user("09156789484",'123456')
+
+        self.client.force_authenticate(user)
+        owner2 = create_user("09151498723",'123456')
+        cafe2 = create_cafe(self.province,self.city,owner2)
+
+        club_1 = create_customer(self.cafe,user)
+        club_2 = create_customer(cafe2,user)
+        club_user_2 = create_customer(cafe2,user_2)
+
+        res = self.client.get(USER_CLUBS_URL)           
+        self.assertEqual(res.status_code,status.HTTP_200_OK)
+
+        clubs = Customer.objects.filter(user=user).all().order_by('-id')
+        serializer = serializers.CustomerSerializer(clubs,many=True)
+
+        self.assertEqual(club_1.user , user)
+        self.assertEqual(club_2.user , user)
+        self.assertNotEqual(club_user_2.user,user)
+        self.assertNotIn(club_user_2,serializer.data)
+        self.assertEqual(res.data['results'] , serializer.data)

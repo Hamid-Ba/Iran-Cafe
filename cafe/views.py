@@ -391,3 +391,15 @@ class CustomerViewSet(viewsets.ModelViewSet):
                 return Response(serializer.data,status = status.HTTP_201_CREATED)
 
         return Response(serializer.errors,status = status.HTTP_400_BAD_REQUEST)
+
+class UserClubsView(generics.ListAPIView):
+    """User Clubs View"""
+    queryset = Customer.objects.all()
+    serializer_class = CustomerSerializer
+    pagination_class = StandardPagination
+    permission_classes = (permissions.IsAuthenticated ,)
+    authentication_classes = (authentication.TokenAuthentication ,)
+
+    def get_queryset(self):
+        return self.queryset.filter(user=self.request.user).order_by('-id')
+    

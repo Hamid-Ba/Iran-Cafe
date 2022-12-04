@@ -29,5 +29,6 @@ urlpatterns = [
     path("cafe_detail/<str:cafe_code>/",views.CafeIdView.as_view(),name='cafe_id'),
     path("cafe_detail_page/<int:cafe_id>/",views.CafeDetailView.as_view(),name='cafe_detail_page'),
     path("fast_register/",views.CafeFastRegisterView.as_view(),name='fast_register'),
-    path("send_suggest/",views.CreateSuggestionApiView.as_view(),name='send_suggest'),   
+    path("send_suggest/",views.CreateSuggestionApiView.as_view(),name='send_suggest'),  
+    path("user_clubs/",views.UserClubsView.as_view(),name='user_clubs') 
 ]
