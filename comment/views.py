@@ -1,7 +1,7 @@
 """
 Comment Module Views
 """
-from rest_framework import (mixins , generics ,viewsets , permissions , authentication ,status ,views)
+from rest_framework import (generics , permissions , authentication ,status ,views)
 from rest_framework.response import Response
 from cafe.models import Bartender, Cafe
 

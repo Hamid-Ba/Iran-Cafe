@@ -25,8 +25,11 @@ class Blog(models.Model):
     image = models.ImageField(null=False,upload_to=blog_image_file_path)
     image_alt = models.CharField(max_length=72,blank=False,null=False)
     image_title = models.CharField(max_length=125,blank=False,null=False)
-    publish_date = models.DateField(null=False, blank=False,default=timezone.now)
+    publish_date = models.DateTimeField(null=False, blank=False,default=timezone.now)
     is_cafe = models.BooleanField()
 
     tags = TaggableManager()
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name='blog')
+
+    def __str__(self) -> str :
+        return self.title

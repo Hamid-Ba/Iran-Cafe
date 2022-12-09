@@ -1,3 +1,14 @@
-from django.shortcuts import render
+"""
+Blog Module Views
+"""
+from rest_framework import (generics , permissions , authentication ,status ,views)
+from rest_framework.response import Response
+from blog import serializers
 
-# Create your views here.
+class CreateBlogView(generics.CreateAPIView):
+    serializer_class = serializers.CreateBlogSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
+
+    def perform_create(self, serializer):
+        return serializer.save(user = self.request.user)
