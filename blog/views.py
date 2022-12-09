@@ -7,7 +7,6 @@ from blog.pagination import BlogPagination
 from cafe.models import Cafe , Bartender
 from blog import serializers , models
 from django.utils import timezone 
-from datetime import (timedelta,datetime)
 
 class BaseMixinView(mixins.RetrieveModelMixin,
                     mixins.CreateModelMixin,
@@ -85,3 +84,12 @@ class BlogDetailView(views.APIView):
             return Response({'data' : serializer.data} , status=status.HTTP_200_OK)
         except :
             return Response({'message' : 'مشکلی ایجاد شده'},status = status.HTTP_400_BAD_REQUEST)
+
+class BlogsView(generics.ListAPIView):
+    """List Of Blogs View"""
+    queryset = models.Blog.objects.all()
+    pagination_class = BlogPagination
+    serializer_class = serializers.BlogListSerializer
+
+    def get_queryset(self):
+        return self.queryset.filter(publish_date__lte = timezone.now()).order_by('-publish_date')
