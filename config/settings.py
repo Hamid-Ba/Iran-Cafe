@@ -60,7 +60,9 @@ INSTALLED_APPS = [
     'plan',
     'queries',
     'django.contrib.sitemaps',
-    'comment'
+    'comment',
+    'blog',
+    'taggit'
 ]
 
 MIDDLEWARE = [

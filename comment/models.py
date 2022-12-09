@@ -10,7 +10,7 @@ class Comment(models.Model):
     item_id = models.PositiveBigIntegerField(null=False, blank=False)
 
     response = models.OneToOneField('self',on_delete=models.SET_NULL,null=True,blank=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name='user')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name='comment')
 
     def __str__(self) :
         return f'{self.user} - item : {self.item_id}'
