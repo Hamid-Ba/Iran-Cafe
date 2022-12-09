@@ -69,7 +69,7 @@ class IranCafeBlogsView(generics.ListAPIView):
     pagination_class = BlogPagination
 
     def list(self, request):
-        blogs = self.queryset.filter(cafe_id = None,is_cafe=False , publish_date__lte = timezone.now()).order_by('-publish_date')
+        blogs = self.queryset.filter(is_cafe=False , publish_date__lte = timezone.now()).order_by('-publish_date')
         paginator = BlogPagination()
         result_page = paginator.paginate_queryset(blogs, request)
         serializer = serializers.BlogListSerializer(result_page,many=True)
