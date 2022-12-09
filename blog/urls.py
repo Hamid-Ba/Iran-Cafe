@@ -8,10 +8,11 @@ from blog import views
 
 
 router = DefaultRouter()
+router.register('blog' , views.ManageBlogView)
 
 app_name = "blog"
 
 urlpatterns = [
-    # path("",include(router.urls)), 
-    path("create/",views.CreateBlogView.as_view(),name="create_blog"),
+    path("",include(router.urls)), 
+    # path("create/",views.CreateBlogView.as_view(),name="create_blog"),
 ]

@@ -35,3 +35,28 @@ class CreateBlogSerializer(TaggitSerializer,serializers.ModelSerializer):
         attrs['is_cafe'] = True
 
         return attrs
+
+class UpdateBlogSerializer(TaggitSerializer,serializers.ModelSerializer):
+    """Update Blog Serializer"""
+    tags = TagListSerializerField()
+    class Meta:
+        model = models.Blog
+        fields = ['title','slug','desc','image','image_alt','image_title',
+        'publish_date','tags']
+
+class BlogSerializer(CreateBlogSerializer):
+    """Blog Serializer"""
+    class Meta(CreateBlogSerializer.Meta):
+        fields = '__all__'
+
+    def to_representation(self, instance):
+        datas =  super().to_representation(instance)
+        try :
+            cafe = Cafe.objects.filter(id=instance.cafe_id).first()
+            datas['cafe'] = {
+                'title' : cafe.persian_title,
+                'code' : cafe.code,
+                'owner' : cafe.owner.fullName
+            }
+        except : None
+        return datas
