@@ -16,7 +16,7 @@ class BaseMixinView(mixins.RetrieveModelMixin,
     authentication_classes = (authentication.TokenAuthentication ,)
     permission_classes = (permissions.IsAuthenticated ,)
 
-class ManageBlogView(BaseMixinView):
+class ManageBlogView(mixins.ListModelMixin,BaseMixinView):
     serializer_class = serializers.BlogSerializer
     # permission_classes = [permissions.IsAuthenticated]
     # authentication_classes = [authentication.TokenAuthentication]
