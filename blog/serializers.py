@@ -60,3 +60,8 @@ class BlogSerializer(CreateBlogSerializer):
             }
         except : None
         return datas
+
+class BlogListSerializer(UpdateBlogSerializer):
+    """Blog List Serializer"""
+    class Meta(UpdateBlogSerializer.Meta):
+        """Meta Class"""

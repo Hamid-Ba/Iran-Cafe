@@ -3,6 +3,7 @@ Blog Module Views
 """
 from rest_framework import (mixins,generics , permissions , authentication , viewsets ,status ,views)
 from rest_framework.response import Response
+from blog.pagination import BlogPagination
 from cafe.models import Cafe , Bartender
 from blog import serializers , models
 from django.utils import timezone 
@@ -45,3 +46,15 @@ class ManageBlogView(mixins.ListModelMixin,BaseMixinView):
     def perform_create(self, serializer):
         return serializer.save(user = self.request.user)
 
+class CafesBlogListView(generics.ListAPIView):
+    """List Of Cafes Blog View"""
+    queryset = models.Blog.objects.all()
+    serializer_class = serializers.BlogListSerializer
+    pagination_class = BlogPagination
+
+    def list(self, request, cafe_id):
+        blogs = self.queryset.filter(cafe_id=cafe_id , publish_date__lte = timezone.now())
+        paginator = BlogPagination()
+        result_page = paginator.paginate_queryset(blogs, request)
+        serializer = serializers.BlogListSerializer(result_page,many=True)
+        return Response({'data' : serializer.data} , status=status.HTTP_200_OK)
