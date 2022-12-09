@@ -27,12 +27,12 @@ class ManageBlogView(mixins.ListModelMixin,BaseMixinView):
         is_cafe = Cafe.objects.filter(owner=self.request.user).exists()
         if is_cafe :
             cafe = Cafe.objects.filter(owner=self.request.user).first()
-            return self.queryset.filter(cafe_id=cafe.id).order_by('publish_date')
+            return self.queryset.filter(cafe_id=cafe.id).order_by('-publish_date')
 
         is_bartender = Bartender.objects.filter(user=self.request.user,is_active=True).exists()
         if is_bartender:
             bartender = Bartender.objects.filter(user=self.request.user,is_active=True).first()
-            return self.queryset.filter(cafe_id=bartender.cafe.id).order_by('publish_date')
+            return self.queryset.filter(cafe_id=bartender.cafe.id).order_by('-publish_date')
 
     def get_serializer_class(self):
         if self.action == 'create' :
@@ -53,8 +53,18 @@ class CafesBlogListView(generics.ListAPIView):
     pagination_class = BlogPagination
 
     def list(self, request, cafe_id):
-        blogs = self.queryset.filter(cafe_id=cafe_id , publish_date__lte = timezone.now())
+        blogs = self.queryset.filter(cafe_id=cafe_id , publish_date__lte = timezone.now()).order_by('-publish_date')
         paginator = BlogPagination()
         result_page = paginator.paginate_queryset(blogs, request)
         serializer = serializers.BlogListSerializer(result_page,many=True)
         return Response({'data' : serializer.data} , status=status.HTTP_200_OK)
+
+class BlogDetailView(views.APIView):
+    """Detail Of Blog View"""
+    def get(self, request,slug):
+        try :
+            blog = models.Blog.objects.filter(slug=slug , publish_date__lte = timezone.now()).first()
+            serializer = serializers.BlogSerializer(blog)
+            return Response({'data' : serializer.data} , status=status.HTTP_200_OK)
+        except :
+            return Response({'message' : 'مشکلی ایجاد شده'},status = status.HTTP_400_BAD_REQUEST)
