@@ -51,16 +51,10 @@ class CafesBlogListView(generics.ListAPIView):
     serializer_class = serializers.BlogListSerializer
     pagination_class = BlogPagination
 
-    def list(self, request, cafe_code):
-        try :
-            cafe = Cafe.objects.filter(code=cafe_code).first()
-            blogs = self.queryset.filter(cafe_id=cafe.id , publish_date__lte = timezone.now()).order_by('-publish_date')
-            paginator = BlogPagination()
-            result_page = paginator.paginate_queryset(blogs, request)
-            serializer = serializers.BlogListSerializer(result_page,many=True)
-            return Response({'data' : serializer.data} , status=status.HTTP_200_OK)    
-        except :
-            return Response({'message' : 'کافه ای با این کد ثبت نشده است'},status = status.HTTP_400_BAD_REQUEST)
+    def get_queryset(self):
+        cafe_code = self.kwargs['cafe_code']
+        cafe = Cafe.objects.filter(code=cafe_code).first()
+        return self.queryset.filter(cafe_id=cafe.id , publish_date__lte = timezone.now()).order_by('-publish_date')
 
 class IranCafeBlogsView(generics.ListAPIView):
     """Iran Cafe Blogs View"""
@@ -68,12 +62,8 @@ class IranCafeBlogsView(generics.ListAPIView):
     serializer_class = serializers.BlogListSerializer
     pagination_class = BlogPagination
 
-    def list(self, request):
-        blogs = self.queryset.filter(is_cafe=False , publish_date__lte = timezone.now()).order_by('-publish_date')
-        paginator = BlogPagination()
-        result_page = paginator.paginate_queryset(blogs, request)
-        serializer = serializers.BlogListSerializer(result_page,many=True)
-        return Response({'data' : serializer.data} , status=status.HTTP_200_OK)   
+    def get_queryset(self):
+        return self.queryset.filter(is_cafe=False , publish_date__lte = timezone.now()).order_by('-publish_date')
 
 class BlogDetailView(views.APIView):
     """Detail Of Blog View"""

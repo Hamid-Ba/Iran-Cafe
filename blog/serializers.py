@@ -13,7 +13,7 @@ class CreateBlogSerializer(TaggitSerializer,serializers.ModelSerializer):
     tags = TagListSerializerField()
     class Meta:
         model = models.Blog
-        fields = ['cafe_id','title','slug','desc','image','image_alt','image_title',
+        fields = ['cafe_id','title','slug','short_desc','desc','image','image_alt','image_title',
         'publish_date','tags']
 
     def validate(self, attrs):
@@ -41,7 +41,7 @@ class UpdateBlogSerializer(TaggitSerializer,serializers.ModelSerializer):
     tags = TagListSerializerField()
     class Meta:
         model = models.Blog
-        fields = ['title','slug','desc','image','image_alt','image_title',
+        fields = ['title','slug','short_desc','desc','image','image_alt','image_title',
         'publish_date','tags']
 
 class BlogSerializer(CreateBlogSerializer):

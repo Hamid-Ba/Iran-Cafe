@@ -20,6 +20,7 @@ class BlogModel(TestCase):
             'title' : 'Test Blog Model',
             'slug' : 'Test-Blog-Model',
             'cafe_id' : 2,
+            'short_desc' : 'short description',
             'desc' : 'Test Blog Model',
             'image' : 'blog.png',
             'image_alt' : 'blog',
