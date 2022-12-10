@@ -156,6 +156,14 @@ STATIC_ROOT = os.path.join(BASE_DIR,'static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR , 'media') 
 
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'none',
+        'height': 200,
+        'width': 600,
+     },
+}
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
