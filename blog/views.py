@@ -79,3 +79,11 @@ class BlogsView(generics.ListAPIView):
 
     def get_queryset(self):
         return self.queryset.filter(publish_date__lte = timezone.now()).order_by('-publish_date')
+
+class LatestBlogsView(generics.ListAPIView):
+    """List Of Latest Blogs View"""
+    queryset = models.Blog.objects.all()
+    serializer_class = serializers.LatestBlogSerializer
+
+    def get_queryset(self):
+        return self.queryset.filter(publish_date__lte = timezone.now()).order_by('-publish_date')[:3]

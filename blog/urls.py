@@ -17,5 +17,6 @@ urlpatterns = [
     path('cafes/<int:cafe_code>/blogs/',views.CafesBlogListView.as_view()),
     path('iran-cafe/',views.IranCafeBlogsView.as_view()),
     path('<str:slug>/',views.BlogDetailView.as_view()),
-    path('all/blogs',views.BlogsView.as_view(),name='all_blogs')
+    path('all/blogs',views.BlogsView.as_view(),name='all_blogs'),
+    path('the_latest_blogs',views.LatestBlogsView.as_view(),name='the_latest_blogs'),
 ]

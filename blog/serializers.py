@@ -65,3 +65,9 @@ class BlogListSerializer(UpdateBlogSerializer):
     """Blog List Serializer"""
     class Meta(UpdateBlogSerializer.Meta):
         """Meta Class"""
+
+class LatestBlogSerializer(serializers.ModelSerializer):
+    """Latest Blog Serializer"""
+    class Meta:
+        model = models.Blog
+        fields = ['title','slug']
