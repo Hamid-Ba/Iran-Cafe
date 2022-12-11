@@ -65,15 +65,11 @@ class IranCafeBlogsView(generics.ListAPIView):
     def get_queryset(self):
         return self.queryset.filter(is_cafe=False , publish_date__lte = timezone.now()).order_by('-publish_date')
 
-class BlogDetailView(views.APIView):
+class BlogDetailView(generics.RetrieveAPIView):
     """Detail Of Blog View"""
-    def get(self, request,slug):
-        try :
-            blog = models.Blog.objects.filter(slug=slug , publish_date__lte = timezone.now()).first()
-            serializer = serializers.BlogSerializer(blog)
-            return Response({'data' : serializer.data} , status=status.HTTP_200_OK)
-        except :
-            return Response({'message' : 'مشکلی ایجاد شده'},status = status.HTTP_400_BAD_REQUEST)
+    lookup_field = 'slug'
+    queryset = models.Blog.objects.all()
+    serializer_class = serializers.BlogSerializer
 
 class BlogsView(generics.ListAPIView):
     """List Of Blogs View"""
