@@ -182,3 +182,14 @@ REST_FRAMEWORK = {
 SPECTACULAR_SETTINGS = {
     'COMPONENT_SPLIT_REQUEST' : True,
 }
+
+# Zarinpal setting
+ZARINPAL_REQUEST = "https://zarinpal.com/pg/services/WebGate/wsdl"
+ZARINPAL_STARTPAY = "https://zarinpal.com/pg/StartPay/"
+ZARINPAL_VERIFY = "https://api.zarinpal.com/pg/v4/payment/verify.json"
+SELLER_PATH_VERIFY = "https://api.cafesiran.ir/api/payment/verify/"
+
+
+ZARINPAL_CALLBACK_URL =  "https://api.cafesiran.ir/api/payment/verify/"
+ZARINPAL_SIMULATION = True # is transactions for test?
+ZARINPAL_MERCHANT_ID = 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX'

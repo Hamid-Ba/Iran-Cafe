@@ -70,7 +70,7 @@ class CreateUpdateMenuItemSerializer(serializers.ModelSerializer):
     class Meta:
         """Meta Class"""
         model = MenuItem
-        fields = ['title', 'image_url' , 'price' , 'desc','is_active' , 'category']
+        fields = ['title', 'image_url' , 'price' , 'desc','is_active' ,'calorie', 'category']
                     
     def create(self, validated_data):
         """Create Menu Item"""

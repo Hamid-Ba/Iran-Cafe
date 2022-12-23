@@ -137,6 +137,7 @@ class MenuItem(models.Model):
     desc = models.TextField(null=False,blank=False)
     price = MoneyField(max_digits=10,decimal_places=0,default_currency='IRR',null=False)
     is_active = models.BooleanField(default=True)
+    calorie = models.FloatField(null=True, blank=True)
     order_count = models.IntegerField(default=0)
 
     cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE,related_name='menu_items')
