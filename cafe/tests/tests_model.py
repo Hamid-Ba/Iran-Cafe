@@ -7,7 +7,8 @@ from django.test import TestCase
 from djmoney.money import Money
 from datetime import (datetime , time,date)
 from django.contrib.auth import get_user_model
-from cafe.models import (Bartender, Cafe , Category, Customer, MenuItem , Gallery, Order, Suggestion , Reservation)
+from cafe.models import (Bartender, Cafe , Category, Customer, MenuItem ,
+ Gallery, Order, Suggestion , Reservation , Event)
 from province.models import (Province , City)
 
 def create_user(phone,password):
@@ -288,3 +289,25 @@ class CustomerTest(TestCase):
         
         for (key , value) in payload.items():
             self.assertEqual(getattr(customer,key), value)
+
+class EventTest(TestCase):
+    """Event Model Test"""
+    def setUp(self) :
+        self.province = create_province('Tehran','Tehran')
+        self.city = create_city('Tehran','Tehran',self.province)
+        self.owner = create_user('09151498722','123456')
+        self.cafe = create_cafe(self.province,self.city,self.owner)
+
+    def test_create_event_should_work_properly(self):
+        """Test Create Event Model"""
+        payload = {
+            "title" : "test title",
+            "content" : "test content"   
+        }
+
+        event = Event.objects.create(cafe=self.cafe,**payload)
+
+        self.assertEqual(event.cafe , self.cafe)
+
+        for (key , value) in payload.items():
+            self.assertEqual(getattr(event,key),value)

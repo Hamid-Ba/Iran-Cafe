@@ -310,3 +310,12 @@ class Customer(models.Model):
 
     def __str__(self) -> str:
         return f'{self.firstName} {self.lastName}'
+
+class Event(models.Model):
+    """Event model"""
+    title = models.CharField(max_length=125)
+    content = models.CharField(max_length=500)
+    status = models.BooleanField(default=False)
+    created_date = models.DateTimeField(auto_now_add=True)
+
+    cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE, related_name='events')

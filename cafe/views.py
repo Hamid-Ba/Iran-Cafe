@@ -11,12 +11,15 @@ from drf_spectacular.utils import (
 from django.contrib.auth import (get_user_model)
 from rest_framework import (mixins , generics ,viewsets , permissions , authentication ,status ,views)
 from cafe.pagination import StandardPagination
-from cafe.models import (Bartender, Cafe,Category, Customer, Gallery, MenuItem, Order, Reservation, Suggestion)
+from cafe.models import (Bartender, Cafe,Category, Customer, Gallery,
+ MenuItem, Order, Reservation, Suggestion , Event)
 from rest_framework.response import Response
-from cafe.serializers import (BartnederSerializer, CafeSerializer, CateogrySerializer, CreateOrderSerializer, CreateCafeSerializer, CustomerSerializer,UpdateCafeSerializer,
- CreateUpdateGallerySerializer, CreateUpdateMenuItemSerializer, CreateReservationSerializer, GallerySerializer, MenuItemSerializer, OrderSerializer, PatchOrderSerializer, PatchReservationSerializer
- , ReservationSerializer, SuggestionSerializer)
-from config.permissions import AllowToFastRegister
+from cafe.serializers import (BartnederSerializer, CafeSerializer, CateogrySerializer, CreateOrderSerializer, 
+CreateCafeSerializer, CustomerSerializer,UpdateCafeSerializer,CreateUpdateGallerySerializer, CreateUpdateMenuItemSerializer,
+CreateReservationSerializer, GallerySerializer, MenuItemSerializer, OrderSerializer, PatchOrderSerializer,
+ PatchReservationSerializer , ReservationSerializer, SuggestionSerializer , EventSerializer)
+ 
+from config.permissions import (AllowToFastRegister , HasCafe)
 
 class BaseMixinView(mixins.RetrieveModelMixin,
                     mixins.CreateModelMixin,
@@ -403,3 +406,16 @@ class UserClubsView(generics.ListAPIView):
     def get_queryset(self):
         return self.queryset.filter(user=self.request.user).order_by('-id')
     
+class EventModelViewSet(viewsets.ModelViewSet):
+    """Event Model ViewSet"""
+    queryset = Event.objects.all()
+    permission_classes = (HasCafe,)
+    serializer_class = EventSerializer
+    pagination_class = StandardPagination
+    authentication_classes = (authentication.TokenAuthentication,)
+
+    def get_queryset(self):
+        return Event.objects.filter(cafe=self.request.user.cafe).order_by('-created_date')
+
+    def perform_create(self, serializer):
+        return serializer.save(cafe=self.request.user.cafe)

@@ -6,7 +6,8 @@ from uuid import uuid4
 from rest_framework import serializers
 from django.contrib.auth import (get_user_model)
 from random import (randint)
-from cafe.models import Bartender, Cafe, Category, Customer, Gallery, MenuItem, Order, OrderItem, Reservation, Suggestion
+from cafe.models import (Bartender, Cafe, Category, Customer, Gallery, MenuItem, 
+Order, OrderItem, Reservation, Suggestion, Event)
 from province.serializers import CitySerializer, ProvinceSerializer
 from notifications import KavenegarSMS
 
@@ -359,3 +360,10 @@ class CustomerSerializer(serializers.ModelSerializer):
         response['cafe_code'] = instance.cafe.code
         
         return response
+
+class EventSerializer(serializers.ModelSerializer):
+    """Event Serializer"""
+    class Meta:
+        model = Event
+        fields = '__all__'
+        read_only_fields = ['id','cafe','created_date']
