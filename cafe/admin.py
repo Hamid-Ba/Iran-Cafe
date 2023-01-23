@@ -1,6 +1,6 @@
 from django.contrib import admin
 from cafe.models import (Bartender, Cafe, Category, Gallery, MenuItem,
- Order, OrderItem, Reservation, Suggestion , Customer)
+ Order, OrderItem, Reservation, Suggestion , Customer , Event)
 
 class CafeAdmin(admin.ModelAdmin):
     """Cafe Admin Model"""
@@ -150,12 +150,24 @@ class BartenderAdmin(admin.ModelAdmin):
         return obj.user.last_login
 
 class CustomerAdmin(admin.ModelAdmin):
+    """Customer admin"""
     list_display = ['firstName' , 'lastName' ,'phone','birthdate','cafe','cafe_code']
     list_display_links = ['firstName','lastName','phone','cafe_code']
     ordering = ["id"]
 
     list_filter = ['cafe__code']
-    search_fields = ['phone','cafe_code']
+    search_fields = ['phone','cafe__code']
+
+    @admin.display(ordering='cafe__code')
+    def cafe_code(self, obj):
+        return obj.cafe.code
+
+class EventAdmin(admin.ModelAdmin):
+    """Event admin"""
+    list_display = ['title','cafe','cafe_code','status','created_date']
+    list_display_links = ['title','cafe','cafe_code']
+    list_filter = ['cafe__code']
+    search_fields = ['title','cafe__code']
 
     @admin.display(ordering='cafe__code')
     def cafe_code(self, obj):
@@ -170,3 +182,4 @@ admin.site.register(Reservation, ReservationAdmin)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(Bartender,BartenderAdmin)
 admin.site.register(Customer,CustomerAdmin)
+admin.site.register(Event, EventAdmin)
