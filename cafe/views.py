@@ -419,3 +419,23 @@ class EventModelViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         return serializer.save(cafe=self.request.user.cafe)
+
+class SingleEventView(generics.RetrieveAPIView):
+    """Single Event View"""
+    serializer_class = EventSerializer
+    queryset = Event.objects.filter(status=True)
+    permission_classes = (permissions.IsAuthenticated,)
+    authentication_classes = (authentication.TokenAuthentication,)
+
+class CafesEventView(generics.ListAPIView):
+    """Cafes Event View"""
+    serializer_class = EventSerializer
+    queryset = Event.objects.filter(status=True).order_by('-created_date')
+    permission_classes = (permissions.IsAuthenticated,)
+    authentication_classes = (authentication.TokenAuthentication,)
+        
+    def get(self, request,cafe_id, *args, **kwargs):
+        events = self.queryset.filter(cafe_id = cafe_id)
+        if len(events) == 0 : return Response({"detail": "Not found."})
+        serializer = self.serializer_class(events,many=True)
+        return Response(serializer.data)

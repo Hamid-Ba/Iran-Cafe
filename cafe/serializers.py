@@ -367,3 +367,14 @@ class EventSerializer(serializers.ModelSerializer):
         model = Event
         fields = '__all__'
         read_only_fields = ['id','cafe','created_date']
+
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+
+        rep['cafe'] = {
+            'id' : instance.cafe.id,
+            'code' : instance.cafe.code ,
+            'persian_title' : instance.cafe.persian_title,
+            'english_title' : instance.cafe.english_title
+        }
+        return rep
