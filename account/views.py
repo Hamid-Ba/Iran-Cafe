@@ -60,5 +60,5 @@ class UserView(generics.RetrieveUpdateAPIView):
     serializer_class = UserSerializer
 
     def get_object(self):
-        """Reterive The Authorized User"""
+        """Retrieve The Authorized User"""
         return self.request.user

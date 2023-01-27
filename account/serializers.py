@@ -21,7 +21,7 @@ class UserSerializer(serializers.ModelSerializer):
                             'is_superuser','last_login','password', 'cafe']
 
 class AuthenticationSerializer(serializers.Serializer):
-    """Authentcation Serializer For Login And Register"""
+    """Authentication Serializer For Login And Register"""
     phone = serializers.CharField(max_length=11,required=True,error_messages={
         'blank': 'موبایل خود را وارد نمایید',
         'required': 'موبایل خود را وارد نمایید',
@@ -29,9 +29,7 @@ class AuthenticationSerializer(serializers.Serializer):
 
     def validate(self, attrs):
         phone = attrs.get('phone')
-
         if not phone.isdigit() : return super().validate(attrs)
-
         return attrs
 
     def create(self,validated_data):
@@ -41,7 +39,6 @@ class AuthenticationSerializer(serializers.Serializer):
         
         user , created= get_user_model().objects.get_or_create(phone=phone)
         user.set_password(otp)
-
         # For Test
         user.fullName = otp
         user.save()
