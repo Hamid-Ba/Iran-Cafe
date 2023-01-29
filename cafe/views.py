@@ -425,6 +425,7 @@ class CafesEventView(generics.ListAPIView):
     """Cafes Event View"""
     serializer_class = serializers.CafeEventsSerializer
     queryset = Event.objects.filter(status=True).order_by('-created_date')
+    pagination_class = StandardPagination
 
     def get(self, request,cafe_id, *args, **kwargs):
         try : cafe = Cafe.objects.filter(pk=cafe_id).first()
