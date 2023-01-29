@@ -319,3 +319,6 @@ class Event(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
 
     cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE, related_name='events')
+
+    def __str__(self) -> str:
+        return self.title
