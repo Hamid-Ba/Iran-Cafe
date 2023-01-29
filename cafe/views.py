@@ -14,10 +14,7 @@ from cafe.pagination import StandardPagination
 from cafe.models import (Bartender, Cafe,Category, Customer, Gallery,
  MenuItem, Order, Reservation, Suggestion , Event)
 from rest_framework.response import Response
-from cafe.serializers import (BartnederSerializer, CafeSerializer, CateogrySerializer, CreateOrderSerializer, 
-CreateCafeSerializer, CustomerSerializer,UpdateCafeSerializer,CreateUpdateGallerySerializer, CreateUpdateMenuItemSerializer,
-CreateReservationSerializer, GallerySerializer, MenuItemSerializer, OrderSerializer, PatchOrderSerializer,
- PatchReservationSerializer , ReservationSerializer, SuggestionSerializer , EventSerializer)
+from cafe import serializers
  
 from config.permissions import (AllowToFastRegister , HasCafe)
 
@@ -31,7 +28,7 @@ class BaseMixinView(mixins.RetrieveModelMixin,
 
 class CafeViewSet(BaseMixinView) :
     """Cafe View Set Class"""
-    serializer_class = CafeSerializer
+    serializer_class = serializers.CafeSerializer
     queryset = Cafe.objects.all()
 
     def get_queryset(self):
@@ -40,10 +37,10 @@ class CafeViewSet(BaseMixinView) :
     def get_serializer_class(self):
         """Specify The Serializer class"""
         if self.action == "create":
-            self.serializer_class = CreateCafeSerializer
+            self.serializer_class = serializers.CreateCafeSerializer
 
         if self.action == "update" or self.action == "partial_update":
-            self.serializer_class = UpdateCafeSerializer
+            self.serializer_class = serializers.UpdateCafeSerializer
 
         return self.serializer_class
 
@@ -59,7 +56,7 @@ class CafeViewSet(BaseMixinView) :
 
 class CafeFastRegisterView(generics.CreateAPIView):
     """Cafe Fast Register View"""
-    serializer_class = CreateCafeSerializer
+    serializer_class = serializers.CreateCafeSerializer
     permission_classes = (AllowToFastRegister,)
 
     def perform_create(self, serializer):
@@ -83,7 +80,7 @@ class CafeDetailView(views.APIView):
             return Response({"message" : "کافه ای با این کد یافت نشد"} , status = status.HTTP_400_BAD_REQUEST)
         
         cafe.add_view()
-        serializer = CafeSerializer(cafe)
+        serializer = serializers.CafeSerializer(cafe)
         return Response(serializer.data)
 
 class CafeIdView(views.APIView):
@@ -118,7 +115,7 @@ class CafeIdView(views.APIView):
     )
 )
 class CafesProvinceListView(generics.ListAPIView):
-    serializer_class = CafeSerializer
+    serializer_class = serializers.CafeSerializer
 
     def get(self, request, province_slug):
         cafes = Cafe.objects.get_by_province(province_slug)
@@ -145,7 +142,7 @@ class CafesProvinceListView(generics.ListAPIView):
         return Response(cafes) 
 
 class CafesCityListView(generics.ListAPIView):
-    serializer_class = CafeSerializer
+    serializer_class = serializers.CafeSerializer
         
     def get(self, request, city_slug):
         cafes = Cafe.objects.get_by_city(city_slug)
@@ -193,17 +190,16 @@ class CafesSearchView(views.APIView):
 
         return Response(cafes,status= status.HTTP_200_OK) 
 
-
 class CategoryView(generics.ListAPIView):
     """Category List View."""
-    serializer_class = CateogrySerializer
+    serializer_class = serializers.CateogrySerializer
     queryset = Category.objects.all()
 
     def get_queryset(self):
         return self.queryset.order_by('order')
 
 class MenuItemViewSet(mixins.ListModelMixin,mixins.DestroyModelMixin,BaseMixinView) :
-    serializer_class = MenuItemSerializer
+    serializer_class = serializers.MenuItemSerializer
     queryset = MenuItem.objects.all()
     pagination_class = StandardPagination
 
@@ -213,7 +209,7 @@ class MenuItemViewSet(mixins.ListModelMixin,mixins.DestroyModelMixin,BaseMixinVi
     def get_serializer_class(self):
         """Specify The Serializer class"""
         if self.action == "create" or self.action == "update" or self.action == "partial_update":
-            self.serializer_class = CreateUpdateMenuItemSerializer
+            self.serializer_class = serializers.CreateUpdateMenuItemSerializer
 
         return self.serializer_class
 
@@ -221,7 +217,7 @@ class MenuItemViewSet(mixins.ListModelMixin,mixins.DestroyModelMixin,BaseMixinVi
         return serializer.save(cafe = self.request.user.cafe)
 
 class MenuItemListView(generics.ListAPIView):
-    serializer_class = MenuItemSerializer
+    serializer_class = serializers.MenuItemSerializer
     
     def get(self,request,cafe_id):        
         menu_items = MenuItem.objects.get_active_items(cafe_id)
@@ -234,7 +230,7 @@ class GalleryViewSet(viewsets.ModelViewSet):
     """Gallery View Set"""
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
-    serializer_class = GallerySerializer
+    serializer_class = serializers.GallerySerializer
     queryset = Gallery.objects.all()
     pagination_class = StandardPagination
 
@@ -245,7 +241,7 @@ class GalleryViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         """Specify The Serializer class"""
         if self.action == "create" or self.action == "update" or self.action == "partial_update":
-            self.serializer_class = CreateUpdateGallerySerializer
+            self.serializer_class = serializers.CreateUpdateGallerySerializer
 
         return self.serializer_class
 
@@ -258,7 +254,7 @@ class SuggestionView(mixins.ListModelMixin,
     """Suggestion View"""
     authentication_classes = (authentication.TokenAuthentication ,)
     permission_classes = (permissions.IsAuthenticated ,)
-    serializer_class = SuggestionSerializer
+    serializer_class = serializers.SuggestionSerializer
     queryset = Suggestion.objects.all()
     pagination_class = StandardPagination
     
@@ -270,13 +266,13 @@ class SuggestionView(mixins.ListModelMixin,
     
 class CreateSuggestionApiView(generics.CreateAPIView):
     """Create Suggestion API view"""
-    serializer_class = SuggestionSerializer
+    serializer_class = serializers.SuggestionSerializer
 
 class ReservationViewSet(mixins.ListModelMixin,
                         mixins.DestroyModelMixin,
                         BaseMixinView):
     """Reservation View Set"""
-    serializer_class = ReservationSerializer
+    serializer_class = serializers.ReservationSerializer
     queryset = Reservation.objects.all()
     pagination_class = StandardPagination
 
@@ -294,10 +290,10 @@ class ReservationViewSet(mixins.ListModelMixin,
     def get_serializer_class(self):
         """Specify The Serializer class"""
         if self.action == "create":
-            self.serializer_class = CreateReservationSerializer
+            self.serializer_class = serializers.CreateReservationSerializer
 
         if self.action == "update" or self.action == "partial_update":
-            self.serializer_class = PatchReservationSerializer
+            self.serializer_class = serializers.PatchReservationSerializer
             
         return self.serializer_class
 
@@ -307,7 +303,7 @@ class ReservationViewSet(mixins.ListModelMixin,
 class OrderViewSet(mixins.ListModelMixin,
                     BaseMixinView):
     """Order ViewSet"""
-    serializer_class = OrderSerializer
+    serializer_class = serializers.OrderSerializer
     queryset = Order.objects.all()
     pagination_class = StandardPagination
 
@@ -332,16 +328,16 @@ class OrderViewSet(mixins.ListModelMixin,
     def get_serializer_class(self):
         """Specify The Serializer class"""
         if self.action == "create" :
-            self.serializer_class = CreateOrderSerializer
+            self.serializer_class = serializers.CreateOrderSerializer
         
         if self.action == "update" or self.action == "partial_update":
-            self.serializer_class = PatchOrderSerializer
+            self.serializer_class = serializers.PatchOrderSerializer
 
         return self.serializer_class
 
     def create(self, request, *args, **kwargs):
         """Create a New Order For Authenticated Normal User"""
-        serializer = CreateOrderSerializer(data=request.data)
+        serializer = serializers.CreateOrderSerializer(data=request.data)
         if serializer.is_valid():
             if Cafe.objects.filter(owner=self.request.user).exists():    
                     return Response(data = {
@@ -353,7 +349,7 @@ class OrderViewSet(mixins.ListModelMixin,
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
 class BartenderViewSet(viewsets.ModelViewSet):
-    serializer_class = BartnederSerializer
+    serializer_class = serializers.BartnederSerializer
     queryset = Bartender.objects.all()
     authentication_classes = (authentication.TokenAuthentication ,)
     permission_classes = (permissions.IsAuthenticated ,)
@@ -363,7 +359,7 @@ class BartenderViewSet(viewsets.ModelViewSet):
         return self.queryset.filter(cafe__owner = self.request.user).order_by('-id')
 
 class CustomerViewSet(viewsets.ModelViewSet):
-    serializer_class = CustomerSerializer
+    serializer_class = serializers.CustomerSerializer
     queryset = Customer.objects.all()
     permission_classes = (permissions.IsAuthenticated ,)
     authentication_classes = (authentication.TokenAuthentication ,)
@@ -377,7 +373,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
         return Customer.objects.filter(user=self.request.user).order_by('-id')
 
     def create(self, request, *args, **kwargs):
-        serializer = CustomerSerializer(data=request.data,context={'request' : request})
+        serializer = serializers.CustomerSerializer(data=request.data,context={'request' : request})
 
         if serializer.is_valid():
                 if Cafe.objects.filter(owner=self.request.user).exists():    
@@ -398,7 +394,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
 class UserClubsView(generics.ListAPIView):
     """User Clubs View"""
     queryset = Customer.objects.all()
-    serializer_class = CustomerSerializer
+    serializer_class = serializers.CustomerSerializer
     pagination_class = StandardPagination
     permission_classes = (permissions.IsAuthenticated ,)
     authentication_classes = (authentication.TokenAuthentication ,)
@@ -410,7 +406,7 @@ class EventModelViewSet(viewsets.ModelViewSet):
     """Event Model ViewSet"""
     queryset = Event.objects.all()
     permission_classes = (HasCafe,)
-    serializer_class = EventSerializer
+    serializer_class = serializers.EventSerializer
     pagination_class = StandardPagination
     authentication_classes = (authentication.TokenAuthentication,)
 
@@ -422,16 +418,25 @@ class EventModelViewSet(viewsets.ModelViewSet):
 
 class SingleEventView(generics.RetrieveAPIView):
     """Single Event View"""
-    serializer_class = EventSerializer
+    serializer_class = serializers.EventSerializer
     queryset = Event.objects.filter(status=True)
 
 class CafesEventView(generics.ListAPIView):
     """Cafes Event View"""
-    serializer_class = EventSerializer
+    serializer_class = serializers.CafeEventsSerializer
     queryset = Event.objects.filter(status=True).order_by('-created_date')
-        
+
     def get(self, request,cafe_id, *args, **kwargs):
-        events = self.queryset.filter(cafe_id = cafe_id)
-        if len(events) == 0 : return Response({"detail": "Not found."})
-        serializer = self.serializer_class(events,many=True)
-        return Response(serializer.data)
+        try : cafe = Cafe.objects.filter(pk=cafe_id).first()
+        except Cafe.DoesNotExist: return Response({"detail": "Not found."})
+
+        if len(cafe.events.filter(status=True)) == 0 : return Response({"detail": "Not found."})
+        serializer = self.serializer_class(instance=cafe)
+        
+        paginator = StandardPagination()
+        res=paginator.paginate_queryset(serializer.data['events'], request)
+        res = {
+            'cafe' : serializer.data['cafe'],
+            'events': res
+        }
+        return Response(res)

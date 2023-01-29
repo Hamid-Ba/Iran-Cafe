@@ -378,3 +378,26 @@ class EventSerializer(serializers.ModelSerializer):
             'english_title' : instance.cafe.english_title
         }
         return rep
+
+class CafeEventsSerializer(serializers.ModelSerializer):
+    """Cafe Events Serializer"""
+    events = EventSerializer(many=True)
+
+    class Meta:
+        model = Cafe
+        fields = ['id','persian_title','english_title','code','events']
+
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep.clear()
+
+        rep['cafe'] = {
+            'id' : instance.id,
+            'code' : instance.code ,
+            'persian_title' : instance.persian_title,
+            'english_title' : instance.english_title
+        }
+
+        rep['events'] = instance.events.filter(status=True).order_by('-created_date').values()
+
+        return rep
