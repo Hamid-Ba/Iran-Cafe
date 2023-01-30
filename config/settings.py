@@ -63,7 +63,8 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     'comment',
     'blog',
-    'taggit'
+    'taggit',
+    'payment'
 ]
 
 MIDDLEWARE = [

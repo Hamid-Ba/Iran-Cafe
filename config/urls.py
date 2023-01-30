@@ -50,6 +50,7 @@ urlpatterns = [
     path('api/comment/',include('comment.urls')),
     path('api/siteinfo/',include('siteinfo.urls')),
     path('api/plan/',include('plan.urls')),
+    path('api/payment/',include('payment.urls')),
     path('api/queries/',include('queries.urls'))
 ]
 
