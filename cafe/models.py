@@ -316,6 +316,8 @@ class Event(models.Model):
     title = models.CharField(max_length=125)
     content = models.CharField(max_length=500)
     status = models.BooleanField(default=False)
+    date = models.DateField(blank=True, null=True)
+    time = models.TimeField(blank=True, null=True)
     created_date = models.DateTimeField(auto_now_add=True)
 
     cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE, related_name='events')

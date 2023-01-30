@@ -429,9 +429,9 @@ class CafesEventView(generics.ListAPIView):
 
     def get(self, request,cafe_id, *args, **kwargs):
         try : cafe = Cafe.objects.filter(pk=cafe_id).first()
-        except Cafe.DoesNotExist: return Response({"detail": "Not found."})
+        except Cafe.DoesNotExist: return Response({})
 
-        if len(cafe.events.filter(status=True)) == 0 : return Response({"detail": "Not found."})
+        if len(cafe.events.filter(status=True)) == 0 : return Response({})
         serializer = self.serializer_class(instance=cafe)
         
         paginator = StandardPagination()
