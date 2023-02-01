@@ -17,7 +17,8 @@ class Payment(models.Model):
 
     pay_amount = MoneyField(max_digits=10,decimal_places=0,default_currency='IRR',null=False)
     desc = models.CharField(max_length=125,null=True,blank=True)
-    ref_id = models.CharField(max_length=225)
+    ref_id = models.CharField(max_length=50 , null=True , blank=True)
+    authority = models.CharField(max_length=50, null=True, blank=True)
     is_payed = models.BooleanField(default=False)
     payed_date = models.DateTimeField(null=True,blank=True)
     created_date = models.DateTimeField(auto_now_add=True)

@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'province',
     'siteinfo',
     'cafe.apps.CafeConfig',
+    'payment',
     'corsheaders',
     'djmoney',
     'plan',
@@ -63,8 +64,7 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     'comment',
     'blog',
-    'taggit',
-    'payment'
+    'taggit'
 ]
 
 MIDDLEWARE = [
@@ -185,12 +185,5 @@ SPECTACULAR_SETTINGS = {
 }
 
 # Zarinpal setting
-ZARINPAL_REQUEST = "https://zarinpal.com/pg/services/WebGate/wsdl"
-ZARINPAL_STARTPAY = "https://zarinpal.com/pg/StartPay/"
-ZARINPAL_VERIFY = "https://api.zarinpal.com/pg/v4/payment/verify.json"
-SELLER_PATH_VERIFY = "https://api.cafesiran.ir/api/payment/verify/"
-
-
-ZARINPAL_CALLBACK_URL =  "https://api.cafesiran.ir/api/payment/verify/"
-ZARINPAL_SIMULATION = True # is transactions for test?
-ZARINPAL_MERCHANT_ID = 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX'
+MERCHANT_ID = 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX'
+VERIFY_URL = 'http://127.0.0.1:8000/verify'
