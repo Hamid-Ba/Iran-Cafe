@@ -56,7 +56,7 @@ INSTALLED_APPS = [
     'province',
     'siteinfo',
     'cafe.apps.CafeConfig',
-    'payment',
+    'payment.apps.PaymentConfig',
     'corsheaders',
     'djmoney',
     'plan',
@@ -186,4 +186,4 @@ SPECTACULAR_SETTINGS = {
 
 # Zarinpal setting
 MERCHANT_ID = 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX'
-VERIFY_URL = 'http://127.0.0.1:8000/verify'
+VERIFY_URL = 'http://127.0.0.1:8000/api/payment/verify_order/'

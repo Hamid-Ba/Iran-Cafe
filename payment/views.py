@@ -3,6 +3,7 @@ from rest_framework.response import (Response)
 from rest_framework import status , authentication
 from rest_framework.views import APIView
 from django.conf import settings
+import datetime
 
 from payment.models import Payment
 from plan.models import Plan
@@ -13,7 +14,7 @@ zarin_pal = Zarinpal(settings.MERCHANT_ID,
                     settings.VERIFY_URL,
                     sandbox = True)
 
-class MakePaymentView(APIView):
+class PlaceOrderView(APIView):
     """Making Payment View."""
     permission_classes = (HasCafe,)
     authentication_classes = (authentication.TokenAuthentication,)
@@ -33,9 +34,53 @@ class MakePaymentView(APIView):
             payment.save()
             
             # redirect user to zarinpal payment gate to paid
-            return Response({'detail' : redirect_url} , status=status.HTTP_200_OK)
+            return Response({'detail' : redirect_url} , status=status.HTTP_201_CREATED)
             # return redirect(redirect_url)
 
         # if got error from zarinpal 
         except ZarinpalError as e:  
+            return Response(e)
+
+class VerifyOrderView(APIView):
+    """Verify Order View"""
+    permission_classes = (HasCafe,)
+    authentication_classes = (authentication.TokenAuthentication,)
+
+    def get(self, request, *args, **kwargs):
+        try :
+            res_data = request.query_params
+            authority = int(res_data['Authority'])
+        except ZarinpalError as e:
+            return Response(e)
+            
+        payment = get_object_or_404(Payment,authority=authority)
+        
+        if res_data['Status'] != 'OK':
+            payment.status = 3
+            payment.save()
+            return Response({'detail' : 'سفارش شما لغو شد'},status=status.HTTP_200_OK)
+        try:        
+            code, message, ref_id = zarin_pal.payment_verification(int(payment.pay_amount.amount), authority)
+
+            # everything is ok 
+            if code == 100:
+                payment.ref_id = ref_id
+                payment.is_payed = True
+                payment.payed_date = datetime.datetime.now()
+                payment.status = 2
+                payment.save()
+                content = {
+                    'type' : 'Success',
+                    'ref_id' : ref_id
+                    }
+                return Response(content,status=status.HTTP_200_OK)
+            # operation was successful but PaymentVerification operation on this transaction have already been done
+            elif code == 101:
+                content = {
+                    'type' : 'Warning'
+                    }
+                return Response({'detail' : 'سفارش شما قبلا به ثبت رسیده است'},status=status.HTTP_406_NOT_ACCEPTABLE)
+
+        # if got an error from zarinpal
+        except ZarinpalError as e:
             return Response(e)

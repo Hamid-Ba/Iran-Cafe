@@ -6,5 +6,6 @@ from django.urls import (
 from . import views
 
 urlpatterns = [
-    path('place_order/<int:plan_id>/',views.MakePaymentView.as_view(),name='place_order'),
+    path('place_order/<int:plan_id>/',views.PlaceOrderView.as_view(),name='place_order'),
+    path('verify_order/',views.VerifyOrderView.as_view(),name='verify_order'),
 ]
