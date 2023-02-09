@@ -5,31 +5,51 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Province',
+            name="Province",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50)),
-                ('slug', models.SlugField(max_length=125)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50)),
+                ("slug", models.SlugField(max_length=125)),
             ],
         ),
         migrations.CreateModel(
-            name='City',
+            name="City",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=85)),
-                ('slug', models.SlugField(max_length=225)),
-                ('province', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='province.province')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=85)),
+                ("slug", models.SlugField(max_length=225)),
+                (
+                    "province",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="province.province",
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'Cities',
+                "verbose_name_plural": "Cities",
             },
         ),
     ]

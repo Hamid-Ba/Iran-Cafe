@@ -6,7 +6,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -15,16 +14,38 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Comment',
+            name="Comment",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date', models.DateField(auto_now_add=True)),
-                ('is_cafe', models.BooleanField(default=False)),
-                ('text', models.CharField(max_length=500)),
-                ('cafe_id', models.PositiveBigIntegerField()),
-                ('item_id', models.PositiveBigIntegerField()),
-                ('response', models.OneToOneField(null=True, on_delete=django.db.models.deletion.CASCADE, to='comment.comment')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='user', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("date", models.DateField(auto_now_add=True)),
+                ("is_cafe", models.BooleanField(default=False)),
+                ("text", models.CharField(max_length=500)),
+                ("cafe_id", models.PositiveBigIntegerField()),
+                ("item_id", models.PositiveBigIntegerField()),
+                (
+                    "response",
+                    models.OneToOneField(
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="comment.comment",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="user",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

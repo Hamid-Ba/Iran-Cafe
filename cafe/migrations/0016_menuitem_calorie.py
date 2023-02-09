@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('cafe', '0015_category_order'),
+        ("cafe", "0015_category_order"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='menuitem',
-            name='calorie',
+            model_name="menuitem",
+            name="calorie",
             field=models.FloatField(blank=True, null=True),
         ),
     ]

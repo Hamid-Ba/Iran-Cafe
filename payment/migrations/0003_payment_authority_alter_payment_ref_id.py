@@ -4,20 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('payment', '0002_remove_payment_test'),
+        ("payment", "0002_remove_payment_test"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='payment',
-            name='authority',
+            model_name="payment",
+            name="authority",
             field=models.CharField(blank=True, max_length=50, null=True),
         ),
         migrations.AlterField(
-            model_name='payment',
-            name='ref_id',
+            model_name="payment",
+            name="ref_id",
             field=models.CharField(blank=True, max_length=50, null=True),
         ),
     ]

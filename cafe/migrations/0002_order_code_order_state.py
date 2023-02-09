@@ -4,20 +4,23 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('cafe', '0001_initial'),
+        ("cafe", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='order',
-            name='code',
+            model_name="order",
+            name="code",
             field=models.CharField(max_length=5, null=True),
         ),
         migrations.AddField(
-            model_name='order',
-            name='state',
-            field=models.CharField(choices=[('P', 'Pending'), ('D', 'Delivered'), ('C', 'Cancelled')], default='P', max_length=1),
+            model_name="order",
+            name="state",
+            field=models.CharField(
+                choices=[("P", "Pending"), ("D", "Delivered"), ("C", "Cancelled")],
+                default="P",
+                max_length=1,
+            ),
         ),
     ]

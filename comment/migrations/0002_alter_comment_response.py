@@ -5,15 +5,18 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('comment', '0001_initial'),
+        ("comment", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='comment',
-            name='response',
-            field=models.OneToOneField(null=True, on_delete=django.db.models.deletion.SET_NULL, to='comment.comment'),
+            model_name="comment",
+            name="response",
+            field=models.OneToOneField(
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="comment.comment",
+            ),
         ),
     ]

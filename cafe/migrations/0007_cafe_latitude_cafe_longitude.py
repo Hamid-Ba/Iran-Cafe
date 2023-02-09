@@ -4,20 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('cafe', '0006_cafe_charge_expired_date'),
+        ("cafe", "0006_cafe_charge_expired_date"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='cafe',
-            name='latitude',
+            model_name="cafe",
+            name="latitude",
             field=models.CharField(blank=True, max_length=125, null=True),
         ),
         migrations.AddField(
-            model_name='cafe',
-            name='longitude',
+            model_name="cafe",
+            name="longitude",
             field=models.CharField(blank=True, max_length=125, null=True),
         ),
     ]

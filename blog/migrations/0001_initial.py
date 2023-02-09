@@ -9,30 +9,55 @@ import taggit.managers
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('taggit', '0005_auto_20220424_2025'),
+        ("taggit", "0005_auto_20220424_2025"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Blog',
+            name="Blog",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('cafe_id', models.PositiveBigIntegerField(blank=True, null=True)),
-                ('title', models.CharField(max_length=85)),
-                ('slug', models.SlugField(max_length=170)),
-                ('desc', models.TextField()),
-                ('image', models.ImageField(upload_to=blog.models.blog_image_file_path)),
-                ('image_alt', models.CharField(max_length=72)),
-                ('image_title', models.CharField(max_length=125)),
-                ('publish_date', models.DateField(default=django.utils.timezone.now)),
-                ('is_cafe', models.BooleanField()),
-                ('tags', taggit.managers.TaggableManager(help_text='A comma-separated list of tags.', through='taggit.TaggedItem', to='taggit.Tag', verbose_name='Tags')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='blog', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("cafe_id", models.PositiveBigIntegerField(blank=True, null=True)),
+                ("title", models.CharField(max_length=85)),
+                ("slug", models.SlugField(max_length=170)),
+                ("desc", models.TextField()),
+                (
+                    "image",
+                    models.ImageField(upload_to=blog.models.blog_image_file_path),
+                ),
+                ("image_alt", models.CharField(max_length=72)),
+                ("image_title", models.CharField(max_length=125)),
+                ("publish_date", models.DateField(default=django.utils.timezone.now)),
+                ("is_cafe", models.BooleanField()),
+                (
+                    "tags",
+                    taggit.managers.TaggableManager(
+                        help_text="A comma-separated list of tags.",
+                        through="taggit.TaggedItem",
+                        to="taggit.Tag",
+                        verbose_name="Tags",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="blog",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

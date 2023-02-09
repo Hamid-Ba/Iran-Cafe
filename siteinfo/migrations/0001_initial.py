@@ -5,37 +5,56 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='AboutUs',
+            name="AboutUs",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('text', models.TextField(blank=True, null=True)),
-                ('phones', models.CharField(blank=True, max_length=60, null=True)),
-                ('emails', models.CharField(blank=True, max_length=175, null=True)),
-                ('address', models.TextField(blank=True, null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("text", models.TextField(blank=True, null=True)),
+                ("phones", models.CharField(blank=True, max_length=60, null=True)),
+                ("emails", models.CharField(blank=True, max_length=175, null=True)),
+                ("address", models.TextField(blank=True, null=True)),
             ],
             options={
-                'verbose_name_plural': 'About Us',
+                "verbose_name_plural": "About Us",
             },
         ),
         migrations.CreateModel(
-            name='ContactUs',
+            name="ContactUs",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('full_name', models.CharField(max_length=125)),
-                ('phone', models.CharField(max_length=11, validators=[account.vaidators.PhoneValidator()])),
-                ('message', models.TextField()),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("full_name", models.CharField(max_length=125)),
+                (
+                    "phone",
+                    models.CharField(
+                        max_length=11, validators=[account.vaidators.PhoneValidator()]
+                    ),
+                ),
+                ("message", models.TextField()),
             ],
             options={
-                'verbose_name': 'contactus',
-                'verbose_name_plural': 'Contact Us',
+                "verbose_name": "contactus",
+                "verbose_name_plural": "Contact Us",
             },
         ),
     ]

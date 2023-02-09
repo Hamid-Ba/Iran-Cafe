@@ -5,15 +5,16 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('cafe', '0011_customer'),
+        ("cafe", "0011_customer"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='reservation',
-            name='phone',
-            field=models.CharField(max_length=11, validators=[cafe.validators.PhoneValidator]),
+            model_name="reservation",
+            name="phone",
+            field=models.CharField(
+                max_length=11, validators=[cafe.validators.PhoneValidator]
+            ),
         ),
     ]

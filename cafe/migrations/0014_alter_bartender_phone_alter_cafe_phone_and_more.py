@@ -5,35 +5,50 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('cafe', '0013_menuitem_order_count'),
+        ("cafe", "0013_menuitem_order_count"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='bartender',
-            name='phone',
-            field=models.CharField(max_length=11, unique=True, validators=[cafe.validators.PhoneValidator()]),
+            model_name="bartender",
+            name="phone",
+            field=models.CharField(
+                max_length=11,
+                unique=True,
+                validators=[cafe.validators.PhoneValidator()],
+            ),
         ),
         migrations.AlterField(
-            model_name='cafe',
-            name='phone',
-            field=models.CharField(max_length=11, unique=True, validators=[cafe.validators.PhoneValidator()]),
+            model_name="cafe",
+            name="phone",
+            field=models.CharField(
+                max_length=11,
+                unique=True,
+                validators=[cafe.validators.PhoneValidator()],
+            ),
         ),
         migrations.AlterField(
-            model_name='customer',
-            name='phone',
-            field=models.CharField(max_length=11, validators=[cafe.validators.PhoneValidator()]),
+            model_name="customer",
+            name="phone",
+            field=models.CharField(
+                max_length=11, validators=[cafe.validators.PhoneValidator()]
+            ),
         ),
         migrations.AlterField(
-            model_name='order',
-            name='phone',
-            field=models.CharField(default='09151498722', max_length=11, validators=[cafe.validators.PhoneValidator()]),
+            model_name="order",
+            name="phone",
+            field=models.CharField(
+                default="09151498722",
+                max_length=11,
+                validators=[cafe.validators.PhoneValidator()],
+            ),
         ),
         migrations.AlterField(
-            model_name='reservation',
-            name='phone',
-            field=models.CharField(max_length=11, validators=[cafe.validators.PhoneValidator()]),
+            model_name="reservation",
+            name="phone",
+            field=models.CharField(
+                max_length=11, validators=[cafe.validators.PhoneValidator()]
+            ),
         ),
     ]

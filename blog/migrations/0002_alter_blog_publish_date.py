@@ -5,15 +5,14 @@ import django.utils.timezone
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('blog', '0001_initial'),
+        ("blog", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='blog',
-            name='publish_date',
+            model_name="blog",
+            name="publish_date",
             field=models.DateTimeField(default=django.utils.timezone.now),
         ),
     ]

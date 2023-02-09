@@ -4,20 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('cafe', '0019_rename_create_date_event_created_date'),
+        ("cafe", "0019_rename_create_date_event_created_date"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='event',
-            name='date',
+            model_name="event",
+            name="date",
             field=models.DateField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='event',
-            name='time',
+            model_name="event",
+            name="time",
             field=models.TimeField(blank=True, null=True),
         ),
     ]

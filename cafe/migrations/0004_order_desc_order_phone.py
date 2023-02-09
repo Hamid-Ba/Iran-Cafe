@@ -5,20 +5,23 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('cafe', '0003_remove_cafe_postal_code'),
+        ("cafe", "0003_remove_cafe_postal_code"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='order',
-            name='desc',
+            model_name="order",
+            name="desc",
             field=models.CharField(blank=True, max_length=500, null=True),
         ),
         migrations.AddField(
-            model_name='order',
-            name='phone',
-            field=models.CharField(default='09151498722', max_length=11, validators=[cafe.validators.PhoneValidator]),
+            model_name="order",
+            name="phone",
+            field=models.CharField(
+                default="09151498722",
+                max_length=11,
+                validators=[cafe.validators.PhoneValidator],
+            ),
         ),
     ]

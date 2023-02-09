@@ -1,9 +1,16 @@
-Django
-djangorestframework
-drf-spectacular
-pillow
-psycopg2
-django-cors-headers
-django-money
-django_jalali
-kavenegar
+Django==4.1
+djangorestframework==3.13.1
+drf-spectacular==0.23.1
+pillow==9.2.0
+psycopg2==2.9.3
+django-cors-headers==3.13.0
+django-ckeditor == 6.5.1
+django-money==3.0.0
+django_jalali==6.0.0
+kavenegar==1.1.2
+zeep==3.4.0
+django-taggit==3.1.0
+
+# Clean Coding
+flake8
+black
