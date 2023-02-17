@@ -117,6 +117,10 @@ class PrivateTest(TestCase):
             gallery = Gallery.objects.filter(cafe_id=self.cafe.id).first()
             self.assertEqual(gallery.cafe, self.cafe)
 
+            try:
+                os.remove(gallery.image.path)
+            except : pass
+
     def test_delete_gallery_should_work_properly(self):
         """Test Delete Gallery Should Work Properly"""
         gallery = create_gallery(self.cafe)
