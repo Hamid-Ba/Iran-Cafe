@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sites",
+    "django_celery_beat",
     "django_jalali",
     "rest_framework",
     "rest_framework.authtoken",
@@ -182,3 +183,9 @@ SPECTACULAR_SETTINGS = {
 # Zarinpal setting
 MERCHANT_ID = "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
 VERIFY_URL = "http://127.0.0.1:8000/api/payment/verify_order/"
+
+
+REDIS_HOST = "localhost"
+REDIS_PORT = 6379
+
+CELERY_BROKER_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
