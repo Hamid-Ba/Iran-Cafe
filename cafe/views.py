@@ -108,7 +108,7 @@ class CafeDetailView(views.APIView):
     """Cafe Detail API View"""
 
     def get(self, request, cafe_id):
-        cafe = Cafe.objects.filter(id=cafe_id).first()
+        cafe = Cafe.objects.get_valid_cafe_by_id(cafe_id=cafe_id)
         if not cafe:
             return Response(
                 {"message": "کافه ای با این کد یافت نشد"},
@@ -124,7 +124,7 @@ class CafeIdView(views.APIView):
     """Cafe Id API View"""
 
     def get(self, request, cafe_code):
-        cafe = Cafe.objects.filter(code=cafe_code).first()
+        cafe = Cafe.objects.get_valid_cafe_by_code(cafe_code=cafe_code)
 
         if cafe:
             return Response({"id": cafe.id}, status=status.HTTP_200_OK)

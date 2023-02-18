@@ -19,13 +19,15 @@ class CafeManager(models.Manager):
     def get_confirmed_cafes(self):
         """Returns a list of cafes that have been confirmed"""
         return self.filter(state="C").values()
-    
+
     def get_charged_and_confirmed_cafes(self):
         """Returns a list of cafes that have been charged and confirmed"""
         confirmed = self.get_confirmed_cafes()
-        confirmed_and_charged = confirmed.filter(charge_expired_date__gte=datetime.now()).values()
+        confirmed_and_charged = confirmed.filter(
+            charge_expired_date__gte=datetime.now()
+        ).values()
         return confirmed_and_charged
-    
+
     def get_by_province(self, province):
         """Get By Province"""
         return (
@@ -59,6 +61,18 @@ class CafeManager(models.Manager):
                 kavenegar.send()
 
         return cafe
+
+    def get_valid_cafe_by_id(self, cafe_id: int):
+        """Return Cafe If Confirmed and Charged"""
+        return self.filter(
+            id=cafe_id, state="C", charge_expired_date__gte=datetime.now()
+        ).first()
+
+    def get_valid_cafe_by_code(self, cafe_code: str):
+        """Return Cafe If Confirmed and Charged"""
+        return self.filter(
+            code=cafe_code, state="C", charge_expired_date__gte=datetime.now()
+        ).first()
 
 
 class Cafe(models.Model):

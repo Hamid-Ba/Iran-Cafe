@@ -119,7 +119,8 @@ class PrivateTest(TestCase):
 
             try:
                 os.remove(gallery.image.path)
-            except : pass
+            except:
+                pass
 
     def test_delete_gallery_should_work_properly(self):
         """Test Delete Gallery Should Work Properly"""

@@ -127,14 +127,16 @@ class PublicTest(TestCase):
         owner_2 = create_user("09151498721")
         create_cafe(self.province, self.city, self.owner, **payload)
         create_cafe(self.province, self.city, owner_2)
-        
+
         owner_3 = create_user("09151498723")
-        not_charged_cafe = create_cafe(self.province, self.city, owner_3,**{"state":"C"})
+        not_charged_cafe = create_cafe(
+            self.province, self.city, owner_3, **{"state": "C"}
+        )
         not_charged_cafe.charge_expired_date = datetime.now() - timedelta(days=5)
         not_charged_cafe.save()
 
         owner_4 = create_user("09151498724")
-        charged_cafe = create_cafe(self.province, self.city, owner_4,**{"state":"C"})
+        charged_cafe = create_cafe(self.province, self.city, owner_4, **{"state": "C"})
         charged_cafe.charge_expired_date = datetime.now() + timedelta(days=5)
         charged_cafe.save()
 
@@ -266,8 +268,11 @@ class PublicTest(TestCase):
         }
 
         owner_2 = create_user("09151498721")
-        cafe = create_cafe(self.province, self.city, self.owner, **payload)
         cafe2 = create_cafe(self.province, self.city, owner_2)
+
+        cafe = create_cafe(self.province, self.city, self.owner, **payload)
+        cafe.charge_expired_date = datetime.now() + timedelta(days=5)
+        cafe.save()
 
         url = get_cafe_url_by_code(cafe.code)
         res = self.client.get(url)
@@ -276,9 +281,32 @@ class PublicTest(TestCase):
         self.assertEqual(cafe.id, res.data["id"])
         self.assertNotEqual(cafe2.id, res.data["id"])
 
+    def test_return_cafe_id_by_code_if_cafe_not_charged(self):
+        """Test Return Cafe Id By Unique Code If Charged"""
+        payload = {
+            "persian_title": "تست",
+            "code": "12345",
+            "english_title": "Test",
+            "phone": "09151498722",
+            "street": "west coast street",
+            "desc": "test description",
+            "type": "C",
+            "state": "C",
+        }
+
+        cafe = create_cafe(self.province, self.city, self.owner, **payload)
+        cafe.charge_expired_date = datetime.now() - timedelta(days=5)
+        cafe.save()
+
+        url = get_cafe_url_by_code(cafe.code)
+        res = self.client.get(url)
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
     def test_add_cafe_view_count(self):
         """Test Add View Count"""
-        cafe = create_cafe(self.province, self.city, self.owner)
+        cafe = create_cafe(self.province, self.city, self.owner, **{"state": "C"})
+        cafe.charge_expired_date = datetime.now() + timedelta(days=5)
+        cafe.save()
 
         url = get_cafe_url_by_id(cafe.id)
         res = self.client.get(url)
