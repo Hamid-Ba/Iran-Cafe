@@ -4,11 +4,12 @@ Test Cafe Endpoints
 from django.test import TestCase
 from rest_framework.test import APIClient
 from django.urls import reverse
+from datetime import datetime, timedelta
 from rest_framework import status
 from django.contrib.auth import get_user_model
+
 from cafe.models import Bartender, Cafe
 from cafe.serializers import CafeSerializer
-
 from province.models import City, Province
 
 CAFE_URL = reverse("cafe:cafe-list")
@@ -111,7 +112,7 @@ class PublicTest(TestCase):
         res = self.client.get(url)
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
 
-    def test_get_cafes_list_if_cafe_confirmed(self):
+    def test_get_cafes_list_if_cafe_confirmed__and_charged(self):
         """Test If Cafe Is Confirmed Then Show It"""
         payload = {
             "persian_title": "تست",
@@ -126,13 +127,23 @@ class PublicTest(TestCase):
         owner_2 = create_user("09151498721")
         create_cafe(self.province, self.city, self.owner, **payload)
         create_cafe(self.province, self.city, owner_2)
+        
+        owner_3 = create_user("09151498723")
+        not_charged_cafe = create_cafe(self.province, self.city, owner_3,**{"state":"C"})
+        not_charged_cafe.charge_expired_date = datetime.now() - timedelta(days=5)
+        not_charged_cafe.save()
+
+        owner_4 = create_user("09151498724")
+        charged_cafe = create_cafe(self.province, self.city, owner_4,**{"state":"C"})
+        charged_cafe.charge_expired_date = datetime.now() + timedelta(days=5)
+        charged_cafe.save()
 
         url = get_cafe_province_url(self.province.slug)
         res = self.client.get(url)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
 
         cafes = Cafe.objects.get_by_province(self.province.slug)
-        self.assertEqual(len(cafes), 1)
+        self.assertEqual(len(cafes), 2)
         self.assertTrue(cafes.exists())
 
     def test_filter_by_city_name_type(self):

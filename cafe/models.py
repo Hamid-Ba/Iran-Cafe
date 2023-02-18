@@ -19,11 +19,17 @@ class CafeManager(models.Manager):
     def get_confirmed_cafes(self):
         """Returns a list of cafes that have been confirmed"""
         return self.filter(state="C").values()
-
+    
+    def get_charged_and_confirmed_cafes(self):
+        """Returns a list of cafes that have been charged and confirmed"""
+        confirmed = self.get_confirmed_cafes()
+        confirmed_and_charged = confirmed.filter(charge_expired_date__gte=datetime.now()).values()
+        return confirmed_and_charged
+    
     def get_by_province(self, province):
         """Get By Province"""
         return (
-            self.get_confirmed_cafes()
+            self.get_charged_and_confirmed_cafes()
             .filter(province__slug=province)
             .order_by("-view_count")
             .values()
@@ -32,7 +38,7 @@ class CafeManager(models.Manager):
     def get_by_city(self, city):
         """Get By City"""
         return (
-            self.get_confirmed_cafes()
+            self.get_charged_and_confirmed_cafes()
             .filter(city__slug=city)
             .order_by("-view_count")
             .values()
