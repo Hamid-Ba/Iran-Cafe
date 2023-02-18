@@ -284,7 +284,14 @@ class CustomerAdmin(admin.ModelAdmin):
 class EventAdmin(admin.ModelAdmin):
     """Event admin"""
 
-    list_display = ["title", "cafe", "cafe_code", "status", "created_date"]
+    list_display = [
+        "title",
+        "cafe",
+        "cafe_code",
+        "status",
+        "is_expired",
+        "created_date",
+    ]
     list_display_links = ["title", "cafe", "cafe_code"]
     list_filter = ["cafe__code"]
     search_fields = ["title", "cafe__code"]

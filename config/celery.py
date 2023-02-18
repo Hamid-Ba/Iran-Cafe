@@ -1,6 +1,6 @@
 import os
 
-from celery import Celery
+from celery import Celery, platforms
 
 # Set the default Django settings module for the 'celery' program.
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
@@ -11,7 +11,10 @@ app = Celery("config")
 # the configuration object to child processes.
 # - namespace='CELERY' means all celery-related configuration keys
 #   should have a `CELERY_` prefix.
-app.config_from_object("config.settings", namespace="CELERY")
+app.config_from_object("django.conf:settings", namespace="CELERY")
+
+# to run as root because the pickle
+platforms.C_FORCE_ROOT = True
 
 # Load task modules from all registered Django apps.
 app.autodiscover_tasks()

@@ -489,7 +489,7 @@ class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = "__all__"
-        read_only_fields = ["id", "cafe", "created_date"]
+        read_only_fields = ["id", "cafe", "created_date", "is_expired"]
 
     def to_representation(self, instance):
         rep = super().to_representation(instance)
@@ -524,7 +524,9 @@ class CafeEventsSerializer(serializers.ModelSerializer):
         }
 
         rep["events"] = (
-            instance.events.filter(status=True).order_by("-created_date").values()
+            instance.events.filter(status=True, is_expired=False)
+            .order_by("-created_date")
+            .values()
         )
 
         return rep

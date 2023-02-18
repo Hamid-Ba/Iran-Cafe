@@ -438,6 +438,7 @@ class Event(models.Model):
     date = models.DateField(blank=True, null=True)
     time = models.TimeField(blank=True, null=True)
     created_date = models.DateTimeField(auto_now_add=True)
+    is_expired = models.BooleanField(default=False)
 
     cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE, related_name="events")
 

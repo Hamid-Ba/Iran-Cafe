@@ -507,7 +507,7 @@ class UserClubsView(generics.ListAPIView):
 class EventModelViewSet(viewsets.ModelViewSet):
     """Event Model ViewSet"""
 
-    queryset = Event.objects.all()
+    queryset = Event.objects.filter(is_expired=False)
     permission_classes = (HasCafe,)
     serializer_class = serializers.EventSerializer
     pagination_class = StandardPagination
@@ -526,14 +526,16 @@ class SingleEventView(generics.RetrieveAPIView):
     """Single Event View"""
 
     serializer_class = serializers.EventSerializer
-    queryset = Event.objects.filter(status=True)
+    queryset = Event.objects.filter(status=True, is_expired=False)
 
 
 class CafesEventView(generics.ListAPIView):
     """Cafes Event View"""
 
     serializer_class = serializers.CafeEventsSerializer
-    queryset = Event.objects.filter(status=True).order_by("-created_date")
+    queryset = Event.objects.filter(status=True, is_expired=False).order_by(
+        "-created_date"
+    )
     pagination_class = StandardPagination
 
     def get(self, request, cafe_id, *args, **kwargs):
@@ -543,7 +545,7 @@ class CafesEventView(generics.ListAPIView):
             return Response({})
 
         try:
-            if len(cafe.events.filter(status=True)) == 0:
+            if len(cafe.events.filter(status=True, is_expired=False)) == 0:
                 return Response({})
         except:
             return Response({})
