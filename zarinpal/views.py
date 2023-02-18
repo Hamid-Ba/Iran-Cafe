@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from django.conf import settings
 import datetime
 
-from payment.models import Payment
+from zarinpal.models import Payment
 from plan.models import Plan
 from config.permissions import HasCafe
 from .zp import Zarinpal, ZarinpalError
