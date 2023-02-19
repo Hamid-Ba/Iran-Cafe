@@ -1,8 +1,9 @@
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
-from rest_framework import status, authentication
+from rest_framework import status, authentication , permissions
 from rest_framework.views import APIView
 from django.conf import settings
+from django.shortcuts import redirect
 import datetime
 
 from zarinpal.models import Payment
@@ -11,7 +12,7 @@ from config.permissions import HasCafe
 from .zp import Zarinpal, ZarinpalError
 
 zarin_pal = Zarinpal(settings.MERCHANT_ID, settings.VERIFY_URL, sandbox=True)
-
+FRONT_VERIFY = settings.FRONT_VERIFY
 
 class PlaceOrderView(APIView):
     """Making Payment View."""
@@ -57,22 +58,22 @@ class PlaceOrderView(APIView):
 class VerifyOrderView(APIView):
     """Verify Order View"""
 
-    permission_classes = (HasCafe,)
-    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.AllowAny,)
 
     def get(self, request, *args, **kwargs):
         try:
             res_data = request.query_params
             authority = int(res_data["Authority"])
         except ZarinpalError as e:
-            return Response(e)
+            return redirect(FRONT_VERIFY +'?status=NOK')
 
         payment = get_object_or_404(Payment, authority=authority)
 
         if res_data["Status"] != "OK":
             payment.status = 3
             payment.save()
-            return Response({"detail": "سفارش شما لغو شد"}, status=status.HTTP_200_OK)
+            # return Response({"detail": "سفارش شما لغو شد"}, status=status.HTTP_200_OK)
+            return redirect(FRONT_VERIFY +'?status=CANCELLED')
         try:
             code, message, ref_id = zarin_pal.payment_verification(
                 int(payment.pay_amount.amount), authority
@@ -85,16 +86,18 @@ class VerifyOrderView(APIView):
                 payment.payed_date = datetime.datetime.now()
                 payment.status = 2
                 payment.save()
-                content = {"type": "Success", "ref_id": ref_id}
-                return Response(content, status=status.HTTP_200_OK)
+                # content = {"type": "Success", "ref_id": ref_id}
+                # return Response(content, status=status.HTTP_200_OK)
+                return redirect(FRONT_VERIFY+'?status=OK&RefID='+str(ref_id))
             # operation was successful but PaymentVerification operation on this transaction have already been done
             elif code == 101:
-                content = {"type": "Warning"}
-                return Response(
-                    {"detail": "سفارش شما قبلا به ثبت رسیده است"},
-                    status=status.HTTP_406_NOT_ACCEPTABLE,
-                )
+                # content = {"type": "Warning"}
+                # return Response(
+                #     {"detail": "سفارش شما قبلا به ثبت رسیده است"},
+                #     status=status.HTTP_406_NOT_ACCEPTABLE,
+                # )
+                return redirect(FRONT_VERIFY+'?status=PAYED')
 
         # if got an error from zarinpal
         except ZarinpalError as e:
-            return Response(e)
+            return redirect(FRONT_VERIFY +'?status=NOK')

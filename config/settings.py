@@ -183,7 +183,8 @@ SPECTACULAR_SETTINGS = {
 # Zarinpal setting
 MERCHANT_ID = "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
 VERIFY_URL = "http://127.0.0.1:8000/api/payment/verify_order/"
-
+# SELLER_LOCAL_VERIFY = "http://cafesiran.ir/dashboard/verify/"
+FRONT_VERIFY = "https://cafesiran.ir/dashboard/verify/"
 
 REDIS_HOST = "localhost"
 REDIS_PORT = 6379
