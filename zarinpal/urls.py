@@ -5,7 +5,14 @@ from django.urls import (
 )
 from . import views
 
+
+router = DefaultRouter()
+router.register("cafes", views.CafesPaymentsView)
+
+app_name = "payment"
+
 urlpatterns = [
+    path("", include(router.urls)),
     path(
         "place_order/<int:plan_id>/", views.PlaceOrderView.as_view(), name="place_order"
     ),

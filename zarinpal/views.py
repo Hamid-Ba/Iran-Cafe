@@ -1,18 +1,22 @@
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
-from rest_framework import status, authentication , permissions
+from rest_framework import status, authentication, permissions
 from rest_framework.views import APIView
+from rest_framework import mixins, viewsets
 from django.conf import settings
 from django.shortcuts import redirect
 import datetime
 
-from zarinpal.models import Payment
+from .models import Payment
 from plan.models import Plan
 from config.permissions import HasCafe
 from .zp import Zarinpal, ZarinpalError
+from .serializers import PaymentSerializer
+from . import pagination
 
 zarin_pal = Zarinpal(settings.MERCHANT_ID, settings.VERIFY_URL, sandbox=True)
 FRONT_VERIFY = settings.FRONT_VERIFY
+
 
 class PlaceOrderView(APIView):
     """Making Payment View."""
@@ -65,7 +69,7 @@ class VerifyOrderView(APIView):
             res_data = request.query_params
             authority = int(res_data["Authority"])
         except ZarinpalError as e:
-            return redirect(FRONT_VERIFY +'?status=NOK')
+            return redirect(FRONT_VERIFY + "?status=NOK")
 
         payment = get_object_or_404(Payment, authority=authority)
 
@@ -73,7 +77,7 @@ class VerifyOrderView(APIView):
             payment.status = 3
             payment.save()
             # return Response({"detail": "سفارش شما لغو شد"}, status=status.HTTP_200_OK)
-            return redirect(FRONT_VERIFY +'?status=CANCELLED')
+            return redirect(FRONT_VERIFY + "?status=CANCELLED")
         try:
             code, message, ref_id = zarin_pal.payment_verification(
                 int(payment.pay_amount.amount), authority
@@ -88,7 +92,7 @@ class VerifyOrderView(APIView):
                 payment.save()
                 # content = {"type": "Success", "ref_id": ref_id}
                 # return Response(content, status=status.HTTP_200_OK)
-                return redirect(FRONT_VERIFY+'?status=OK&RefID='+str(ref_id))
+                return redirect(FRONT_VERIFY + "?status=OK&RefID=" + str(ref_id))
             # operation was successful but PaymentVerification operation on this transaction have already been done
             elif code == 101:
                 # content = {"type": "Warning"}
@@ -96,8 +100,28 @@ class VerifyOrderView(APIView):
                 #     {"detail": "سفارش شما قبلا به ثبت رسیده است"},
                 #     status=status.HTTP_406_NOT_ACCEPTABLE,
                 # )
-                return redirect(FRONT_VERIFY+'?status=PAYED')
+                return redirect(FRONT_VERIFY + "?status=PAYED")
 
         # if got an error from zarinpal
         except ZarinpalError as e:
-            return redirect(FRONT_VERIFY +'?status=NOK')
+            return redirect(FRONT_VERIFY + "?status=NOK")
+
+
+class CafesPaymentsView(
+    mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet
+):
+    """Cafe Payments View"""
+
+    permission_classes = (HasCafe,)
+    serializer_class = PaymentSerializer
+    queryset = Payment.objects.order_by("created_date")
+    pagination_class = pagination.StandardPagination
+    authentication_classes = (authentication.TokenAuthentication,)
+
+    def get_serializer_context(self):
+        context = {"request": self.request}
+        return context
+
+    def get_queryset(self):
+        cafe = self.request.user.cafe
+        return self.queryset.filter(cafe=cafe)
