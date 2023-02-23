@@ -5,6 +5,8 @@ from rest_framework import permissions, authentication, status, views
 from rest_framework.response import Response
 from cafe.models import MenuItem, Order
 from django.db.models import Sum
+from django.db.models import Count
+
 
 from config.permissions import HasCafe
 from queries.pagination import StandardPagination
@@ -56,5 +58,32 @@ class OrderQueryView(views.APIView):
         #         item = items.filter(menu_item_id=item_id).first()
         #         item['count'] = most_purchesd_item[item_id]
         #         res['most_purchesd'].append(item)
+
+        return Response(res, status=status.HTTP_200_OK)
+
+
+class LoyalCustomers(views.APIView):
+    """Return Cafes n-th Loyal Cusotmers"""
+
+    permission_classes = (HasCafe,)
+    authentication_classes = (authentication.TokenAuthentication,)
+
+    def get(self, request, number, *args, **kwargs):
+        """Get Loyal Customers"""
+        cafe = self.request.user.cafe
+        cafes_orders = Order.objects.filter(cafe=cafe)
+        res = []
+
+        if cafes_orders.exists():
+            loyal_customers = (
+                cafes_orders.values_list("user__phone", "user__fullName")
+                .annotate(order_count=Count("user"))
+                .order_by("-order_count")[:number]
+            )
+
+            for customer in loyal_customers:
+                res.append(
+                    {"name": customer[1], "phone": customer[0], "count": customer[2]}
+                )
 
         return Response(res, status=status.HTTP_200_OK)
