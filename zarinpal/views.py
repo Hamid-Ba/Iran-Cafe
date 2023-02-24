@@ -67,7 +67,7 @@ class VerifyOrderView(APIView):
     def get(self, request, *args, **kwargs):
         try:
             res_data = request.query_params
-            authority = int(res_data["Authority"])
+            authority = res_data["Authority"]
         except ZarinpalError as e:
             return redirect(FRONT_VERIFY + "?status=NOK")
 
