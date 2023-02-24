@@ -392,16 +392,23 @@ class OrderViewSet(mixins.ListModelMixin, BaseMixinView):
 
     def get_queryset(self):
         state = "all"
+        code = ""
         try:
             if self.request.query_params["state"].strip() != "":
-                state = self.request.query_params["state"]
+                state = self.request.query_params["state"]            
+        except:
+            None
+        
+        try:
+            if self.request.query_params["code"].strip() != "":
+                code = self.request.query_params["code"]
         except:
             None
 
         is_cafe_exist = Cafe.objects.filter(owner=self.request.user).exists()
         if is_cafe_exist:
             return Order.objects.get_order(
-                state=state, cafe=self.request.user.cafe, user=None
+                state=state, code=code, cafe=self.request.user.cafe, user=None
             )
 
         is_bartender_exist = Bartender.objects.filter(
@@ -410,10 +417,10 @@ class OrderViewSet(mixins.ListModelMixin, BaseMixinView):
         if is_bartender_exist.exists():
             bartender = is_bartender_exist.first()
             return Order.objects.get_order(
-                state=state, cafe=None, user=None, bartender=bartender
+                state=state, code=code, cafe=None, user=None, bartender=bartender
             )
 
-        return Order.objects.get_order(state=state, cafe=None, user=self.request.user)
+        return Order.objects.get_order(state=state, code=code, cafe=None, user=self.request.user)
 
     def get_serializer_class(self):
         """Specify The Serializer class"""

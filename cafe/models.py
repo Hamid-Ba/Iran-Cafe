@@ -320,24 +320,24 @@ class OrderManager(models.Manager):
     def _get_user_order(self, user):
         return self.filter(user=user).order_by("-registered_date")
 
-    def get_order(self, state, cafe, user, bartender=None):
+    def get_order(self, state, code, cafe, user, bartender=None):
         if cafe:
             orders = self._get_cafe_order(cafe)
             if state != "all" or not state:
-                return orders.filter(state=state)
-            return orders
+                orders = orders.filter(state=state)
+            return orders.filter(code__contains=code)
         elif user:
             orders = self._get_user_order(user)
             if state != "all" or not state:
-                return orders.filter(state=state)
-            return orders
+                orders = orders.filter(state=state)
+            return orders.filter(code__contains=code)
         elif bartender:
             cafe_orders = self._get_cafe_order(bartender.cafe)
             user_orders = self._get_user_order(bartender.user)
             orders = cafe_orders | user_orders
             if state != "all" or not state:
-                return orders.filter(state=state)
-            return orders
+                orders = orders.filter(state=state)
+            return orders.filter(code__contains=code)
 
         return None
 
