@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     "django.contrib.sitemaps",
     "comment",
     "blog",
+    "store",
     "taggit",
 ]
 

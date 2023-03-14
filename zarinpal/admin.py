@@ -20,9 +20,9 @@ class PaymentAdmin(admin.ModelAdmin):
 
     search_fields = ["plan__title", "cafe__code"]
 
-    @admin.display(ordering="cafe__code")
-    def cafe_code(self, obj):
-        return obj.cafe.code
+    # @admin.display(ordering="cafe__code")
+    # def cafe_code(self, obj):
+    #     return obj.cafe.code
 
     @admin.display(ordering="plan__title")
     def cafe_code(self, obj):

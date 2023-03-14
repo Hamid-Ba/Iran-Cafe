@@ -395,10 +395,10 @@ class OrderViewSet(mixins.ListModelMixin, BaseMixinView):
         code = ""
         try:
             if self.request.query_params["state"].strip() != "":
-                state = self.request.query_params["state"]            
+                state = self.request.query_params["state"]
         except:
             None
-        
+
         try:
             if self.request.query_params["code"].strip() != "":
                 code = self.request.query_params["code"]
@@ -420,7 +420,9 @@ class OrderViewSet(mixins.ListModelMixin, BaseMixinView):
                 state=state, code=code, cafe=None, user=None, bartender=bartender
             )
 
-        return Order.objects.get_order(state=state, code=code, cafe=None, user=self.request.user)
+        return Order.objects.get_order(
+            state=state, code=code, cafe=None, user=self.request.user
+        )
 
     def get_serializer_class(self):
         """Specify The Serializer class"""

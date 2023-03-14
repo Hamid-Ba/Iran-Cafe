@@ -1,5 +1,5 @@
 import django_filters
-from cafe.models import Order, OrderItem
+from cafe.models import Order
 
 
 class OrderFilter(django_filters.FilterSet):

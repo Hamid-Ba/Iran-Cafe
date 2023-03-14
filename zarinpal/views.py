@@ -68,7 +68,7 @@ class VerifyOrderView(APIView):
         try:
             res_data = request.query_params
             authority = res_data["Authority"]
-        except ZarinpalError as e:
+        except ZarinpalError:
             return redirect(FRONT_VERIFY + "?status=NOK")
 
         payment = get_object_or_404(Payment, authority=authority)
@@ -103,7 +103,7 @@ class VerifyOrderView(APIView):
                 return redirect(FRONT_VERIFY + "?status=PAYED")
 
         # if got an error from zarinpal
-        except ZarinpalError as e:
+        except ZarinpalError:
             return redirect(FRONT_VERIFY + "?status=NOK")
 
 
