@@ -100,7 +100,8 @@ class StoreOrderTest(TestCase):
             address="123 Test St",
             postal_code="12345",
             phone_number="09151498722",
-            cafe=self.cafe
+            cafe=self.cafe,
+            user=self.owner
         )
 
     def test_store_order_string_representation(self):

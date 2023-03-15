@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator, RegexValidator
 from djmoney.models.fields import MoneyField
+from django.conf import settings
 
 from cafe.models import Cafe
 from config.validators import PhoneValidator
@@ -59,7 +60,10 @@ class StoreOrder(models.Model):
     address = models.CharField(max_length=255)
     postal_code = models.CharField(max_length=10, validators=[RegexValidator(regex="^\d{5}$")])
     phone_number = models.CharField(max_length=20, validators=[RegexValidator(regex="^\+?\d{9,15}$")])
-    cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE, related_name="store_orders")
+    cafe = models.ForeignKey(Cafe ,null=True,blank=True, on_delete=models.CASCADE, related_name="store_orders")
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="store_orders"
+    )
 
     def __str__(self):
         return f"Store Order #{self.pk}"
