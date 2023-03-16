@@ -2,7 +2,6 @@
 Province Module Serializers
 """
 from rest_framework import serializers
-from django.contrib.auth import get_user_model
 
 from province.models import Province, City
 

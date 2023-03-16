@@ -6,8 +6,7 @@ from rest_framework.test import APIClient
 from django.urls import reverse
 from rest_framework import status
 from django.contrib.auth import get_user_model
-from djmoney.money import Money
-from cafe.models import Cafe, Category, Suggestion
+from cafe.models import Cafe, Suggestion
 
 from province.models import City, Province
 

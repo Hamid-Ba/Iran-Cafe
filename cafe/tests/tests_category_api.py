@@ -24,8 +24,8 @@ class PublicTest(TestCase):
 
     def test_get_category_list_should_work_properly(self):
         """Test Get Category List"""
-        category1 = create_category("category1", order=1)
-        category2 = create_category("category2", order=2)
+        create_category("category1", order=1)
+        create_category("category2", order=2)
 
         res = self.client.get(CATEGORY_LIST)
         self.assertEqual(res.status_code, status.HTTP_200_OK)

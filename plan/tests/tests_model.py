@@ -3,8 +3,6 @@ Test Plan Module Models
 """
 from django.test import TestCase
 from djmoney.money import Money
-from datetime import datetime, time
-from django.contrib.auth import get_user_model
 
 from plan.models import *
 

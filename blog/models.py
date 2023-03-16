@@ -4,7 +4,6 @@ Blog Module Models
 import os
 from django.conf import settings
 from uuid import uuid4
-from datetime import date
 from django.utils import timezone
 from django.db import models
 from taggit.managers import TaggableManager

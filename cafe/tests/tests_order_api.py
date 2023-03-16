@@ -142,9 +142,7 @@ class PrivateTest(TestCase):
         item_2 = MenuItem.objects.create(
             category=self.category_2, cafe=self.cafe, **menu_item
         )
-        item_3 = MenuItem.objects.create(
-            category=self.category_1, cafe=self.cafe, **menu_item
-        )
+        MenuItem.objects.create(category=self.category_1, cafe=self.cafe, **menu_item)
 
         payload = {
             "total_price": "30000",

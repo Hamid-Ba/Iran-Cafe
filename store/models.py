@@ -38,9 +38,9 @@ class Product(models.Model):
 
     def __str__(self):
         return self.title
-    
-class StoreOrder(models.Model):
 
+
+class StoreOrder(models.Model):
     class OrderState(models.TextChoices):
         PENDING = "P", "Pending"
         CONFIRMED = "D", "Delivered"
@@ -54,21 +54,30 @@ class StoreOrder(models.Model):
         max_digits=10, decimal_places=0, default_currency="IRR", null=False
     )
     phone = models.CharField(
-        max_length=11,
-        blank=False,
-        null=False,
-        validators=[PhoneValidator]
+        max_length=11, blank=False, null=False, validators=[PhoneValidator]
     )
+    registered_date = models.DateTimeField(auto_now_add=True, editable=False)
     address = models.CharField(max_length=255)
-    postal_code = models.CharField(max_length=10, validators=[RegexValidator(regex="^\d{5}$")])
-    phone_number = models.CharField(max_length=20, validators=[RegexValidator(regex="^\+?\d{9,15}$")])
-    cafe = models.ForeignKey(Cafe ,null=True,blank=True, on_delete=models.CASCADE, related_name="store_orders")
+    postal_code = models.CharField(
+        max_length=10, validators=[RegexValidator(regex="^\d{5}$")]
+    )
+    phone_number = models.CharField(
+        max_length=20, validators=[RegexValidator(regex="^\+?\d{9,15}$")]
+    )
+    cafe = models.ForeignKey(
+        Cafe,
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name="store_orders",
+    )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="store_orders"
     )
 
     def __str__(self):
         return f"Store Order #{self.pk}"
+
 
 class StoreOrderItem(models.Model):
     product_id = models.BigIntegerField(null=False, blank=False)
@@ -79,5 +88,7 @@ class StoreOrderItem(models.Model):
         max_digits=10, decimal_places=0, default_currency="IRR", null=False
     )
     count = models.IntegerField(validators=[MinValueValidator(1)])
-    
-    order = models.ForeignKey(StoreOrder, on_delete=models.CASCADE,related_name="items")
+
+    order = models.ForeignKey(
+        StoreOrder, on_delete=models.CASCADE, related_name="items"
+    )

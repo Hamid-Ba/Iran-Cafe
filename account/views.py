@@ -1,9 +1,7 @@
 """
 Account Module Views
 """
-from rest_framework import viewsets, generics, permissions, authentication, views
-from rest_framework.decorators import action
-from rest_framework import status
+from rest_framework import generics, permissions, authentication, views
 from rest_framework.authtoken.views import ObtainAuthToken
 from django.contrib.auth import logout
 

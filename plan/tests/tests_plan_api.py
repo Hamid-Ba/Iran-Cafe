@@ -7,11 +7,9 @@ from django.urls import reverse
 from rest_framework import status
 from djmoney.money import Money
 from django.contrib.auth import get_user_model
-from cafe.models import Cafe
 from plan.models import Plan
 from plan.serializers import PlanSerializer
 
-from province.models import City, Province
 
 PLAN_URL = reverse("plan:plans")
 

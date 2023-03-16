@@ -8,17 +8,21 @@ from cafe.models import Cafe
 from province.models import City, Province
 from store import models
 
+
 def create_user(phone, password=None):
     """Helper Function For Create User"""
     return get_user_model().objects.create_user(phone=phone, password=password)
+
 
 def create_province(name, slug):
     """Helper Function To Create Province"""
     return Province.objects.create(name=name, slug=slug)
 
+
 def create_city(name, slug, province):
     """Helper Function To Create Province"""
     return City.objects.create(name=name, slug=slug, province=province)
+
 
 def create_cafe(province, city, owner, **new_payload):
     """Helper Function To Create Cafe"""
@@ -36,6 +40,7 @@ def create_cafe(province, city, owner, **new_payload):
     }
     payload.update(new_payload)
     return Cafe.objects.create(**payload)
+
 
 # create a class to test the category model
 class TestStoreCategory(TestCase):
@@ -91,7 +96,7 @@ class StoreOrderTest(TestCase):
         self.province = create_province("Tehran", "Tehran")
         self.city = create_city("Tehran", "Tehran", self.province)
         self.owner = create_user("09151498722")
-        self.cafe = create_cafe(self.province,self.city,self.owner)
+        self.cafe = create_cafe(self.province, self.city, self.owner)
 
         self.order = models.StoreOrder.objects.create(
             state=models.StoreOrder.OrderState.PENDING,
@@ -101,7 +106,7 @@ class StoreOrderTest(TestCase):
             postal_code="12345",
             phone_number="09151498722",
             cafe=self.cafe,
-            user=self.owner
+            user=self.owner,
         )
 
     def test_store_order_string_representation(self):
@@ -109,7 +114,7 @@ class StoreOrderTest(TestCase):
 
     def test_store_order_code_not_null(self):
         self.assertIsNotNone(self.order.code)
-            
+
     def test_store_order_item_relation(self):
         item = models.StoreOrderItem.objects.create(
             product_id=1,
@@ -118,6 +123,6 @@ class StoreOrderTest(TestCase):
             desc="Test Description",
             price=500,
             count=2,
-            order=self.order
+            order=self.order,
         )
         self.assertIn(item, self.order.items.all())

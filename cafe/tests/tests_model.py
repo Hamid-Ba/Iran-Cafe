@@ -231,9 +231,7 @@ class OrderTest(TestCase):
         item_2 = MenuItem.objects.create(
             category=category_2, cafe=self.cafe, **menu_item
         )
-        item_3 = MenuItem.objects.create(
-            category=category_1, cafe=self.cafe, **menu_item
-        )
+        MenuItem.objects.create(category=category_1, cafe=self.cafe, **menu_item)
         payload = {
             "total_price": Money(910000, "IRR"),
             "code": str(uuid4())[:5],

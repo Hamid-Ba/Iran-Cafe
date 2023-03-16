@@ -96,9 +96,8 @@ class PrivateTest(TestCase):
         res = self.client.get(GALLERY_URL)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
 
-        galleries = (
-            Gallery.objects.filter(cafe_id=self.cafe.id).order_by("-id").values()
-        )
+        Gallery.objects.filter(cafe_id=self.cafe.id).order_by("-id").values()
+
         # self.assertIn(galleries.first(),res.data)
         self.assertEqual(len(res.data["results"]), 2)
 

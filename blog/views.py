@@ -7,10 +7,7 @@ from rest_framework import (
     permissions,
     authentication,
     viewsets,
-    status,
-    views,
 )
-from rest_framework.response import Response
 from blog.pagination import BlogPagination
 from cafe.models import Cafe, Bartender
 from blog import serializers, models

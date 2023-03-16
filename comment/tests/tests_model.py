@@ -5,7 +5,7 @@ from django.test import TestCase
 
 from comment.models import Comment
 from django.contrib.auth import get_user_model
-from datetime import time, date
+from datetime import date
 
 
 def create_user(phone, password):

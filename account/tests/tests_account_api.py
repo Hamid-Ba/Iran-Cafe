@@ -54,7 +54,7 @@ class PublicTests(TestCase):
         """Test For Creation The Token"""
         payload = {"phone": "09151498722", "password": "123456"}
 
-        user = create_user(payload["phone"], payload["password"])
+        create_user(payload["phone"], payload["password"])
 
         res = self.client.post(TOKEN_URL, payload)
 
