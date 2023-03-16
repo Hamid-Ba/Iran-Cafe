@@ -45,6 +45,7 @@ urlpatterns = [
     path("api/plan/", include("plan.urls")),
     path("api/payment/", include("zarinpal.urls")),
     path("api/queries/", include("queries.urls")),
+    path("api/store/", include("store.urls")),
 ]
 
 if settings.DEBUG:
