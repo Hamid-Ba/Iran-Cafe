@@ -34,10 +34,15 @@ class Product(models.Model):
         StoreCategory, on_delete=models.CASCADE, related_name="products"
     )
 
+    order_count = models.IntegerField(default=0)
     created_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title
+
+    def ordered(self, count):
+        self.order_count += count
+        self.save()
 
 
 class StoreOrder(models.Model):
@@ -61,9 +66,7 @@ class StoreOrder(models.Model):
     postal_code = models.CharField(
         max_length=10, validators=[RegexValidator(regex="^\d{5}$")]
     )
-    phone_number = models.CharField(
-        max_length=20, validators=[RegexValidator(regex="^\+?\d{9,15}$")]
-    )
+    phone_number = models.CharField(max_length=20, validators=[PhoneValidator])
     cafe = models.ForeignKey(
         Cafe,
         null=True,

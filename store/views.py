@@ -1,8 +1,11 @@
 from rest_framework import mixins
+from rest_framework import generics
 from rest_framework import viewsets
 from rest_framework import permissions
 from rest_framework import authentication
 
+from config import permissions as custom_permission
+from cafe.models import Cafe
 from . import models
 from . import serializers
 from . import pagination
@@ -35,7 +38,7 @@ class ProductApiView(ReturnMixinView):
     serializer_class = serializers.ProductSerializer
 
 
-class StoreOrderApiView(ReturnMixinView):
+class StoreOrderApiView(mixins.CreateModelMixin, ReturnMixinView):
     """Order Api View"""
 
     queryset = models.StoreOrder.objects.all()
@@ -46,3 +49,14 @@ class StoreOrderApiView(ReturnMixinView):
     def get_queryset(self):
         user = self.request.user
         return self.queryset.filter(user=user).order_by("-registered_date")
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        cafe_qs = Cafe.objects.filter(owner=user)
+
+        if cafe_qs.exists():
+            serializer.save(user=user, cafe=cafe_qs.first())
+        else:
+            serializer.save(user=user)
+
+        return super().perform_create(serializer)
