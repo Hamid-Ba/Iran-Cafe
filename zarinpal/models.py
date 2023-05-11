@@ -76,7 +76,9 @@ class StorePayment(models.Model):
     )
 
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="store_payments"
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="store_payments",
     )
     order = models.ForeignKey(
         store_models.StoreOrder, on_delete=models.CASCADE, related_name="store_payments"

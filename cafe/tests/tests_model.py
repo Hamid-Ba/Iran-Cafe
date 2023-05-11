@@ -3,6 +3,7 @@ Test Cafe Module Models
 """
 from uuid import uuid4
 from django.test import TestCase
+from model_bakery import baker
 
 # from decimal import Decimal
 from djmoney.money import Money
@@ -19,6 +20,7 @@ from cafe.models import (
     Suggestion,
     Reservation,
     Event,
+    Branch,
 )
 from province.models import Province, City
 
@@ -360,3 +362,30 @@ class EventTest(TestCase):
 
         for key, value in payload.items():
             self.assertEqual(getattr(event, key), value)
+
+
+class BranchTest(TestCase):
+    """Branch Model Test"""
+
+    def setUp(self):
+        self.cafe = baker.make("cafe.Cafe")
+        self.city = baker.make("province.City")
+        self.province = baker.make("province.Province")
+
+    def test_create_branch_should_work_properly(self):
+        """Test Create Branch Model"""
+        payload = {
+            "latitude": "123",
+            "longitude": "321",
+            "street": "Backingham 4th",
+            "province": self.province,
+            "city": self.city,
+        }
+
+        branch = Branch.objects.create(cafe=self.cafe, **payload)
+
+        self.assertEqual(branch.cafe, self.cafe)
+
+        for key, value in payload.items():
+            if key != "province" and key != "city":
+                self.assertEqual(getattr(branch, key), value)

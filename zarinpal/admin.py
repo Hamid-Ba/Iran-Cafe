@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Payment ,StorePayment
+from .models import Payment, StorePayment
 
 
 class PaymentAdmin(admin.ModelAdmin):
@@ -24,6 +24,7 @@ class PaymentAdmin(admin.ModelAdmin):
     def cafe_code(self, obj):
         return obj.plan.title
 
+
 class StorePaymentAdmin(admin.ModelAdmin):
     """Store Payment admin"""
 
@@ -38,10 +39,11 @@ class StorePaymentAdmin(admin.ModelAdmin):
         "payed_date",
         "created_date",
     ]
-    list_display_links = ["cafe", "user","order", "pay_amount", "created_date"]
+    list_display_links = ["cafe", "user", "order", "pay_amount", "created_date"]
     ordering = ["id"]
 
-    search_fields = ["user__phone","user__fullName", "cafe__code"]
+    search_fields = ["user__phone", "user__fullName", "cafe__code"]
+
 
 admin.site.register(Payment, PaymentAdmin)
 admin.site.register(StorePayment, StorePaymentAdmin)

@@ -2,7 +2,7 @@
 Zarinpal Module Serializers
 """
 from rest_framework import serializers
-from .models import Payment , StorePayment
+from .models import Payment, StorePayment
 
 
 class PaymentSerializer(serializers.ModelSerializer):
@@ -21,7 +21,8 @@ class PaymentSerializer(serializers.ModelSerializer):
         if rep["cafe"] == cafe:
             return rep
         return rep
-    
+
+
 class StorePaymentSerializer(serializers.ModelSerializer):
     """Payment Serializer"""
 
@@ -38,5 +39,6 @@ class StorePaymentSerializer(serializers.ModelSerializer):
 
             if rep["cafe"] == cafe:
                 return rep
-        except : pass
+        except:
+            pass
         return rep

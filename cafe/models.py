@@ -168,6 +168,24 @@ def category_image_file_path(instance, filename):
     return os.path.join("uploads", "category", filename)
 
 
+class Branch(models.Model):
+    """Branch model"""
+
+    latitude = models.CharField(max_length=125, blank=True, null=True)
+    longitude = models.CharField(max_length=125, blank=True, null=True)
+    street = models.CharField(max_length=250, null=True, blank=True)
+    is_active = models.BooleanField(default=True)
+
+    cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE, related_name="branches")
+    province = models.ForeignKey(
+        Province, on_delete=models.DO_NOTHING, related_name="branches"
+    )
+    city = models.ForeignKey(City, on_delete=models.DO_NOTHING, related_name="branches")
+
+    def __str__(self) -> str:
+        return f"{self.cafe.code}-{self.province}-{self.city}-{self.street}"
+
+
 class Category(models.Model):
     """Category model"""
 

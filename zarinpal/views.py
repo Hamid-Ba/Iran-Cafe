@@ -7,12 +7,12 @@ from django.conf import settings
 from django.shortcuts import redirect
 import datetime
 
-from .models import Payment , StorePayment
+from .models import Payment, StorePayment
 from plan.models import Plan
 from store.models import StoreOrder
 from config.permissions import HasCafe
 from .zp import Zarinpal, ZarinpalError
-from .serializers import PaymentSerializer , StorePaymentSerializer
+from .serializers import PaymentSerializer, StorePaymentSerializer
 from . import pagination
 
 zarin_pal = Zarinpal(settings.MERCHANT_ID, settings.VERIFY_URL, sandbox=True)
@@ -90,7 +90,7 @@ class VerifyOrderView(APIView):
                 payment.payed_date = datetime.datetime.now()
                 payment.status = 2
                 payment.save()
-                
+
                 return redirect(FRONT_VERIFY + "?status=OK&RefID=" + str(ref_id))
             # operation was successful but PaymentVerification operation on this transaction have already been done
             elif code == 101:
@@ -163,6 +163,7 @@ class PlaceStoreOrderView(APIView):
         except ZarinpalError as e:
             return Response(e)
 
+
 class VerifyStoreOrderView(APIView):
     """Verify Order View"""
 
@@ -193,7 +194,7 @@ class VerifyStoreOrderView(APIView):
                 payment.payed_date = datetime.datetime.now()
                 payment.status = 2
                 payment.save()
-                
+
                 return redirect(FRONT_VERIFY + "?status=OK&RefID=" + str(ref_id))
             # operation was successful but PaymentVerification operation on this transaction have already been done
             elif code == 101:
@@ -202,7 +203,8 @@ class VerifyStoreOrderView(APIView):
         # if got an error from zarinpal
         except ZarinpalError:
             return redirect(FRONT_VERIFY + "?status=NOK")
-        
+
+
 class CafesStorePaymentsView(
     mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet
 ):

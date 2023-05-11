@@ -19,7 +19,13 @@ urlpatterns = [
     ),
     path("verify_order/", views.VerifyOrderView.as_view(), name="verify_order"),
     path(
-        "place_store_order/<int:order_id>/", views.PlaceStoreOrderView.as_view(), name="place_store_order"
+        "place_store_order/<int:order_id>/",
+        views.PlaceStoreOrderView.as_view(),
+        name="place_store_order",
     ),
-    path("verify_store_order/", views.VerifyStoreOrderView.as_view(), name="verify_store_order"),
+    path(
+        "verify_store_order/",
+        views.VerifyStoreOrderView.as_view(),
+        name="verify_store_order",
+    ),
 ]
