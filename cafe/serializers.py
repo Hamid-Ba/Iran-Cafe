@@ -18,6 +18,7 @@ from cafe.models import (
     Reservation,
     Suggestion,
     Event,
+    Branch
 )
 from province.serializers import CitySerializer, ProvinceSerializer
 from notifications import KavenegarSMS
@@ -526,6 +527,57 @@ class CafeEventsSerializer(serializers.ModelSerializer):
         rep["events"] = (
             instance.events.filter(status=True, is_expired=False)
             .order_by("-created_date")
+            .values()
+        )
+
+        return rep
+
+class BranchSerializer(serializers.ModelSerializer):
+    """Branch Serializer"""
+
+    class Meta:
+        model = Branch
+        fields = "__all__"
+        read_only_fields = ["cafe"]
+
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+
+        rep["province"] = {
+            "id": instance.province.id,
+            "name": instance.province.name
+        }
+
+        rep["city"] = {
+            "id": instance.city.id,
+            "name": instance.city.name
+        }
+
+        return rep
+
+class CafeBranchesSerializer(serializers.ModelSerializer):
+    """Cafe Branches Serializer"""
+
+    branches = BranchSerializer(many=True)
+
+    class Meta:
+        model = Cafe
+        fields = ["id", "persian_title", "english_title", "code", "branches"]
+
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep.clear()
+
+        rep["cafe"] = {
+            "id": instance.id,
+            "code": instance.code,
+            "persian_title": instance.persian_title,
+            "english_title": instance.english_title,
+        }
+
+        rep["branches"] = (
+            instance.branches.filter(is_active=True)
+            .order_by("-id")
             .values()
         )
 

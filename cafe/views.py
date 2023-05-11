@@ -30,6 +30,7 @@ from cafe.models import (
     Reservation,
     Suggestion,
     Event,
+    Branch
 )
 from rest_framework.response import Response
 from cafe import serializers
@@ -564,3 +565,56 @@ class CafesEventView(generics.ListAPIView):
         res = paginator.paginate_queryset(serializer.data["events"], request)
         res = {"cafe": serializer.data["cafe"], "events": res}
         return Response(res)
+
+class BranchViewSet(viewsets.ModelViewSet):
+    """Branch View Set"""
+    
+    queryset = Branch.objects.all()
+    permission_classes = (HasCafe,)
+    serializer_class = serializers.BranchSerializer
+    pagination_class = StandardPagination
+    authentication_classes = (authentication.TokenAuthentication,)
+
+    def get_queryset(self):
+        return Branch.objects.filter(cafe=self.request.user.cafe).order_by("-id")
+    
+    def perform_create(self, serializer):
+        return serializer.save(cafe=self.request.user.cafe)
+    
+    # def perform_destroy(self, instance):
+    #     if instance.cafe != self.request.user.cafe:
+    #         return Response("You do not have permission to perform this action.",status=status.HTTP_403_FORBIDDEN)
+    #     return super().perform_destroy(instance)
+    
+class CafeBranchesApiView(generics.ListAPIView):
+    """Cafe Branches"""
+
+    serializer_class = serializers.CafeBranchesSerializer
+    queryset = Branch.objects.filter(is_active=True).order_by(
+        "-id"
+    )
+    pagination_class = StandardPagination
+
+    def get(self, request, cafe_id, *args, **kwargs):
+        try:
+            cafe = Cafe.objects.filter(pk=cafe_id).first()
+        except Cafe.DoesNotExist:
+            return Response({})
+
+        try:
+            if len(cafe.branches.filter(is_active=True)) == 0:
+                return Response({})
+        except:
+            return Response({})
+
+        serializer = self.serializer_class(instance=cafe)
+        paginator = StandardPagination()
+        res = paginator.paginate_queryset(serializer.data["branches"], request)
+        res = {"cafe": serializer.data["cafe"], "branches": res}
+        return Response(res)
+    
+class SingleBranchView(generics.RetrieveAPIView):
+    """Single Event View"""
+
+    serializer_class = serializers.BranchSerializer
+    queryset = Branch.objects.filter(is_active=True)

@@ -17,6 +17,7 @@ router.register("order", views.OrderViewSet)
 router.register("bartender", views.BartenderViewSet)
 router.register("customer", views.CustomerViewSet)
 router.register("events", views.EventModelViewSet)
+router.register("branches", views.BranchViewSet)
 
 app_name = "cafe"
 
@@ -52,4 +53,8 @@ urlpatterns = [
         "cafe_events/<int:cafe_id>/", views.CafesEventView.as_view(), name="cafe_events"
     ),
     path("cafe_event/<int:pk>/", views.SingleEventView.as_view(), name="single_event"),
+    path(
+        "cafe_branches/<int:cafe_id>/", views.CafeBranchesApiView.as_view(), name="cafe_branches"
+    ),
+    path("cafe_branch/<int:pk>/", views.SingleBranchView.as_view(), name="single_branch"),
 ]
