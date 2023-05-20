@@ -104,7 +104,7 @@ class StoreOrderTest(TestCase):
             total_price=1000,
             address="123 Test St",
             postal_code="12345",
-            phone_number="09151498722",
+            fullName="Hamid Balalzadeh",
             cafe=self.cafe,
             user=self.owner,
         )

@@ -51,6 +51,7 @@ class StoreOrder(models.Model):
         CONFIRMED = "D", "Delivered"
         REJECTED = "C", "Cancelled"
 
+    fullName = models.CharField(max_length=255, blank=False, null=False)
     code = models.CharField(max_length=5, blank=False, null=True)
     state = models.CharField(
         max_length=1, default=OrderState.PENDING, choices=OrderState.choices

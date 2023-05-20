@@ -23,6 +23,7 @@ class StoreOrderItemInline(admin.TabularInline):
 class StoreOrderAdmin(admin.ModelAdmin):
     list_display = (
         "code",
+        "fullName",
         "state",
         "total_price",
         "phone",
