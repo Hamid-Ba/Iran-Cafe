@@ -18,7 +18,7 @@ from cafe.models import (
     Reservation,
     Suggestion,
     Event,
-    Branch
+    Branch,
 )
 from province.serializers import CitySerializer, ProvinceSerializer
 from notifications import KavenegarSMS
@@ -532,6 +532,7 @@ class CafeEventsSerializer(serializers.ModelSerializer):
 
         return rep
 
+
 class BranchSerializer(serializers.ModelSerializer):
     """Branch Serializer"""
 
@@ -543,17 +544,12 @@ class BranchSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         rep = super().to_representation(instance)
 
-        rep["province"] = {
-            "id": instance.province.id,
-            "name": instance.province.name
-        }
+        rep["province"] = {"id": instance.province.id, "name": instance.province.name}
 
-        rep["city"] = {
-            "id": instance.city.id,
-            "name": instance.city.name
-        }
+        rep["city"] = {"id": instance.city.id, "name": instance.city.name}
 
         return rep
+
 
 class CafeBranchesSerializer(serializers.ModelSerializer):
     """Cafe Branches Serializer"""
@@ -576,9 +572,7 @@ class CafeBranchesSerializer(serializers.ModelSerializer):
         }
 
         rep["branches"] = (
-            instance.branches.filter(is_active=True)
-            .order_by("-id")
-            .values()
+            instance.branches.filter(is_active=True).order_by("-id").values()
         )
 
         return rep

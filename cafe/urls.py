@@ -54,7 +54,11 @@ urlpatterns = [
     ),
     path("cafe_event/<int:pk>/", views.SingleEventView.as_view(), name="single_event"),
     path(
-        "cafe_branches/<int:cafe_id>/", views.CafeBranchesApiView.as_view(), name="cafe_branches"
+        "cafe_branches/<int:cafe_id>/",
+        views.CafeBranchesApiView.as_view(),
+        name="cafe_branches",
     ),
-    path("cafe_branch/<int:pk>/", views.SingleBranchView.as_view(), name="single_branch"),
+    path(
+        "cafe_branch/<int:pk>/", views.SingleBranchView.as_view(), name="single_branch"
+    ),
 ]

@@ -30,7 +30,7 @@ from cafe.models import (
     Reservation,
     Suggestion,
     Event,
-    Branch
+    Branch,
 )
 from rest_framework.response import Response
 from cafe import serializers
@@ -566,9 +566,10 @@ class CafesEventView(generics.ListAPIView):
         res = {"cafe": serializer.data["cafe"], "events": res}
         return Response(res)
 
+
 class BranchViewSet(viewsets.ModelViewSet):
     """Branch View Set"""
-    
+
     queryset = Branch.objects.all()
     permission_classes = (HasCafe,)
     serializer_class = serializers.BranchSerializer
@@ -577,22 +578,21 @@ class BranchViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Branch.objects.filter(cafe=self.request.user.cafe).order_by("-id")
-    
+
     def perform_create(self, serializer):
         return serializer.save(cafe=self.request.user.cafe)
-    
+
     # def perform_destroy(self, instance):
     #     if instance.cafe != self.request.user.cafe:
     #         return Response("You do not have permission to perform this action.",status=status.HTTP_403_FORBIDDEN)
     #     return super().perform_destroy(instance)
-    
+
+
 class CafeBranchesApiView(generics.ListAPIView):
     """Cafe Branches"""
 
     serializer_class = serializers.CafeBranchesSerializer
-    queryset = Branch.objects.filter(is_active=True).order_by(
-        "-id"
-    )
+    queryset = Branch.objects.filter(is_active=True).order_by("-id")
     pagination_class = StandardPagination
 
     def get(self, request, cafe_id, *args, **kwargs):
@@ -612,7 +612,8 @@ class CafeBranchesApiView(generics.ListAPIView):
         res = paginator.paginate_queryset(serializer.data["branches"], request)
         res = {"cafe": serializer.data["cafe"], "branches": res}
         return Response(res)
-    
+
+
 class SingleBranchView(generics.RetrieveAPIView):
     """Single Event View"""
 

@@ -11,7 +11,7 @@ from cafe.models import (
     Suggestion,
     Customer,
     Event,
-    Branch
+    Branch,
 )
 
 
@@ -300,23 +300,24 @@ class EventAdmin(admin.ModelAdmin):
     @admin.display(ordering="cafe__code")
     def cafe_code(self, obj):
         return obj.cafe.code
-    
+
+
 class BranchAdmin(admin.ModelAdmin):
     """Branch admin"""
 
-    list_display = ('id', 'latitude', 'longitude', 'street', 'is_active')
-    list_filter = ('is_active',)
-    search_fields = ('cafe__code', 'province__name', 'city__name', 'street')
+    list_display = ("id", "latitude", "longitude", "street", "is_active")
+    list_filter = ("is_active",)
+    search_fields = ("cafe__code", "province__name", "city__name", "street")
 
     fieldsets = (
-        (None, {'fields': ('cafe', 'province', 'city')}),
-        ('Location Information', {'fields': ('latitude', 'longitude', 'street')}),
-        ('Status', {'fields': ('is_active',)}),
+        (None, {"fields": ("cafe", "province", "city")}),
+        ("Location Information", {"fields": ("latitude", "longitude", "street")}),
+        ("Status", {"fields": ("is_active",)}),
     )
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
-        qs = qs.select_related('cafe', 'province', 'city')
+        qs = qs.select_related("cafe", "province", "city")
         return qs
 
 

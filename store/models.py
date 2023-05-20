@@ -64,9 +64,7 @@ class StoreOrder(models.Model):
     )
     registered_date = models.DateTimeField(auto_now_add=True, editable=False)
     address = models.CharField(max_length=255)
-    postal_code = models.CharField(
-        max_length=10, validators=[RegexValidator(regex="^\d{5}$")]
-    )
+    postal_code = models.CharField(max_length=10)
     # phone_number = models.CharField(max_length=20, validators=[PhoneValidator])
     cafe = models.ForeignKey(
         Cafe,
