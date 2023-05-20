@@ -66,7 +66,7 @@ class StoreOrder(models.Model):
     postal_code = models.CharField(
         max_length=10, validators=[RegexValidator(regex="^\d{5}$")]
     )
-    phone_number = models.CharField(max_length=20, validators=[PhoneValidator])
+    # phone_number = models.CharField(max_length=20, validators=[PhoneValidator])
     cafe = models.ForeignKey(
         Cafe,
         null=True,
