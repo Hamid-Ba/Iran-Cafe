@@ -29,10 +29,12 @@ class Product(models.Model):
     price = MoneyField(
         max_digits=10, decimal_places=0, default_currency="IRR", null=False
     )
-    image_url = models.URLField()
+    image_url = models.URLField(null=True, blank=True)
     category = models.ForeignKey(
         StoreCategory, on_delete=models.CASCADE, related_name="products"
     )
+    minimum_choice = models.IntegerField(default=1)
+    adding_count = models.IntegerField(default=1)
 
     order_count = models.IntegerField(default=0)
     created_date = models.DateTimeField(auto_now_add=True)
@@ -64,7 +66,7 @@ class StoreOrder(models.Model):
     )
     registered_date = models.DateTimeField(auto_now_add=True, editable=False)
     address = models.CharField(max_length=255)
-    postal_code = models.CharField(max_length=10)
+    postal_code = models.CharField(max_length=11)
     # phone_number = models.CharField(max_length=20, validators=[PhoneValidator])
     cafe = models.ForeignKey(
         Cafe,
