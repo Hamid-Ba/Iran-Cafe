@@ -2,9 +2,13 @@ from rest_framework import mixins
 from rest_framework import status
 from rest_framework import generics
 from rest_framework import viewsets
+from django.shortcuts import redirect
 from rest_framework import permissions
 from rest_framework import authentication
 from rest_framework.response import Response
+from django.contrib.sites.models import Site
+from django.conf import settings
+import requests
 
 from config import permissions as custom_permission
 from cafe.models import Cafe
@@ -62,7 +66,16 @@ class StoreOrderApiView(mixins.CreateModelMixin, ReturnMixinView):
                 serializer.save(cafe=cafe_qs.first())
             else:
                 serializer.save()
-        
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+            if settings.DEBUG:
+                domain = Site.objects.filter(domain__contains="127").first()
+                req_url = f"http://{domain}/api/payment/place_store_order/{serializer.data['id']}/"
+
+            else:
+                domain = Site.objects.filter(domain__contains="api.cafesiran").first()
+                req_url = f"https://{domain}/api/payment/place_store_order/{serializer.data['id']}/"
+
+            return redirect(req_url)
+            # return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

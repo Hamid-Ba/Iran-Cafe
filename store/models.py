@@ -80,7 +80,7 @@ class StoreOrder(models.Model):
     )
 
     def __str__(self):
-        return f"Store Order #{self.pk}"
+        return f"Store Order #{self.id}-{self.code}"
 
 
 class StoreOrderItem(models.Model):

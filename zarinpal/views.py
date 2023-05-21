@@ -8,6 +8,7 @@ from django.shortcuts import redirect
 import datetime
 
 from .models import Payment, StorePayment
+from cafe.models import Cafe
 from plan.models import Plan
 from store.models import StoreOrder
 from config.permissions import HasCafe
@@ -124,13 +125,15 @@ class CafesPaymentsView(
 class PlaceStoreOrderView(APIView):
     """Making Store Payment View."""
 
-    permission_classes = (HasCafe,)
+    # permission_classes = (HasCafe,)
     authentication_classes = (authentication.TokenAuthentication,)
 
-    def post(self, request, order_id, *args, **kwargs):
+    def get(self, request, order_id, *args, **kwargs):
         try:
             user = self.request.user
-            cafe = self.request.user.cafe
+            cafe = None
+            if Cafe.objects.filter(owner=user).exists():
+                cafe = self.request.user.cafe
         except:
             return Response(
                 {"detial": "شما قادر به ثبت سفارش نمی باشید"},
@@ -142,7 +145,11 @@ class PlaceStoreOrderView(APIView):
         try:
             # try to create payment if success get url to redirect it
             redirect_url = zarin_pal.payment_request(
-                int(order.total_price.amount), desc, mobile=user.phone, email=None
+                int(order.total_price.amount),
+                desc,
+                mobile=user.phone,
+                email=None,
+                is_store=True,
             )
 
             payment = StorePayment.objects.create(

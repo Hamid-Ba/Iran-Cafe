@@ -49,10 +49,7 @@ class StoreOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.StoreOrder
         fields = "__all__"
-        read_only_fields = (
-            "code",
-            "state"
-        )
+        read_only_fields = ("code", "state")
 
     def _add_items(self, order, items):
         for item in items:

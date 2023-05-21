@@ -1,4 +1,5 @@
 from zeep import Client
+from django.conf import settings
 
 
 class Zarinpal:
@@ -30,12 +31,27 @@ class Zarinpal:
         self.__zarinpal_client = Client(self.WSDL)
 
     def payment_request(
-        self, amount: int, description: str, email: str = None, mobile: str = None
+        self,
+        amount: int,
+        description: str,
+        email: str = None,
+        mobile: str = None,
+        is_store=False,
     ) -> str:
         # try to get a Reference ID
-        result = self.__zarinpal_client.service.PaymentRequest(
-            self.MERCHANT_ID, amount, description, email, mobile, self.CALLBACK_URL
-        )
+        if is_store:
+            result = self.__zarinpal_client.service.PaymentRequest(
+                self.MERCHANT_ID,
+                amount,
+                description,
+                email,
+                mobile,
+                settings.VERIFY_STORE_URL,
+            )
+        else:
+            result = self.__zarinpal_client.service.PaymentRequest(
+                self.MERCHANT_ID, amount, description, email, mobile, self.CALLBACK_URL
+            )
         # 100 means success
         if result.Status == 100:
             # convert to int and save value to self.authority

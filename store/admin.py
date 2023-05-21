@@ -34,6 +34,7 @@ class StoreOrderAdmin(admin.ModelAdmin):
     inlines = [
         StoreOrderItemInline,
     ]
+    search_fields = ["code", "fullName"]
 
 
 class StoreOrderItemAdmin(admin.ModelAdmin):
