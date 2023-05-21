@@ -51,9 +51,7 @@ class StoreOrderSerializer(serializers.ModelSerializer):
         fields = "__all__"
         read_only_fields = (
             "code",
-            "state",
-            "user",
-            "cafe",
+            "state"
         )
 
     def _add_items(self, order, items):

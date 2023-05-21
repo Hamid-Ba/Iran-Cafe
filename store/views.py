@@ -1,8 +1,10 @@
 from rest_framework import mixins
+from rest_framework import status
 from rest_framework import generics
 from rest_framework import viewsets
 from rest_framework import permissions
 from rest_framework import authentication
+from rest_framework.response import Response
 
 from config import permissions as custom_permission
 from cafe.models import Cafe
@@ -50,13 +52,17 @@ class StoreOrderApiView(mixins.CreateModelMixin, ReturnMixinView):
         user = self.request.user
         return self.queryset.filter(user=user).order_by("-registered_date")
 
-    def perform_create(self, serializer):
+    def create(self, request, *args, **kwargs):
         user = self.request.user
         cafe_qs = Cafe.objects.filter(owner=user)
+        request.data["user"] = user.id
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            if cafe_qs.exists():
+                serializer.save(cafe=cafe_qs.first())
+            else:
+                serializer.save()
+        
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        if cafe_qs.exists():
-            serializer.save(user=user, cafe=cafe_qs.first())
-        else:
-            serializer.save(user=user)
-
-        return super().perform_create(serializer)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
