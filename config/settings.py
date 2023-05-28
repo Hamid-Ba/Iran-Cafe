@@ -36,6 +36,7 @@ SITE = {"front": {"protocol": "https", "url": "cafesiran.ir"}}
 
 INSTALLED_APPS = [
     "ckeditor",
+    "django_extensions",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
