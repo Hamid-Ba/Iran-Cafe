@@ -107,6 +107,12 @@ class Cafe(models.Model):
         null=True,
         error_messages={"invalid": "مقدار وارد شده صحیح نم باشد"},
     )
+    menu_url = models.URLField(
+        max_length=250,
+        blank=True,
+        null=True,
+        error_messages={"invalid": "مقدار وارد شده صحیح نم باشد"},
+    )
     telegram_id = models.CharField(max_length=100, blank=True, null=True)
     instagram_id = models.CharField(max_length=100, blank=True, null=True)
     google_map_url = models.URLField(

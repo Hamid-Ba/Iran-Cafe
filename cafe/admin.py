@@ -78,6 +78,7 @@ class CafeAdmin(admin.ModelAdmin):
                 "classes": ("collapse",),
                 "fields": (
                     "desc",
+                    "menu_url",
                     "view_count",
                 ),
             },
