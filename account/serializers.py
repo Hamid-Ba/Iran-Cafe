@@ -76,10 +76,13 @@ class AuthenticationSerializer(serializers.Serializer):
         user.save()
 
         # Send Otp Code
-        kavenegar = KavenegarSMS()
-        kavenegar.otp(user.phone, otp)
-        kavenegar.send()
-
+        try:
+            kavenegar = KavenegarSMS()
+            kavenegar.otp(user.phone, otp)
+            kavenegar.send()
+        except:
+            raise serializers.ValidationError("kavenegar error")
+        
         return user
 
 
