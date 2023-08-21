@@ -224,8 +224,8 @@ class MenuItem(models.Model):
     title = models.CharField(max_length=125, null=False, blank=False)
     image_url = models.URLField(
         max_length=250,
-        blank=False,
-        null=False,
+        blank=True,
+        null=True,
         error_messages={"invalid": "مقدار وارد شده صحیح نم باشد"},
     )
     desc = models.TextField(null=False, blank=False)
@@ -409,7 +409,7 @@ class OrderItem(models.Model):
     # item = models.ForeignKey(MenuItem, on_delete=models.DO_NOTHING,related_name='items')
     menu_item_id = models.BigIntegerField(null=False, blank=False)
     title = models.CharField(max_length=125, null=False, blank=False)
-    image_url = models.CharField(max_length=250, null=False, blank=False)
+    image_url = models.CharField(max_length=250, null=True, blank=True)
     desc = models.TextField(null=False, blank=False)
     price = MoneyField(
         max_digits=10, decimal_places=0, default_currency="IRR", null=False
