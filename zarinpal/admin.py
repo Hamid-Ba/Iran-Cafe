@@ -1,8 +1,10 @@
+from jalali_date.admin import ModelAdminJalaliMixin
+
 from django.contrib import admin
 from .models import Payment, StorePayment
 
 
-class PaymentAdmin(admin.ModelAdmin):
+class PaymentAdmin(ModelAdminJalaliMixin,admin.ModelAdmin):
     """Payment admin"""
 
     list_display = [
@@ -17,7 +19,7 @@ class PaymentAdmin(admin.ModelAdmin):
     ]
     list_display_links = ["cafe", "plan", "pay_amount", "created_date"]
     ordering = ["id"]
-
+    list_editable = ("payed_date",)
     search_fields = ["plan__title", "cafe__code"]
 
     @admin.display(ordering="plan__title")
@@ -25,7 +27,7 @@ class PaymentAdmin(admin.ModelAdmin):
         return obj.plan.title
 
 
-class StorePaymentAdmin(admin.ModelAdmin):
+class StorePaymentAdmin(ModelAdminJalaliMixin,admin.ModelAdmin):
     """Store Payment admin"""
 
     list_display = [
@@ -41,7 +43,8 @@ class StorePaymentAdmin(admin.ModelAdmin):
     ]
     list_display_links = ["cafe", "user", "order", "pay_amount", "created_date"]
     ordering = ["id"]
-
+    list_editable = ("payed_date",)
+    
     search_fields = ["user__phone", "user__fullName", "cafe__code"]
 
 

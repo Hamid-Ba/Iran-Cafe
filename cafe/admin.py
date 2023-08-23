@@ -1,4 +1,7 @@
+from jalali_date.admin import ModelAdminJalaliMixin
+
 from django.contrib import admin
+
 from cafe.models import (
     Bartender,
     Cafe,
@@ -15,7 +18,7 @@ from cafe.models import (
 )
 
 
-class CafeAdmin(admin.ModelAdmin):
+class CafeAdmin(ModelAdminJalaliMixin,admin.ModelAdmin):
     """Cafe Admin Model"""
 
     list_display = [
@@ -32,7 +35,7 @@ class CafeAdmin(admin.ModelAdmin):
         "city",
     ]
     list_display_links = ["code", "owner", "persian_title", "english_title"]
-    list_editable = ["state"]
+    list_editable = ["state","charge_expired_date"]
     list_filter = ["province", "state", "type", "charge_expired_date", "is_open"]
     sortable_by = ["state", "type", "view_count", "charge_expired_date", "is_open"]
 
