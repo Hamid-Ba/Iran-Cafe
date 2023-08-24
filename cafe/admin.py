@@ -51,6 +51,7 @@ class CafeAdmin(ModelAdminJalaliMixin,admin.ModelAdmin):
                     "persian_title",
                     "english_title",
                     "image_url",
+                    "tax"
                 ),
             },
         ),

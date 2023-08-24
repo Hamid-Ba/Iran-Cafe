@@ -134,6 +134,7 @@ class Cafe(models.Model):
     latitude = models.CharField(max_length=125, blank=True, null=True)
     longitude = models.CharField(max_length=125, blank=True, null=True)
     is_open = models.BooleanField(default=False)
+    tax = models.SmallIntegerField(default=0)
 
     owner = models.OneToOneField(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="cafe"
