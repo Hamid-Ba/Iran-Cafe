@@ -67,5 +67,5 @@ class KavenegarSMS:
                 return e
             except HTTPException as e:
                 return e
-        # else:
-        #     raise APIException
+        else:
+            raise APIException
