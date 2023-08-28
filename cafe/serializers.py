@@ -56,9 +56,9 @@ class CreateCafeSerializer(serializers.ModelSerializer):
             kavenegar.register(cafe.phone)
             kavenegar.send()
         except:
-            tasks.inform_manager_when_cafe_has_problem_to_receiving_sms(cafe.id)
+            tasks.inform_manager_when_cafe_has_problem_to_receiving_sms.delay(cafe.id)
             
-        tasks.inform_manager_when_cafe_registered(cafe.id)
+        tasks.inform_manager_when_cafe_registered.delay(cafe.id)
 
         return cafe
 
