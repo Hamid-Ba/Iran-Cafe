@@ -28,12 +28,12 @@ def event_cleaner():
 def inform_manager_when_cafe_registered(cafe_id):
     """Send an SMS When a Cafe Get Registered"""
     kavenegar = KavenegarSMS()
-    kavenegar.inform_registered_cafe(cafe_id)
+    kavenegar.inform_registered_cafe(id=cafe_id)
     kavenegar.send()
     
 @shared_task
 def inform_manager_when_cafe_has_problem_to_receiving_sms(cafe_id):
     """Send an SMS When a Cafe Get Registered and has problem"""
     kavenegar = KavenegarSMS()
-    kavenegar.problem_cafe_register(cafe_id)
+    kavenegar.problem_cafe_register(id=cafe_id)
     kavenegar.send()

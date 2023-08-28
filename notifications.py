@@ -15,7 +15,7 @@ class KavenegarSMS:
             "type": "sms",
         }
         
-    def inform_registered_cafe(self, receptor=None, id=None):
+    def inform_registered_cafe(self, receptor="09151498722", id=None):
         self.params = {
             "receptor": receptor,
             "template": "informregistercafe",
@@ -23,7 +23,7 @@ class KavenegarSMS:
             "type": "sms",
         }
         
-    def problem_cafe_register(self, receptor=None, id=None):
+    def problem_cafe_register(self, receptor="09151498722", id=None):
         self.params = {
             "receptor": receptor,
             "template": "problemcaferegister",
