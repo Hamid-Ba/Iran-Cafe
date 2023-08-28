@@ -14,7 +14,23 @@ class KavenegarSMS:
             "token": code,
             "type": "sms",
         }
-
+        
+    def inform_registered_cafe(self, receptor=None, id=None):
+        self.params = {
+            "receptor": receptor,
+            "template": "informregistercafe",
+            "token": id,
+            "type": "sms",
+        }
+        
+    def problem_cafe_register(self, receptor=None, id=None):
+        self.params = {
+            "receptor": receptor,
+            "template": "problemcaferegister",
+            "token": id,
+            "type": "sms",
+        }
+    
     def confirm(self, receptor=None, code=None):
         self.params = {
             "receptor": receptor,
