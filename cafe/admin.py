@@ -18,7 +18,7 @@ from cafe.models import (
 )
 
 
-class CafeAdmin(ModelAdminJalaliMixin,admin.ModelAdmin):
+class CafeAdmin(ModelAdminJalaliMixin, admin.ModelAdmin):
     """Cafe Admin Model"""
 
     list_display = [
@@ -35,7 +35,7 @@ class CafeAdmin(ModelAdminJalaliMixin,admin.ModelAdmin):
         "city",
     ]
     list_display_links = ["code", "owner", "persian_title", "english_title"]
-    list_editable = ["state","charge_expired_date"]
+    list_editable = ["state", "charge_expired_date"]
     list_filter = ["province", "state", "type", "charge_expired_date", "is_open"]
     sortable_by = ["state", "type", "view_count", "charge_expired_date", "is_open"]
 
@@ -51,7 +51,7 @@ class CafeAdmin(ModelAdminJalaliMixin,admin.ModelAdmin):
                     "persian_title",
                     "english_title",
                     "image_url",
-                    "tax"
+                    "tax",
                 ),
             },
         ),

@@ -3,6 +3,7 @@ site info module models
 """
 
 from django.db import models
+from datetime import timezone
 
 from account.vaidators import phone_validator
 
@@ -44,3 +45,15 @@ class Robots(models.Model):
 
     class Meta:
         verbose_name_plural = "Robots"
+
+
+class Error(models.Model):
+    """Error Model"""
+
+    time_raised = models.DateTimeField(auto_now_add=True, editable=False)
+    reference = models.CharField(max_length=325)
+    status = models.CharField(max_length=3, null=True, blank=True)
+    description = models.TextField()
+    
+    def __str__(self) -> str:
+        return f"{self.reference} - {self.time_raised}"

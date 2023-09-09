@@ -7,6 +7,7 @@ from django.conf import settings
 from django.shortcuts import redirect
 import datetime
 
+from siteinfo.models import Error
 from .models import Payment, StorePayment
 from cafe.models import Cafe
 from plan.models import Plan
@@ -58,6 +59,11 @@ class PlaceOrderView(APIView):
 
         # if got error from zarinpal
         except ZarinpalError as e:
+            Error.objects.create(
+                reference="Zarinpal - views.py - PlaceOrderView",
+                status=str(type(e).__name__),
+                description=str(e),
+            )
             return Response(e)
 
 
@@ -168,6 +174,11 @@ class PlaceStoreOrderView(APIView):
 
         # if got error from zarinpal
         except ZarinpalError as e:
+            Error.objects.create(
+                reference="Zarinpal - views.py - PlaceStoreOrderView",
+                status=str(type(e).__name__),
+                description=str(e),
+            )
             return Response(e)
 
 

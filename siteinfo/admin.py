@@ -1,9 +1,10 @@
 """
 site info module admin models
 """
+from jalali_date.admin import ModelAdminJalaliMixin
 from django.contrib import admin
 
-from siteinfo.models import AboutUs, ContactUs, Robots
+from siteinfo.models import AboutUs, ContactUs, Robots, Error
 
 
 class AboutUsAdmin(admin.ModelAdmin):
@@ -51,7 +52,13 @@ class RobotsAdmin(admin.ModelAdmin):
     list_display = ["id", "name"]
     list_display_links = ["id", "name"]
 
+class ErrorAdmin(ModelAdminJalaliMixin, admin.ModelAdmin):
+    """Error Admin Model"""
+    
+    list_display = ["id", "time_raised", "reference", "status"]
+    list_display_links = ["id", "reference", "status"]
 
 admin.site.register(AboutUs, AboutUsAdmin)
 admin.site.register(ContactUs, ContactUsAdmin)
 admin.site.register(Robots, RobotsAdmin)
+admin.site.register(Error, ErrorAdmin)

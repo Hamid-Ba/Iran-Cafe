@@ -6,6 +6,8 @@ from uuid import uuid4
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from random import randint
+
+from siteinfo.models import Error
 from cafe.models import (
     Bartender,
     Cafe,
@@ -55,9 +57,14 @@ class CreateCafeSerializer(serializers.ModelSerializer):
             kavenegar = KavenegarSMS()
             kavenegar.register(cafe.phone)
             kavenegar.send()
-        except:
+        except Exception as e:
+            Error.objects.create(
+                reference="Cafe - serializers.py - kavenegar",
+                status=str(type(e).__name__),
+                description=str(e),
+            )
             tasks.inform_manager_when_cafe_has_problem_to_receiving_sms.delay(cafe.id)
-            
+
         tasks.inform_manager_when_cafe_registered.delay(cafe.id)
 
         return cafe

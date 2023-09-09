@@ -4,6 +4,7 @@ Comment Module Serializer
 from rest_framework import serializers
 from datetime import date
 
+from siteinfo.models import Error
 from cafe.models import Bartender, Cafe, MenuItem
 from comment.models import Comment
 
@@ -56,7 +57,12 @@ class CreateCommentSerializer(serializers.ModelSerializer):
             comment.save()
             return comment
 
-        except:
+        except Exception as e:
+            Error.objects.create(
+                reference="Comment - serializers.py - create customer comment",
+                status=str(type(e).__name__),
+                description=str(e),
+            )
             msg = "مشکلی ایجاد شده"
             raise serializers.ValidationError(msg)
 
@@ -114,7 +120,12 @@ class ResponseCommentSerializer(serializers.ModelSerializer):
 
             return response
 
-        except:
+        except Exception as e:
+            Error.objects.create(
+                reference="Comment - serializers.py - create response comment",
+                status=str(type(e).__name__),
+                description=str(e),
+            )
             msg = "مشکلی ایجاد شده"
             raise serializers.ValidationError(msg)
 

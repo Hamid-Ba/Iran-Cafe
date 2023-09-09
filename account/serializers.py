@@ -7,6 +7,7 @@ from django.contrib.auth import get_user_model, authenticate
 from random import randint
 
 from cafe.serializers import UserCafeSerializer
+from siteinfo.models import Error
 from notifications import KavenegarSMS
 
 
@@ -80,9 +81,14 @@ class AuthenticationSerializer(serializers.Serializer):
             kavenegar = KavenegarSMS()
             kavenegar.otp(user.phone, otp)
             kavenegar.send()
-        except:
+        except Exception as e:
+            Error.objects.create(
+                reference="Account - serializers.py - kavenegar",
+                status=str(type(e).__name__),
+                description=str(e),
+            )
             raise serializers.ValidationError("kavenegar error")
-        
+
         return user
 
 

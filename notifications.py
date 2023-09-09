@@ -14,7 +14,7 @@ class KavenegarSMS:
             "token": code,
             "type": "sms",
         }
-        
+
     def inform_registered_cafe(self, id=None):
         self.params = {
             "receptor": "09151498722",
@@ -22,7 +22,7 @@ class KavenegarSMS:
             "token": id,
             "type": "sms",
         }
-        
+
     def problem_cafe_register(self, id=None):
         self.params = {
             "receptor": "09151498722",
@@ -30,7 +30,7 @@ class KavenegarSMS:
             "token": id,
             "type": "sms",
         }
-    
+
     def confirm(self, receptor=None, code=None):
         self.params = {
             "receptor": receptor,

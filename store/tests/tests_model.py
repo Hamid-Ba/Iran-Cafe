@@ -110,7 +110,9 @@ class StoreOrderTest(TestCase):
         )
 
     def test_store_order_string_representation(self):
-        self.assertEqual(str(self.order), f"Store Order #{self.order.pk}-{self.order.code}")
+        self.assertEqual(
+            str(self.order), f"Store Order #{self.order.pk}-{self.order.code}"
+        )
 
     def test_store_order_code_not_null(self):
         self.assertIsNotNone(self.order.code)
