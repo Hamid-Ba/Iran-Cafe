@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -o errexit
+set -o nounset
+
+watchmedo auto-restart -d config/ -p "*.py" -- celery -A config worker --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler

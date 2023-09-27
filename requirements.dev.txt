@@ -1,0 +1,7 @@
+-r requirements.txt
+
+argh==0.26.2
+PyYAML==6.0
+watchdog==2.1.6
+flake8
+black

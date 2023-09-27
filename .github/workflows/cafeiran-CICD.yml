@@ -1,0 +1,22 @@
+name: Cafe Iran Docker CI-CD
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup Docker Compose
+      run: make up
+    - name: Monitor Logs
+      run: make show_logs
+    - name: Take Test From CafeIran App
+      run: make test

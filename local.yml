@@ -1,0 +1,100 @@
+version: "3.9"
+
+services:
+  cafeiran_api:
+    build:
+      context: .
+      dockerfile: ./docker/local/django/DockerFile
+    command: /start
+    container_name: cafeiran_api
+    volumes:
+      - .:/app
+      - static_volume:/app/static
+      - media_volume:/app/media
+    ports:
+      - "8000:8000"
+    depends_on:
+      - cafeiran_postgres
+    env_file:
+      - ./.envs/.local/.django
+      - ./.envs/.local/.postgres
+    networks:
+      - devops_proj
+  
+  cafeiran_postgres:
+    image: postgres:13-alpine
+    container_name: cafeiran_postgres
+    volumes:
+      - local_postgres_data:/var/lib/postgresql/data
+    env_file:
+      - ./.envs/.local/.postgres
+    networks:
+      - devops_proj
+  
+  redis:
+    image: redis:6-alpine
+    container_name: redis
+    networks:
+      - devops_proj
+
+  cafeiran_worker:
+    build:
+      context: .
+      dockerfile: ./docker/local/django/DockerFile
+    command: /start_worker
+    container_name: cafeiran_worker
+    volumes:
+      - .:/app
+    env_file:
+      - ./.envs/.local/.django
+      - ./.envs/.local/.postgres
+    depends_on:
+      - cafeiran_postgres
+      - redis
+    networks:
+      - devops_proj
+
+  cafeiran_beat:
+    build:
+      context: .
+      dockerfile: ./docker/local/django/DockerFile
+    command: /start_beat
+    container_name: cafeiran_beat
+    volumes:
+      - .:/app
+    env_file:
+      - ./.envs/.local/.django
+      - ./.envs/.local/.postgres
+    depends_on:
+      - cafeiran_postgres
+      - redis
+    networks:
+      - devops_proj
+
+  cafeiran_flower:
+    build:
+      context: .
+      dockerfile: ./docker/local/django/DockerFile
+    command: /start_flower
+    container_name: cafeiran_flower
+    volumes:
+      - .:/app
+    env_file:
+      - ./.envs/.local/.django
+      - ./.envs/.local/.postgres
+    ports:
+      - "5555:5555"
+    depends_on:
+      - cafeiran_postgres
+      - redis
+    networks:
+      - devops_proj
+
+networks:
+  devops_proj:
+    driver: bridge
+
+volumes:
+  local_postgres_data: {}
+  static_volume:
+  media_volume:

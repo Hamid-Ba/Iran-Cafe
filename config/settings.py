@@ -11,7 +11,10 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 import os
+import environ
 from pathlib import Path
+
+env = environ.Env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,12 +24,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-sm-_ny_7*z%qc&qroi+q5oh*4kq7)t^511u7$va9y^8@qg3^*4"
+SECRET_KEY = env("DJANGO_SECRET_KEY", default="None")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True#env.bool("DJANGO_DEBUG", False)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 SITE_ID = 1
 
@@ -77,6 +80,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+CSRF_TRUSTED_ORIGINS = ["http://*.127.0.0.1", "https://*.127.0.0.1", "http://localhost:8080", "http://localhost:8000", "http://87.107.165.182", "https://87.107.165.182", "http://api.cafesiran.ir", "https://api.cafesiran.ir", "http://cafesiran.ir", "https://cafesiran.ir"]
 CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = "config.urls"
@@ -103,17 +107,28 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "IranCafe",
-        "HOST": "localhost",
-        "USER": "postgres",
-        "PASSWORD": "09155490422HamidBa",
-        "PORT": "5432",
-    }
-}
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": "IranCafe",
+#         "HOST": "localhost",
+#         "USER": "postgres",
+#         "PASSWORD": "09155490422HamidBa",
+#         "PORT": "5432",
+#     }
+# }
 
+# if DEBUG:
+#     DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
+#     }
+# }    
+# else:
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+DATABASES = {"default": env.db("DATABASE_URL")}
+DATABASES["default"]["ATOMIC_REQUESTS"] = True  
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -190,7 +205,6 @@ VERIFY_STORE_URL = "http://127.0.0.1:8000/api/payment/verify_store_order/"
 # SELLER_LOCAL_VERIFY = "http://cafesiran.ir/dashboard/verify/"
 FRONT_VERIFY = "https://cafesiran.ir/dashboard/verify/"
 
-REDIS_HOST = "localhost"
-REDIS_PORT = 6379
-
-CELERY_BROKER_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
+CELERY_BROKER_URL = env("CELERY_BROKER")
+CELERY_RESULT_BACKEND = env("CELERY_BACKEND")
+CELERY_TIMEZONE = "Asia/Tehran"

@@ -1,0 +1,11 @@
+CELERY_BROKER=redis://redis:6379/0
+CELERY_BACKEND=redis://redis:6379/0
+
+CELERY_FLOWER_USER=admin
+CELERY_FLOWER_PASSWORD=admin
+
+SIGNING_KEY=AehY7up6zVl7bgG1WgK2Ze1OIM7KomoZ9i3CXQe5H61vM-q84h4
+DJANGO_SECRET_KEY=django-insecure-sm-_ny_7*z%qc&qroi+q5oh*4kq7)t^511u7$va9y^8@qg3^*4
+
+CSRF_TRUSTED_ORIGINS=http://*.127.0.0.1, https://*.127.0.0.1, http://localhost:8080, http://localhost:8000, http://87.107.165.182, https://87.107.165.182, http://api.cafesiran.ir, https://api.cafesiran.ir, http://cafesiran.ir, https://cafesiran.ir
+DJANGO_DEBUG=True
