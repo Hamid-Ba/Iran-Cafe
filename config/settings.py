@@ -27,7 +27,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = env("DJANGO_SECRET_KEY", default="None")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool("DJANGO_DEBUG", False)
+DEBUG = env.bool("DJANGO_DEBUG", True)
+DOCKER = env.bool("DOCKER", False)
 
 ALLOWED_HOSTS = ["*"]
 
@@ -107,17 +108,21 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": "IranCafe",
-#         "HOST": "localhost",
-#         "USER": "postgres",
-#         "PASSWORD": "09155490422HamidBa",
-#         "PORT": "5432",
-#     }
-# }
-
+if not DOCKER:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": "IranCafe",
+            "HOST": "localhost",
+            "USER": "postgres",
+            "PASSWORD": "09155490422HamidBa",
+            "PORT": "5432",
+        }
+    }
+else :
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    DATABASES = {"default": env.db("DATABASE_URL")}
+    DATABASES["default"]["ATOMIC_REQUESTS"] = True  
 # if DEBUG:
 #     DATABASES = {
 #     "default": {
@@ -126,9 +131,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 #     }
 # }    
 # else:
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-DATABASES = {"default": env.db("DATABASE_URL")}
-DATABASES["default"]["ATOMIC_REQUESTS"] = True  
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -205,9 +208,11 @@ VERIFY_STORE_URL = "http://127.0.0.1:8000/api/payment/verify_store_order/"
 # SELLER_LOCAL_VERIFY = "http://cafesiran.ir/dashboard/verify/"
 FRONT_VERIFY = "https://cafesiran.ir/dashboard/verify/"
 
-# CELERY_BROKER_URL = "redis://redis:6379/0"
-# CELERY_RESULT_BACKEND = "redis://redis:6379/0"
+if not DOCKER:
+    CELERY_BROKER_URL = "redis://redis:6379/0"
+    CELERY_RESULT_BACKEND = "redis://redis:6379/0"
 
-CELERY_BROKER_URL = env("CELERY_BROKER")
-CELERY_RESULT_BACKEND = env("CELERY_BACKEND")
-CELERY_TIMEZONE = "Asia/Tehran"
+else :
+    CELERY_BROKER_URL = env("CELERY_BROKER")
+    CELERY_RESULT_BACKEND = env("CELERY_BACKEND")
+    CELERY_TIMEZONE = "Asia/Tehran"
