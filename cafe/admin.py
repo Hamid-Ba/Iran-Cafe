@@ -15,6 +15,7 @@ from cafe.models import (
     Customer,
     Event,
     Branch,
+    Table
 )
 
 
@@ -324,7 +325,14 @@ class BranchAdmin(admin.ModelAdmin):
         qs = super().get_queryset(request)
         qs = qs.select_related("cafe", "province", "city")
         return qs
-
+    
+class TableAdmin(admin.ModelAdmin):
+    """Table admin"""
+    
+    list_display = ("id", "cafe", "number")
+    list_display_links = ("id", "cafe")
+    list_editable = ("number",)
+    search_fields = ("cafe__code",)
 
 admin.site.register(Cafe, CafeAdmin)
 admin.site.register(Category, CategoryAdmin)
@@ -337,3 +345,4 @@ admin.site.register(Bartender, BartenderAdmin)
 admin.site.register(Customer, CustomerAdmin)
 admin.site.register(Event, EventAdmin)
 admin.site.register(Branch, BranchAdmin)
+admin.site.register(Table, TableAdmin)

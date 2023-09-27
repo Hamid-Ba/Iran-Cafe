@@ -178,6 +178,12 @@ class Table(models.Model):
     
     cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE, related_name="tables")
 
+    def __str__(self) -> str:
+        return f"Table : {self.number} - Cafe : {self.cafe.code}"
+    
+    class Meta:
+        unique_together = ('number', 'cafe',)
+    
 class Branch(models.Model):
     """Branch model"""
 
