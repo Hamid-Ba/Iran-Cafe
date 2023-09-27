@@ -209,8 +209,8 @@ VERIFY_STORE_URL = "http://127.0.0.1:8000/api/payment/verify_store_order/"
 FRONT_VERIFY = "https://cafesiran.ir/dashboard/verify/"
 
 if not DOCKER:
-    CELERY_BROKER_URL = "redis://redis:6379/0"
-    CELERY_RESULT_BACKEND = "redis://redis:6379/0"
+    CELERY_BROKER_URL = "redis://127.0.0.1:6379/0"
+    CELERY_RESULT_BACKEND = "redis://127.0.0.1:6379/0"
 
 else :
     CELERY_BROKER_URL = env("CELERY_BROKER")
