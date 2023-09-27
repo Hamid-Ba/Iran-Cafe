@@ -166,24 +166,29 @@ class Cafe(models.Model):
                 self.charge_expired_date += timedelta(days=days)
         self.save()
 
+
 class Table(models.Model):
     """Table Model"""
-    
-    number = models.PositiveIntegerField(blank=False,null=False)
+
+    number = models.PositiveIntegerField(blank=False, null=False)
     qr_code = models.URLField(
         max_length=250,
         blank=True,
         null=True,
     )
-    
+
     cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE, related_name="tables")
 
     def __str__(self) -> str:
         return f"Table : {self.number} - Cafe : {self.cafe.code}"
-    
+
     class Meta:
-        unique_together = ('number', 'cafe',)
-    
+        unique_together = (
+            "number",
+            "cafe",
+        )
+
+
 class Branch(models.Model):
     """Branch model"""
 
@@ -201,12 +206,14 @@ class Branch(models.Model):
     def __str__(self) -> str:
         return f"{self.cafe.code}-{self.province}-{self.city}-{self.street}"
 
+
 def category_image_file_path(instance, filename):
     """Generate file path for category image"""
     ext = os.path.splitext(filename)[1]
     filename = f"{uuid4()}.{ext}"
 
     return os.path.join("uploads", "category", filename)
+
 
 class Category(models.Model):
     """Category model"""

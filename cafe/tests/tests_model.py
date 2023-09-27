@@ -21,7 +21,7 @@ from cafe.models import (
     Reservation,
     Event,
     Branch,
-    Table
+    Table,
 )
 from province.models import Province, City
 
@@ -391,24 +391,25 @@ class BranchTest(TestCase):
             if key != "province" and key != "city":
                 self.assertEqual(getattr(branch, key), value)
 
+
 class TableTest(TestCase):
     """Table Model Test"""
-    
+
     def setUp(self) -> None:
         self.cafe = baker.make("cafe.Cafe")
         self.city = baker.make("province.City")
         self.province = baker.make("province.Province")
-    
+
     def test_create_table_should_work_properly(self):
         """Test Create Table Model"""
         payload = {
-            "number" : 1,
-            "qr_code" : "https://api.qrserver.com/v1/create-qr-code/?data=https://cafesiran.ir&size=200x200"
+            "number": 1,
+            "qr_code": "https://api.qrserver.com/v1/create-qr-code/?data=https://cafesiran.ir&size=200x200",
         }
-        
+
         table = Table.objects.create(cafe=self.cafe, **payload)
-        
+
         self.assertEqual(table.cafe, self.cafe)
-        
+
         for key, value in payload.items():
             self.assertEqual(getattr(table, key), value)

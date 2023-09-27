@@ -52,11 +52,13 @@ class RobotsAdmin(admin.ModelAdmin):
     list_display = ["id", "name"]
     list_display_links = ["id", "name"]
 
+
 class ErrorAdmin(ModelAdminJalaliMixin, admin.ModelAdmin):
     """Error Admin Model"""
-    
+
     list_display = ["id", "time_raised", "reference", "status"]
     list_display_links = ["id", "reference", "status"]
+
 
 admin.site.register(AboutUs, AboutUsAdmin)
 admin.site.register(ContactUs, ContactUsAdmin)

@@ -18,6 +18,7 @@ router.register("bartender", views.BartenderViewSet)
 router.register("customer", views.CustomerViewSet)
 router.register("events", views.EventModelViewSet)
 router.register("branches", views.BranchViewSet)
+router.register("tables", views.TableViewSet)
 
 app_name = "cafe"
 

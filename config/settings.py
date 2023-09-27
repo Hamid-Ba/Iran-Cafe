@@ -81,7 +81,18 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-CSRF_TRUSTED_ORIGINS = ["http://*.127.0.0.1", "https://*.127.0.0.1", "http://localhost:8080", "http://localhost:8000", "http://87.107.165.182", "https://87.107.165.182", "http://api.cafesiran.ir", "https://api.cafesiran.ir", "http://cafesiran.ir", "https://cafesiran.ir"]
+CSRF_TRUSTED_ORIGINS = [
+    "http://*.127.0.0.1",
+    "https://*.127.0.0.1",
+    "http://localhost:8080",
+    "http://localhost:8000",
+    "http://87.107.165.182",
+    "https://87.107.165.182",
+    "http://api.cafesiran.ir",
+    "https://api.cafesiran.ir",
+    "http://cafesiran.ir",
+    "https://cafesiran.ir",
+]
 CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = "config.urls"
@@ -119,17 +130,17 @@ if not DOCKER:
             "PORT": "5432",
         }
     }
-else :
+else:
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
     DATABASES = {"default": env.db("DATABASE_URL")}
-    DATABASES["default"]["ATOMIC_REQUESTS"] = True  
+    DATABASES["default"]["ATOMIC_REQUESTS"] = True
 # if DEBUG:
 #     DATABASES = {
 #     "default": {
 #         "ENGINE": "django.db.backends.sqlite3",
 #         "NAME": BASE_DIR / "db.sqlite3",
 #     }
-# }    
+# }
 # else:
 
 
@@ -212,7 +223,7 @@ if not DOCKER:
     CELERY_BROKER_URL = "redis://127.0.0.1:6379/0"
     CELERY_RESULT_BACKEND = "redis://127.0.0.1:6379/0"
 
-else :
+else:
     CELERY_BROKER_URL = env("CELERY_BROKER")
     CELERY_RESULT_BACKEND = env("CELERY_BACKEND")
     CELERY_TIMEZONE = "Asia/Tehran"

@@ -21,6 +21,7 @@ from cafe.models import (
     Suggestion,
     Event,
     Branch,
+    Table,
 )
 from province.serializers import CitySerializer, ProvinceSerializer
 from notifications import KavenegarSMS
@@ -589,3 +590,35 @@ class CafeBranchesSerializer(serializers.ModelSerializer):
         )
 
         return rep
+
+
+class TableSerializer(serializers.ModelSerializer):
+    """Table Serializer"""
+
+    cafe = CafeSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = Table
+        fields = ["id", "number", "qr_code", "cafe"]
+        read_only_fields = ["id", "qr_code", "cafe"]
+
+    def validate(self, attrs):
+        cafe = attrs.get("cafe")
+        number = attrs.get("number")
+
+        if Table.objects.filter(cafe=cafe, number=number).exists():
+            msg = "شما این میز را قبلا تعریف کرده اید"
+            raise serializers.ValidationError(msg)
+
+        return attrs
+
+    def create(self, validated_data):
+        cafe = validated_data.pop("cafe", None)
+        number = validated_data.pop("number", None)
+        qr_code_data = f"https://cafeiran.ir?cc={cafe.code}?table={number}"
+        qr_code = f"https://api.qrserver.com/v1/create-qr-code/?data={qr_code_data}&size=200x200"
+
+        table = Table.objects.create(cafe=cafe, number=number, qr_code=qr_code)
+        table.save()
+
+        return table

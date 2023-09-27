@@ -54,6 +54,6 @@ class Error(models.Model):
     reference = models.CharField(max_length=325)
     status = models.CharField(max_length=3, null=True, blank=True)
     description = models.TextField()
-    
+
     def __str__(self) -> str:
         return f"{self.reference} - {self.time_raised}"
