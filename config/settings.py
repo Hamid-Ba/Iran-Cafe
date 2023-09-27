@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = env("DJANGO_SECRET_KEY", default="None")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True#env.bool("DJANGO_DEBUG", False)
+DEBUG = env.bool("DJANGO_DEBUG", False)
 
 ALLOWED_HOSTS = ["*"]
 
@@ -204,6 +204,9 @@ VERIFY_URL = "http://127.0.0.1:8000/api/payment/verify_order/"
 VERIFY_STORE_URL = "http://127.0.0.1:8000/api/payment/verify_store_order/"
 # SELLER_LOCAL_VERIFY = "http://cafesiran.ir/dashboard/verify/"
 FRONT_VERIFY = "https://cafesiran.ir/dashboard/verify/"
+
+# CELERY_BROKER_URL = "redis://redis:6379/0"
+# CELERY_RESULT_BACKEND = "redis://redis:6379/0"
 
 CELERY_BROKER_URL = env("CELERY_BROKER")
 CELERY_RESULT_BACKEND = env("CELERY_BACKEND")
