@@ -18,7 +18,6 @@ class PaymentAdmin(ModelAdminJalaliMixin, admin.ModelAdmin):
         "created_date",
     ]
     list_display_links = ["cafe", "plan", "pay_amount", "created_date"]
-    ordering = ["id"]
     list_editable = ("payed_date",)
     search_fields = ["plan__title", "cafe__code"]
 
@@ -42,7 +41,6 @@ class StorePaymentAdmin(ModelAdminJalaliMixin, admin.ModelAdmin):
         "created_date",
     ]
     list_display_links = ["cafe", "user", "order", "pay_amount", "created_date"]
-    ordering = ["id"]
     list_editable = ("payed_date",)
 
     search_fields = ["user__phone", "user__fullName", "cafe__code"]

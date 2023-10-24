@@ -38,7 +38,7 @@ class CafeAdmin(ModelAdminJalaliMixin, admin.ModelAdmin):
         "city",
     ]
     list_display_links = ["code", "owner", "persian_title", "english_title"]
-    list_editable = ["state", "charge_expired_date"]
+    list_editable = ["state", "charge_expired_date", "is_notify_expired_from_back", "is_notify_expired_from_front"]
     list_filter = ["province", "state", "type", "charge_expired_date", "is_open"]
     sortable_by = ["state", "type", "view_count", "charge_expired_date", "is_open"]
 
