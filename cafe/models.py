@@ -2,10 +2,12 @@
 Cafe Module Models
 """
 import os
+import pytz
 from uuid import uuid4
 from django.db import models
 from django.conf import settings
 from datetime import datetime, timedelta
+
 from djmoney.models.fields import MoneyField
 
 from cafe.validators import phone_validator
@@ -154,12 +156,17 @@ class Cafe(models.Model):
     def charge_cafe(self, days, is_first=False):
         """Charge Cafe Date By Given Days"""
         # First Free Charge
+        utc=pytz.UTC
+        
         if is_first and not self.charge_expired_date:
             self.charge_expired_date = datetime.now() + timedelta(days=days)
         # When Purchesd Plan
         elif not is_first:
             # When Date is expired
-            if self.charge_expired_date and self.charge_expired_date < datetime.now():
+            charge_expired_date = self.charge_expired_date.replace(tzinfo=utc)
+            now = datetime.now().replace(tzinfo=utc)
+            
+            if self.charge_expired_date and charge_expired_date < now:
                 self.charge_expired_date = datetime.now() + timedelta(days=days)
             # When has charge but want to charge
             else:
