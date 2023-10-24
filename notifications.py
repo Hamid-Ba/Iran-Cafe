@@ -54,6 +54,14 @@ class KavenegarSMS:
             "token": receptor,
             "type": "sms",
         }
+        
+    def expired_cafe(self, receptor=None, cafe_name=None):
+        self.params = {
+            "receptor": receptor,
+            "template": "irancafeexpired",
+            "token": cafe_name,
+            "type": "sms",
+        }
 
     def send(self):
         flag = True

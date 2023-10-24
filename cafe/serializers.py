@@ -65,6 +65,7 @@ class CreateCafeSerializer(serializers.ModelSerializer):
                 description=str(e),
             )
             tasks.inform_manager_when_cafe_has_problem_to_receiving_sms.delay(cafe.id)
+            tasks.inf
 
         tasks.inform_manager_when_cafe_registered.delay(cafe.id)
 

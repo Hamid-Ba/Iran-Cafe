@@ -75,6 +75,12 @@ class CafeManager(models.Manager):
         return self.filter(
             code=cafe_code, state="C", charge_expired_date__gte=datetime.now()
         ).first()
+        
+    def get_expired_cafes(self):
+        """Return Expired Cafes"""
+        return self.filter(
+            state="C", charge_expired_date__lt=datetime.now()
+        ).all()
 
 
 class Cafe(models.Model):
@@ -96,6 +102,11 @@ class Cafe(models.Model):
         PENDING = "P", "Pending"
         CONFIRMED = "C", "Confirmed"
         REJECTED = "R", "Rejected"
+        
+    class CafeExpiredStatus(models.TextChoices):
+        Informed = "I", "Informed"
+        Need_To_Be_Informed = "N", "Need To Be Informed"
+        Charged = "C", "Charged"
 
     code = models.CharField(max_length=5, unique=True, null=True, blank=True)
     persian_title = models.CharField(max_length=85, null=False, blank=False)
@@ -133,6 +144,12 @@ class Cafe(models.Model):
     )
     view_count = models.BigIntegerField(default=0)
     charge_expired_date = models.DateTimeField(null=True, blank=True)
+    is_notify_expired_from_back = models.CharField(
+        max_length=1, default=CafeExpiredStatus.Charged, choices=CafeExpiredStatus.choices
+    )
+    is_notify_expired_from_front = models.CharField(
+        max_length=1, default=CafeExpiredStatus.Charged, choices=CafeExpiredStatus.choices
+    )
     latitude = models.CharField(max_length=125, blank=True, null=True)
     longitude = models.CharField(max_length=125, blank=True, null=True)
     is_open = models.BooleanField(default=False)
@@ -171,6 +188,15 @@ class Cafe(models.Model):
             # When has charge but want to charge
             else:
                 self.charge_expired_date += timedelta(days=days)
+                
+            self.is_notify_expired_from_back = self.CafeExpiredStatus.Charged
+        self.save()
+        
+    def set_notified_expired(self, is_back=True, value="I"):
+        if is_back:
+            self.is_notify_expired_from_back=value
+        else:
+            self.is_notify_expired_from_front=value
         self.save()
 
 

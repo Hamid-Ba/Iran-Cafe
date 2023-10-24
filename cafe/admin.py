@@ -28,6 +28,8 @@ class CafeAdmin(ModelAdminJalaliMixin, admin.ModelAdmin):
         "persian_title",
         "english_title",
         "charge_expired_date",
+        "is_notify_expired_from_back",
+        "is_notify_expired_from_front",
         "view_count",
         "state",
         "is_open",
@@ -60,7 +62,7 @@ class CafeAdmin(ModelAdminJalaliMixin, admin.ModelAdmin):
             "Status Info",
             {
                 "classes": ("collapse",),
-                "fields": ("state", "type", "charge_expired_date"),
+                "fields": ("state", "type", "charge_expired_date", "is_notify_expired_from_back", "is_notify_expired_from_front"),
             },
         ),
         (
