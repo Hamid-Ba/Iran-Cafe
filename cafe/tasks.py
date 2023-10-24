@@ -31,7 +31,7 @@ def notify_cafe_charge_expired():
     
     for cafe in cafes:
         if cafe.is_notify_expired_from_back == "N":
-            inform_cafe_owner_expired_message.delay(cafe.owner.phone, cafe.persian_title)
+            inform_cafe_owner_expired_message.delay(cafe.owner.phone, cafe.code)
             cafe.set_notified_expired(is_back=True, value="I")
             
 @shared_task
