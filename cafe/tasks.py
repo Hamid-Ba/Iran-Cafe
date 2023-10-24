@@ -43,6 +43,7 @@ def is_cafe_charge_expired():
     for cafe in cafes:
         if cafe.is_notify_expired_from_back == "C":
             cafe.set_notified_expired(is_back=True, value="N")
+            cafe.set_notified_expired(is_back=False, value="N")
 
 @shared_task
 def inform_manager_when_cafe_registered(cafe_id):
