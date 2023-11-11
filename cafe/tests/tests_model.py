@@ -413,3 +413,49 @@ class TableTest(TestCase):
 
         for key, value in payload.items():
             self.assertEqual(getattr(table, key), value)
+
+    def test_get_count_of_cafe_table_should_work_properly(self):
+        """Test Get Count Of Cafe Table"""
+
+        cafe_2 = baker.make("cafe.Cafe")
+
+        self.assertEqual(self.cafe.tables_count(), 0)
+
+        payload_1 = {
+            "number": 1,
+            "qr_code": "https://api.qrserver.com/v1/create-qr-code/?data=https://cafesiran.ir&size=200x200",
+        }
+
+        Table.objects.create(cafe=self.cafe, **payload_1)
+
+        self.assertEqual(self.cafe.tables_count(), 1)
+
+        payload_2 = {
+            "number": 2,
+            "qr_code": "https://api.qrserver.com/v1/create-qr-code/?data=https://cafesiran.ir&size=200x200",
+        }
+
+        Table.objects.create(cafe=self.cafe, **payload_2)
+
+        self.assertEqual(cafe_2.tables_count(), 0)
+        self.assertEqual(self.cafe.tables_count(), 2)
+
+    def test_get_cafe_last_table_should_work_properly(self):
+        """Test Get Cafe Last Table"""
+
+        payload_1 = {
+            "number": 1,
+            "qr_code": "https://api.qrserver.com/v1/create-qr-code/?data=https://cafesiran.ir&size=200x200",
+        }
+        table_1 = Table.objects.create(cafe=self.cafe, **payload_1)
+
+        payload_2 = {
+            "number": 2,
+            "qr_code": "https://api.qrserver.com/v1/create-qr-code/?data=https://cafesiran.ir&size=200x200",
+        }
+        table_2 = Table.objects.create(cafe=self.cafe, **payload_2)
+
+        last_table = self.cafe.last_table()
+
+        self.assertEqual(last_table, table_2)
+        self.assertNotEqual(last_table, table_1)

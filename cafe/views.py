@@ -622,26 +622,55 @@ class SingleBranchView(generics.RetrieveAPIView):
     queryset = Branch.objects.filter(is_active=True)
 
 
-class TableViewSet(mixins.ListModelMixin,mixins.DestroyModelMixin,BaseMixinView):
+class TableViewSet(
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.CreateModelMixin,
+    viewsets.GenericViewSet,
+):
     serializer_class = serializers.TableSerializer
     queryset = Table.objects.all()
     permission_classes = (HasCafe,)
     pagination_class = StandardPagination
+    authentication_classes = (authentication.TokenAuthentication,)
 
     def get_queryset(self):
-        return self.queryset.filter(cafe=self.request.user.cafe).order_by(
-            "-number"
-        )
+        return self.queryset.filter(cafe=self.request.user.cafe).order_by("-number")
 
-    def create(self, request, *args, **kwargs):
-        number = self.request.data["number"]
-        if Table.objects.filter(cafe=request.user.cafe, number=number).exists():
-            return Response(
-                {"message": "شما این میز را قبلا تعریف کرده اید"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+    # def create(self, request, *args, **kwargs):
+    #     number = self.request.data["number"]
+    #     if Table.objects.filter(cafe=request.user.cafe, number=number).exists():
+    #         return Response(
+    #             {"message": "شما این میز را قبلا تعریف کرده اید"},
+    #             status=status.HTTP_400_BAD_REQUEST,
+    #         )
 
-        return super().create(request, *args, **kwargs)
+    #     return super().create(request, *args, **kwargs)
 
     def perform_create(self, serializer):
         return serializer.save(cafe=self.request.user.cafe)
+
+
+class DeleteTableAPIView(views.APIView):
+    """Delete Table Api View"""
+
+    permission_classes = (HasCafe,)
+    authentication_classes = (authentication.TokenAuthentication,)
+
+    def delete(self, request):
+        cafe = request.user.cafe
+
+        if cafe.tables_count() <= 0:
+            return Response(
+                {"message": "شما هیچ میزی ندارید"}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        last_table = cafe.last_table()
+
+        last_table.delete()
+        # last_table.save()
+
+        return Response(
+            {"message": "میز شما با موفقیت حذف گردید"},
+            status=status.HTTP_204_NO_CONTENT,
+        )

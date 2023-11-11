@@ -145,7 +145,7 @@ class CreateUpdateMenuItemSerializer(serializers.ModelSerializer):
             "is_active",
             "calorie",
             "category",
-            "sort_index"
+            "sort_index",
         ]
 
     def create(self, validated_data):
@@ -602,21 +602,22 @@ class TableSerializer(serializers.ModelSerializer):
     class Meta:
         model = Table
         fields = ["id", "number", "qr_code", "cafe"]
-        read_only_fields = ["id", "qr_code", "cafe"]
+        read_only_fields = ["id", "number", "qr_code", "cafe"]
 
-    def validate(self, attrs):
-        cafe = attrs.get("cafe")
-        number = attrs.get("number")
+    # def validate(self, attrs):
+    #     cafe = attrs.get("cafe")
+    #     number = attrs.get("number")
 
-        if Table.objects.filter(cafe=cafe, number=number).exists():
-            msg = "شما این میز را قبلا تعریف کرده اید"
-            raise serializers.ValidationError(msg)
+    #     if Table.objects.filter(cafe=cafe, number=number).exists():
+    #         msg = "شما این میز را قبلا تعریف کرده اید"
+    #         raise serializers.ValidationError(msg)
 
-        return attrs
+    #     return attrs
 
     def create(self, validated_data):
         cafe = validated_data.pop("cafe", None)
-        number = validated_data.pop("number", None)
+
+        number = cafe.tables_count() + 1
         qr_code_data = f"https://cafeiran.ir?cc={cafe.code}?table={number}"
         qr_code = f"https://api.qrserver.com/v1/create-qr-code/?data={qr_code_data}&size=200x200"
 
@@ -624,3 +625,8 @@ class TableSerializer(serializers.ModelSerializer):
         table.save()
 
         return table
+
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep["cafe"] = {"id": rep["cafe"].get("id"), "code": rep["cafe"].get("code")}
+        return rep

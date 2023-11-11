@@ -62,4 +62,5 @@ urlpatterns = [
     path(
         "cafe_branch/<int:pk>/", views.SingleBranchView.as_view(), name="single_branch"
     ),
+    path("table/delete/", views.DeleteTableAPIView.as_view(), name="delete_table"),
 ]

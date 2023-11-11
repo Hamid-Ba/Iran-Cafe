@@ -54,7 +54,7 @@ class KavenegarSMS:
             "token": receptor,
             "type": "sms",
         }
-        
+
     def expired_cafe(self, receptor=None, cafe_name=None):
         self.params = {
             "receptor": receptor,
