@@ -269,7 +269,7 @@ class MenuItemManager(models.Manager):
         return (
             self.filter(cafe__id=cafe_id)
             .filter(is_active=True)
-            .order_by("-id")
+            .order_by("sort_index")
             .values()
         )
 
@@ -291,6 +291,7 @@ class MenuItem(models.Model):
     is_active = models.BooleanField(default=True)
     calorie = models.FloatField(null=True, blank=True)
     order_count = models.IntegerField(default=0)
+    sort_index = models.PositiveIntegerField(null=True, blank=True, default=1)
 
     cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE, related_name="menu_items")
     category = models.ForeignKey(
