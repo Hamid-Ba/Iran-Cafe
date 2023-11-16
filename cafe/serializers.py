@@ -619,7 +619,7 @@ class TableSerializer(serializers.ModelSerializer):
 
         number = cafe.tables_count() + 1
 
-        qr_code_data = f"https://cafeiran.ir/cafes/{cafe.id}?table={number}"
+        qr_code_data = f"https://cafesiran.ir/cafes/{cafe.id}?table={number}"
         qr_code = f"https://api.qrserver.com/v1/create-qr-code/?data={qr_code_data}&size=200x200"
 
         table = Table.objects.create(cafe=cafe, number=number, qr_code=qr_code)
