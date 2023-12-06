@@ -77,7 +77,7 @@ class CafeEventsTest(TestCase):
 
         self.assertEqual(self.cafe.state, "C")
         self.assertTrue(self.cafe.charge_expired_date)
-        
+
         valid_date = [
             (datetime.now() + timedelta(days=30)).date(),
             (datetime.now() + timedelta(days=31)).date(),

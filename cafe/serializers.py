@@ -121,14 +121,13 @@ class UserCafeSerializer(CafeSerializer):
 
 class CateogrySerializer(serializers.ModelSerializer):
     """Cateogry Serializer"""
-
+    
     class Meta:
         """Meta Class"""
 
         model = Category
         fields = "__all__"
-        read_only_fields = ["id"]
-
+        read_only_fields = ["id","cafe"]
 
 class CreateUpdateMenuItemSerializer(serializers.ModelSerializer):
     """Cafe Serializer For Register Cafe"""

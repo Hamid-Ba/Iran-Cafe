@@ -268,6 +268,10 @@ class Category(models.Model):
     title = models.CharField(max_length=72, null=False, blank=False)
     image = models.ImageField(null=False, upload_to=category_image_file_path)
 
+    cafe = models.ForeignKey(
+        Cafe, null=True, blank=True, on_delete=models.CASCADE, related_name="categories"
+    )
+
     def __str__(self):
         return self.title
 

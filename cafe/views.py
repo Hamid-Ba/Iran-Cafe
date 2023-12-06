@@ -250,10 +250,40 @@ class CategoryView(generics.ListAPIView):
     """Category List View."""
 
     serializer_class = serializers.CateogrySerializer
-    queryset = Category.objects.all()
+    queryset = Category.objects.filter(cafe=None)
 
     def get_queryset(self):
         return self.queryset.order_by("order")
+
+
+class CategoryViewSet(mixins.ListModelMixin, mixins.DestroyModelMixin, BaseMixinView):
+    """Category View Set."""
+
+    serializer_class = serializers.CateogrySerializer
+    permission_classes = (HasCafe,)
+    queryset = Category.objects.all()
+    pagination_class = StandardPagination
+
+    def get_queryset(self):
+        return self.queryset.filter(cafe__owner=self.request.user).order_by("order")
+
+    def perform_create(self, serializer):
+        return serializer.save(cafe=self.request.user.cafe)
+    
+    def perform_update(self, serializer):
+        return serializer.save(cafe=self.request.user.cafe)
+
+
+class CafeCategoryListView(generics.ListAPIView):
+    """Cafe Category List View"""
+
+    serializer_class = serializers.CateogrySerializer
+    queryset = Category.objects.filter(cafe=None)
+
+    def get(self, request, cafe_id, *args, **kwargs):
+        self.queryset = self.queryset | Category.objects.filter(cafe__id=cafe_id)
+        self.queryset = self.queryset.order_by("order")
+        return super().get(request, *args, **kwargs)
 
 
 class MenuItemViewSet(mixins.ListModelMixin, mixins.DestroyModelMixin, BaseMixinView):

@@ -107,9 +107,9 @@ class CafeAdmin(ModelAdminJalaliMixin, admin.ModelAdmin):
 class CategoryAdmin(admin.ModelAdmin):
     """Category Admin Model"""
 
-    list_display = ["title", "order"]
+    list_display = ["title", "order", "cafe"]
     list_display_links = ["title"]
-    sortable_by = ["title", "order"]
+    sortable_by = ["title", "order", "cafe"]
 
 
 class MenuItemAdmin(admin.ModelAdmin):

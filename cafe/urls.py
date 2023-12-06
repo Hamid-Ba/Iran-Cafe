@@ -9,6 +9,7 @@ from cafe import views
 
 router = DefaultRouter()
 router.register("cafes", views.CafeViewSet)
+router.register("categories", views.CategoryViewSet)
 router.register("menuitems", views.MenuItemViewSet)
 router.register("galleries", views.GalleryViewSet)
 router.register("suggestions", views.SuggestionView)
@@ -25,6 +26,11 @@ app_name = "cafe"
 urlpatterns = [
     path("", include(router.urls)),
     path("category_list", views.CategoryView.as_view(), name="category_list"),
+    path(
+        "cafe_category/<int:cafe_id>/",
+        views.CafeCategoryListView.as_view(),
+        name="cafe_category",
+    ),
     path(
         "menuitem_list/<int:cafe_id>/",
         views.MenuItemListView.as_view(),
