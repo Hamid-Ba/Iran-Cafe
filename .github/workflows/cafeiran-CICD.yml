@@ -22,7 +22,9 @@ jobs:
       run: make test 
   
   Deploy:
+    if: ${{ always() && contains(join(needs.*.result, ','), 'success') }}
     name: Deploy
+    needs: Test
     runs-on: ubuntu-latest
 
     steps:
