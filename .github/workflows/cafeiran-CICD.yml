@@ -40,6 +40,7 @@ jobs:
             cd ${{secrets.BACK_PATH}}
             git pull --no-ff
             source venv/bin/activate
+            pip install -r requirements2.txt
             python manage.py migrate
             sudo systemctl restart gunicorn
             sudo systemctl restart nginx
