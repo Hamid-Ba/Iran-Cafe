@@ -36,3 +36,9 @@ class RobotsView(View):
     def get(self, request):
         robot = get_object_or_404(Robots, pk=1)
         return HttpResponse(robot.text, content_type="text/plain")
+
+class CI_CDView(View):
+    """CI/CD View"""
+
+    def get(self, request):
+        return HttpResponse("CI/CD", content_type="text/plain")
