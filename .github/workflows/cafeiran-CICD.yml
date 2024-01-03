@@ -1,4 +1,4 @@
-name: Cafe Iran Docker CI-CD
+name: Cafe Iran Back CI-CD
 
 on:
   push:
