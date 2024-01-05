@@ -262,7 +262,6 @@ class CategoryViewSet(mixins.ListModelMixin, mixins.DestroyModelMixin, BaseMixin
     serializer_class = serializers.CateogrySerializer
     permission_classes = (HasCafe,)
     queryset = Category.objects.all()
-    pagination_class = StandardPagination
 
     def get_queryset(self):
         return self.queryset.filter(cafe__owner=self.request.user).order_by("order")

@@ -266,7 +266,7 @@ class Category(models.Model):
 
     order = models.IntegerField(null=True, blank=True, default=1)
     title = models.CharField(max_length=72, null=False, blank=False)
-    image = models.ImageField(null=False, upload_to=category_image_file_path)
+    image = models.ImageField(null=True, blank=True, upload_to=category_image_file_path)
 
     cafe = models.ForeignKey(
         Cafe, null=True, blank=True, on_delete=models.CASCADE, related_name="categories"
