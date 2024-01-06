@@ -19,3 +19,5 @@ django-jalali==6.0.0
 django-jalali-date==1.0.2
 psycopg2==2.9.3
 model-bakery==1.11.0
+channels==4.0.0
+daphne==4.0.0
