@@ -318,6 +318,7 @@ class CreateOrderSerializer(serializers.ModelSerializer):
                 "type": "order.message",
                 "order": f"{order.id}",
                 "cafe": f"{cafe.id}",
+                "message": "سفارش جدیدی اضافه شد"
             },
         )
 
