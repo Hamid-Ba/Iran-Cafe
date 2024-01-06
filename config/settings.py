@@ -39,6 +39,8 @@ SITE = {"front": {"protocol": "https", "url": "cafesiran.ir"}}
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
+    "channels",
     "ckeditor",
     "django_extensions",
     "django.contrib.admin",
@@ -114,6 +116,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "config.wsgi.application"
+ASGI_APPLICATION = "config.asgi.application"
 
 
 # Database
@@ -227,3 +230,9 @@ else:
     CELERY_BROKER_URL = env("CELERY_BROKER")
     CELERY_RESULT_BACKEND = env("CELERY_BACKEND")
     CELERY_TIMEZONE = "Asia/Tehran"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
+}

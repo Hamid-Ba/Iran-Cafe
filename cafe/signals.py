@@ -42,7 +42,8 @@ def pre_save_image(sender, instance, *args, **kwargs):
                 os.remove(old_img)
     except:
         pass
-    
+
+
 @receiver(post_delete, sender=Category)
 def post_delete_category_image(sender, instance, *args, **kwargs):
     """Clean Old Image file"""
@@ -50,7 +51,8 @@ def post_delete_category_image(sender, instance, *args, **kwargs):
         instance.image.delete(save=False)
     except:
         pass
-    
+
+
 @receiver(pre_save, sender=Category)
 def pre_save_image(sender, instance, *args, **kwargs):
     """instance old image file will delete from os"""

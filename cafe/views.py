@@ -268,7 +268,7 @@ class CategoryViewSet(mixins.ListModelMixin, mixins.DestroyModelMixin, BaseMixin
 
     def perform_create(self, serializer):
         return serializer.save(cafe=self.request.user.cafe)
-    
+
     def perform_update(self, serializer):
         return serializer.save(cafe=self.request.user.cafe)
 

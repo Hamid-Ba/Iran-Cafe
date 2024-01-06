@@ -37,6 +37,7 @@ class RobotsView(View):
         robot = get_object_or_404(Robots, pk=1)
         return HttpResponse(robot.text, content_type="text/plain")
 
+
 class CI_CDView(View):
     """CI/CD View"""
 

@@ -6,6 +6,8 @@ from uuid import uuid4
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from random import randint
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 from siteinfo.models import Error
 from cafe.models import (
@@ -121,13 +123,14 @@ class UserCafeSerializer(CafeSerializer):
 
 class CateogrySerializer(serializers.ModelSerializer):
     """Cateogry Serializer"""
-    
+
     class Meta:
         """Meta Class"""
 
         model = Category
         fields = "__all__"
-        read_only_fields = ["id","cafe"]
+        read_only_fields = ["id", "cafe"]
+
 
 class CreateUpdateMenuItemSerializer(serializers.ModelSerializer):
     """Cafe Serializer For Register Cafe"""
@@ -299,7 +302,24 @@ class CreateOrderSerializer(serializers.ModelSerializer):
         self._add_items(order, items)
         order.save()
 
+        # Notify WebSocket consumers about the new order
+        self._send_websocket_notification(order, cafe)
+
         return order
+
+    def _send_websocket_notification(self, order, cafe):
+        channel_layer = get_channel_layer()
+        group_name = "order_group"  # Change this to your actual group name
+
+        # Send a message to the WebSocket group
+        async_to_sync(channel_layer.group_send)(
+            group_name,
+            {
+                "type": "order.message",
+                "order": f"{order.id}",
+                "cafe": f"{cafe.id}",
+            },
+        )
 
 
 class CafeOrderSerializer(serializers.ModelSerializer):
