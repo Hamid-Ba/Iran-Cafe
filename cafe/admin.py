@@ -109,6 +109,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
     list_display = ["title", "order", "cafe"]
     list_display_links = ["title"]
+    list_editable = ["cafe", "order"]
     sortable_by = ["title", "order", "cafe"]
 
 
