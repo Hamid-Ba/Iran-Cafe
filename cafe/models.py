@@ -289,6 +289,12 @@ class MenuItemManager(models.Manager):
             .order_by("sort_index")
             .values()
         )
+        
+    def get_list_by(self, cafe, category):
+        return (
+            self.filter(cafe__id=cafe.id)
+            .filter(category__id=category.id)
+        )
 
 
 class MenuItem(models.Model):
