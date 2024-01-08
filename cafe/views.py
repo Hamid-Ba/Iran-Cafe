@@ -277,10 +277,10 @@ class CafeCategoryListView(generics.ListAPIView):
     """Cafe Category List View"""
 
     serializer_class = serializers.CateogrySerializer
-    queryset = Category.objects.filter(cafe=None)
+    queryset = Category.objects.all()
 
     def get(self, request, cafe_id, *args, **kwargs):
-        self.queryset = self.queryset | Category.objects.filter(cafe__id=cafe_id)
+        self.queryset = Category.objects.filter(cafe__id=cafe_id)
         self.queryset = self.queryset.order_by("order")
         return super().get(request, *args, **kwargs)
 
