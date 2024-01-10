@@ -8,6 +8,7 @@ from drf_spectacular.utils import (
     OpenApiParameter,
     OpenApiTypes,
 )
+
 from django.contrib.auth import get_user_model
 from rest_framework import (
     mixins,
@@ -36,7 +37,11 @@ from cafe.models import (
 from rest_framework.response import Response
 from cafe import serializers
 
-from config.permissions import AllowToFastRegister, HasCafe
+from config.permissions import (
+    AllowToFastRegister,
+    HasCafe,
+    UnauthenticatedCreatePermission,
+)
 
 
 class BaseMixinView(
@@ -414,12 +419,19 @@ class ReservationViewSet(
         return serializer.save(user=self.request.user)
 
 
-class OrderViewSet(mixins.ListModelMixin, BaseMixinView):
+class OrderViewSet(
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    viewsets.GenericViewSet,
+):
     """Order ViewSet"""
 
     serializer_class = serializers.OrderSerializer
     queryset = Order.objects.all()
     pagination_class = StandardPagination
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
         state = "all"
@@ -457,25 +469,38 @@ class OrderViewSet(mixins.ListModelMixin, BaseMixinView):
 
     def get_serializer_class(self):
         """Specify The Serializer class"""
-        if self.action == "create":
-            self.serializer_class = serializers.CreateOrderSerializer
-
         if self.action == "update" or self.action == "partial_update":
             self.serializer_class = serializers.PatchOrderSerializer
 
         return self.serializer_class
 
-    def create(self, request, *args, **kwargs):
+
+class PlaceOrderAPI(generics.CreateAPIView):
+    serializer_class = serializers.CreateOrderSerializer
+    queryset = Order.objects.all()
+
+    def post(self, request, *args, **kwargs):
         """Create a New Order For Authenticated Normal User"""
+        phone = request.data.get("phone")
+
+        # Validate phone here (e.g., check if it's provided, is valid, etc.)
+        if not phone:
+            return Response(
+                data={"message": "شماره موبایل خود را وارد نمایید"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        user, created = get_user_model().objects.get_or_create(phone=phone)
+
         serializer = serializers.CreateOrderSerializer(data=request.data)
         if serializer.is_valid():
-            if Cafe.objects.filter(owner=self.request.user).exists():
+            if Cafe.objects.filter(owner=user).exists():
                 return Response(
                     data={"message": "شما قادر به ثبت سفارش نمی باشید"},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-            serializer.save(user=self.request.user)
+            serializer.save(user=user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

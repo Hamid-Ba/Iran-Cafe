@@ -6,6 +6,7 @@ from django.test import TestCase
 from rest_framework.test import APIClient
 from django.urls import reverse
 from rest_framework import status
+from model_bakery import baker
 from django.contrib.auth import get_user_model
 from djmoney.money import Money
 from cafe.models import Cafe, Category, MenuItem, Order
@@ -13,6 +14,7 @@ from cafe.models import Cafe, Category, MenuItem, Order
 from province.models import City, Province
 
 ORDER_URL = reverse("cafe:order-list")
+PLACE_ORDER_URL = reverse("cafe:place_order")
 
 
 def order_detail_url(order_id):
@@ -102,6 +104,11 @@ class PublicTest(TestCase):
 
     def setUp(self):
         self.client = APIClient()
+        # self.category_1 = create_category("Hot Baverage")
+        # self.category_2 = create_category("Cold Liquid")
+        self.category_1 = baker.make("cafe.Category")
+        self.category_2 = baker.make("cafe.Category")
+        self.cafe = baker.make("cafe.Cafe")
 
     def test_return_unauthorized(self):
         """Test if user is unauthorized"""
@@ -113,23 +120,9 @@ class PublicTest(TestCase):
         res = self.client.post(ORDER_URL)
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
-
-class PrivateTest(TestCase):
-    """Tests Which Need User To Be Authenticated"""
-
-    def setUp(self):
-        self.client = APIClient()
-        self.province = create_province("Tehran", "Tehran")
-        self.city = create_city("Tehran", "Tehran", self.province)
-        self.owner = create_user("09151498722", "123456")
-        self.user = create_user("09151498721", "123456")
-        self.cafe = create_cafe(self.province, self.city, self.owner)
-        self.category_1 = create_category("Hot Baverage")
-        self.category_2 = create_category("Cold Liquid")
-
-    def test_book_order_should_work_properly(self):
-        """Test Book Order"""
-        self.client.force_authenticate(self.user)
+    def test_place_order_should_work_properly(self):
+        """Test Place Order"""
+        # self.client.force_authenticate(self.user)
         menu_item = {
             "image_url": "https://no_image.png",
             "title": "test title",
@@ -144,10 +137,13 @@ class PrivateTest(TestCase):
         )
         MenuItem.objects.create(category=self.category_1, cafe=self.cafe, **menu_item)
 
+        phone = "09151498722"
+        user = create_user(phone, "123456")
+
         payload = {
             "total_price": "30000",
             "desc": "test description",
-            "phone": "09151498722",
+            "phone": phone,
             "num_of_table": 2,
             "items": [
                 {
@@ -169,26 +165,30 @@ class PrivateTest(TestCase):
             ],
             "cafe": self.cafe.id,
         }
-        res = self.client.post(ORDER_URL, payload, format="json")
+        res = self.client.post(PLACE_ORDER_URL, payload, format="json")
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
 
         order = Order.objects.all().order_by("-registered_date").first()
 
         self.assertEqual(order.items.count(), 2)
         self.assertEqual(order.cafe, self.cafe)
-        self.assertEqual(order.user, self.user)
+        self.assertEqual(order.user, user)
         self.assertEqual(len(order.code), 5)
         self.assertEqual(order.total_price, Money(30000, "IRR"))
 
     def test_cafe_owner_can_not_register_order(self):
         """Test That Cafe Owner Can Not Register Order"""
-        self.client.force_authenticate(self.user)
-        create_cafe(self.province, self.city, self.user)
+
+        phone = "09151498722"
+        user = create_user(phone, "123456")
+        province = baker.make("province.Province")
+        city = baker.make("province.City")
+        create_cafe(province, city, user)
 
         payload = {
             "total_price": "20000",
             "desc": "test description",
-            "phone": "09151498720",
+            "phone": phone,
             "items": [
                 {
                     "menu_item_id": 1,
@@ -202,10 +202,80 @@ class PrivateTest(TestCase):
             "cafe": self.cafe.id,
         }
 
-        res = self.client.post(ORDER_URL, payload, format="json")
+        res = self.client.post(PLACE_ORDER_URL, payload, format="json")
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
-        self.assertTrue(Cafe.objects.filter(owner=self.user).exists())
+        self.assertTrue(Cafe.objects.filter(owner=user).exists())
+
+
+class PrivateTest(TestCase):
+    """Tests Which Need User To Be Authenticated"""
+
+    def setUp(self):
+        self.client = APIClient()
+        self.province = create_province("Tehran", "Tehran")
+        self.city = create_city("Tehran", "Tehran", self.province)
+        self.owner = create_user("09151498722", "123456")
+        self.user = create_user("09151498721", "123456")
+        self.cafe = create_cafe(self.province, self.city, self.owner)
+        self.category_1 = create_category("Hot Baverage")
+        self.category_2 = create_category("Cold Liquid")
+
+    # def test_book_order_should_work_properly(self):
+    #     """Test Book Order"""
+    #     # self.client.force_authenticate(self.user)
+    #     menu_item = {
+    #         "image_url": "https://no_image.png",
+    #         "title": "test title",
+    #         "desc": "test description",
+    #         "price": Money(10000, "IRR"),
+    #     }
+    #     item_1 = MenuItem.objects.create(
+    #         category=self.category_1, cafe=self.cafe, **menu_item
+    #     )
+    #     item_2 = MenuItem.objects.create(
+    #         category=self.category_2, cafe=self.cafe, **menu_item
+    #     )
+    #     MenuItem.objects.create(category=self.category_1, cafe=self.cafe, **menu_item)
+
+    #     phone = "09151498722"
+    #     user = create_user(phone, "123456")
+
+    #     payload = {
+    #         "total_price": "30000",
+    #         "desc": "test description",
+    #         "phone": phone,
+    #         "num_of_table": 2,
+    #         "items": [
+    #             {
+    #                 "menu_item_id": item_1.id,
+    #                 "title": item_1.title,
+    #                 "image_url": item_1.image_url,
+    #                 "desc": item_1.desc,
+    #                 "price": 10000,
+    #                 "count": 2,
+    #             },
+    #             {
+    #                 "menu_item_id": item_2.id,
+    #                 "title": item_2.title,
+    #                 "image_url": item_2.image_url,
+    #                 "desc": item_2.desc,
+    #                 "price": 10000,
+    #                 "count": 1,
+    #             },
+    #         ],
+    #         "cafe": self.cafe.id,
+    #     }
+    #     res = self.client.post(ORDER_URL, payload, format="json")
+    #     self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+
+    #     order = Order.objects.all().order_by("-registered_date").first()
+
+    #     self.assertEqual(order.items.count(), 2)
+    #     self.assertEqual(order.cafe, self.cafe)
+    #     self.assertEqual(order.user, self.user)
+    #     self.assertEqual(len(order.code), 5)
+    #     self.assertEqual(order.total_price, Money(30000, "IRR"))
 
     def test_change_order_state_should_work_properly(self):
         """Test Changing order state should work"""

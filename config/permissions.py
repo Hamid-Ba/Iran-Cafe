@@ -22,3 +22,8 @@ class AllowToFastRegister(BasePermission):
             return False
 
         return True
+
+
+class UnauthenticatedCreatePermission(BasePermission):
+    def has_permission(self, request, view):
+        return view.action == "create" or request.user and request.user.is_authenticated

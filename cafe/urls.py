@@ -37,6 +37,11 @@ urlpatterns = [
         name="menuitem_list",
     ),
     path(
+        "order_place/",
+        views.PlaceOrderAPI.as_view(),
+        name="place_order",
+    ),
+    path(
         "province_cafes/<str:province_slug>/",
         views.CafesProvinceListView.as_view(),
         name="cafes_by_province",
