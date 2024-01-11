@@ -315,7 +315,7 @@ class CreateOrderSerializer(serializers.ModelSerializer):
         async_to_sync(channel_layer.group_send)(
             group_name,
             {
-                "type": "order.message",
+                "type": "order_message",
                 "order": f"{order.id}",
                 "cafe": f"{cafe.id}",
                 "message": "سفارش جدیدی اضافه شد",
