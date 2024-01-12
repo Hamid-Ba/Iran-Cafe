@@ -308,19 +308,27 @@ class CreateOrderSerializer(serializers.ModelSerializer):
             self._send_order_notification(order, cafe)
         except Exception as e:
             print("We Are In Test Mode")
-            
+
         return order
 
     def _send_order_notification(self, order, cafe):
-        """Send A message to order WS"""    
-        url = "ws://127.0.0.1:8000/ws/order/"  
+        """Send A message to order WS"""
+        url = "ws://127.0.0.1:8000/ws/order/"
         if not settings.DEBUG:
             url = "ws://127.0.0.1:8001/ws/order/"
-            
+
         ws = create_connection(url)
-        ws.send(json.dumps({"order":f"{order.id}", "cafe":f"{cafe.id}", "message":"سفارش جدیدی اضافه شد"}))
-        result =  ws.recv()
-        print (result)
+        ws.send(
+            json.dumps(
+                {
+                    "order": f"{order.id}",
+                    "cafe": f"{cafe.id}",
+                    "message": "سفارش جدیدی اضافه شد",
+                }
+            )
+        )
+        result = ws.recv()
+        print(result)
         ws.close()
 
 

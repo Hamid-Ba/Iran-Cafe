@@ -13,7 +13,7 @@ class OrderConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_discard(self.group_name, self.channel_name)
 
     async def receive(self, text_data):
-        text_data_json = json.loads(text_data)    
+        text_data_json = json.loads(text_data)
         try:
             text_data_json = json.loads(text_data)
             try:
@@ -32,7 +32,7 @@ class OrderConsumer(AsyncWebsocketConsumer):
                     "cafe": f"{cafe}",
                     "message": f"{message}",
                     "client": self.channel_name,
-                }
+                },
             )
         except json.JSONDecodeError:
             await self.send(text_data=json.dumps({"message": "invalid data"}))
@@ -46,19 +46,20 @@ class OrderConsumer(AsyncWebsocketConsumer):
         # Send the cafe message to the current client
         if self.channel_name != sender_name:
             await self.send(text_data=json.dumps({"order": order, "cafe": cafe}))
-        
+
         if self.channel_name == sender_name:
             await self.send(text_data=json.dumps({"message": message}))
+
 
 class PagerConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.group_name = "pager_group"
         await self.channel_layer.group_add(self.group_name, self.channel_name)
         await self.accept()
-        
+
     async def disconnect(self, code):
         await self.channel_layer.group_discard(self.group_name, self.channel_name)
-    
+
     async def receive(self, text_data=None, bytes_data=None):
         try:
             text_data_json = json.loads(text_data)
@@ -74,7 +75,7 @@ class PagerConsumer(AsyncWebsocketConsumer):
                     "type": "pager_message",
                     "cafe": cafe,
                     "client": self.channel_name,
-                }
+                },
             )
         except json.JSONDecodeError:
             await self.send(text_data=json.dumps({"message": "invalid data"}))
@@ -86,6 +87,6 @@ class PagerConsumer(AsyncWebsocketConsumer):
         # Send the cafe message to the current client
         if self.channel_name != sender_name:
             await self.send(text_data=json.dumps({"cafe": cafe}))
-        
+
         if self.channel_name == sender_name:
             await self.send(text_data=json.dumps({"message": "success"}))
