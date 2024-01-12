@@ -1,13 +1,15 @@
 """
 Cafe Module Serializers
 """
+import json
 from django_jalali.serializers.serializerfield import JDateField, JDateTimeField
 from uuid import uuid4
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from random import randint
-from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
+from websocket import create_connection
+
+from django.conf import settings
 
 from siteinfo.models import Error
 from cafe.models import (
@@ -303,24 +305,21 @@ class CreateOrderSerializer(serializers.ModelSerializer):
         order.save()
 
         # Notify WebSocket consumers about the new order
-        self._send_websocket_notification(order, cafe)
+        self._send_order_notification(order, cafe)
 
         return order
 
-    def _send_websocket_notification(self, order, cafe):
-        channel_layer = get_channel_layer()
-        group_name = "order_group"  # Change this to your actual group name
-
-        # Send a message to the WebSocket group
-        async_to_sync(channel_layer.group_send)(
-            group_name,
-            {
-                "type": "order_message",
-                "order": f"{order.id}",
-                "cafe": f"{cafe.id}",
-                "message": "سفارش جدیدی اضافه شد",
-            },
-        )
+    def _send_order_notification(self, order, cafe):
+        """Send A message to order WS"""
+        url = "ws://127.0.0.1:8000/ws/order/"
+        if not settings.DEBUG:
+            url = "ws://api.cafesiran.ir/ws/order/"
+            
+        ws = create_connection(url)
+        ws.send(json.dumps({"order":f"{order.id}", "cafe":f"{cafe.id}", "message":"سفارش جدیدی اضافه شد"}))
+        result =  ws.recv()
+        print (result)
+        ws.close()
 
 
 class CafeOrderSerializer(serializers.ModelSerializer):
