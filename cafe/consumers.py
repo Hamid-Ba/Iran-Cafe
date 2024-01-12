@@ -40,6 +40,7 @@ class OrderConsumer(AsyncWebsocketConsumer):
     async def order_message(self, event):
         order = event["order"]
         cafe = event["cafe"]
+        message = event["message"]
         sender_name = event["client"]
 
         # Send the cafe message to the current client
@@ -47,7 +48,7 @@ class OrderConsumer(AsyncWebsocketConsumer):
             await self.send(text_data=json.dumps({"order": order, "cafe": cafe}))
         
         if self.channel_name == sender_name:
-            await self.send(text_data=json.dumps({"message": "success"}))
+            await self.send(text_data=json.dumps({"message": message}))
 
 class PagerConsumer(AsyncWebsocketConsumer):
     async def connect(self):

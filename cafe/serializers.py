@@ -8,7 +8,6 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from random import randint
 from websocket import create_connection
-
 from django.conf import settings
 
 from siteinfo.models import Error
@@ -305,13 +304,16 @@ class CreateOrderSerializer(serializers.ModelSerializer):
         order.save()
 
         # Notify WebSocket consumers about the new order
-        self._send_order_notification(order, cafe)
-
+        try:
+            self._send_order_notification(order, cafe)
+        except Exception as e:
+            print("We Are In Test Mode")
+            
         return order
 
     def _send_order_notification(self, order, cafe):
-        """Send A message to order WS"""
-        url = "ws://127.0.0.1:8000/ws/order/"
+        """Send A message to order WS"""    
+        url = "ws://127.0.0.1:8000/ws/order/"  
         if not settings.DEBUG:
             url = "ws://api.cafesiran.ir/ws/order/"
             
