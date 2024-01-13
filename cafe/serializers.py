@@ -322,6 +322,10 @@ class CreateOrderSerializer(serializers.ModelSerializer):
             json.dumps(
                 {
                     "order": f"{order.id}",
+                    "table": f"{order.num_of_table}",
+                    "status": f"{order.state}",
+                    "date": f"{order.registered_date}",
+                    "total_price": f"{order.total_price.amount}",
                     "cafe": f"{cafe.id}",
                     "message": "سفارش جدیدی اضافه شد",
                 }

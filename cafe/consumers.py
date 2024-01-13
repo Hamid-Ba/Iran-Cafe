@@ -22,6 +22,10 @@ class OrderConsumer(AsyncWebsocketConsumer):
             try:
                 cafe = text_data_json["cafe"]
                 order = text_data_json["order"]
+                table = text_data_json["table"]
+                status = text_data_json["status"]
+                date = text_data_json["date"]
+                total_price = text_data_json["total_price"]
                 message = text_data_json["message"]
             except:
                 await self.send(text_data=json.dumps({"message": "invalid data"}))
@@ -34,6 +38,10 @@ class OrderConsumer(AsyncWebsocketConsumer):
                     "type": "order_message",
                     "cafe": cafe,
                     "order": order,
+                    "table": table,
+                    "status": status,
+                    "date": date,
+                    "total_price": total_price,
                     "message": message,
                     "client": self.channel_name,
                 },
@@ -45,12 +53,28 @@ class OrderConsumer(AsyncWebsocketConsumer):
     async def order_message(self, event):
         order = event["order"]
         cafe = event["cafe"]
+        table = event["table"]
+        status = event["status"]
+        date = event["date"]
+        total_price = event["total_price"]
         message = event["message"]
         sender_name = event["client"]
 
         # Send the cafe message to the current client
         if self.channel_name != sender_name:
-            await self.send(text_data=json.dumps({"order": order, "cafe": cafe}))
+            await self.send(
+                text_data=json.dumps(
+                    {
+                        "order": order,
+                        "table": table,
+                        "status": status,
+                        "date": date,
+                        "total_price": total_price,
+                        "cafe": cafe,
+                    }
+                )
+            )
+            # await self.send(text_data=json.dumps({"order": order, "cafe": cafe}))
 
         if self.channel_name == sender_name:
             await self.send(text_data=json.dumps({"message": message}))
