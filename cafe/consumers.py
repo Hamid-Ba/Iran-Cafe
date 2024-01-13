@@ -65,10 +65,10 @@ class OrderConsumer(AsyncWebsocketConsumer):
             await self.send(
                 text_data=json.dumps(
                     {
-                        "order": order,
-                        "table": table,
-                        "status": status,
-                        "date": date,
+                        "id": order,
+                        "num_of_table": table,
+                        "state": status,
+                        "registered_date": date,
                         "total_price": total_price,
                         "cafe": cafe,
                     }
