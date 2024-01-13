@@ -313,9 +313,9 @@ class CreateOrderSerializer(serializers.ModelSerializer):
 
     def _send_order_notification(self, order, cafe):
         """Send A message to order WS"""
-        url = "ws://127.0.0.1:8000/ws/order/"
+        url = f"ws://127.0.0.1:8000/ws/order/{cafe.id}/"
         if not settings.DEBUG:
-            url = "ws://127.0.0.1:8001/ws/order/"
+            url = f"ws://127.0.0.1:8001/ws/order/{cafe.id}/"
 
         ws = create_connection(url)
         ws.send(
