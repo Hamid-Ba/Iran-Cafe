@@ -20,7 +20,7 @@ class CloudyCustomer(models.Model):
     cancelled_date = models.DateTimeField(null=True,blank=True)
     created_date = models.DateTimeField(auto_now_add=True)
     
-    cafe = models.ForeignKey("cafe.Cafe", on_delete=models.DO_NOTHING, related_name="cloudies")
+    cafe = models.OneToOneField("cafe.Cafe", on_delete=models.DO_NOTHING, related_name="cloud")
     
     def __str__(self) -> str:
         return f"{self.fullName}-{self.phone}"
