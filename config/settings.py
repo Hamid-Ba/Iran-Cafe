@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     "province",
     "siteinfo",
     "cafe.apps.CafeConfig",
+    "cloud",
     "zarinpal.apps.ZarinpalConfig",
     "corsheaders",
     "djmoney",

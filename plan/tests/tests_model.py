@@ -4,7 +4,7 @@ Test Plan Module Models
 from django.test import TestCase
 from djmoney.money import Money
 
-from plan.models import *
+from plan import models
 
 
 class PlanTest(TestCase):
@@ -20,7 +20,7 @@ class PlanTest(TestCase):
             "desc": "Gold Plan Description",
         }
 
-        plan = Plan.objects.create(**payload)
+        plan = models.Plan.objects.create(**payload)
 
         for key, value in payload.items():
             self.assertEqual(getattr(plan, key), value)
