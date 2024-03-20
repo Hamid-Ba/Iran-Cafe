@@ -39,6 +39,7 @@ urlpatterns = [
     path("robots.txt", RobotsView.as_view(), name="robots.txt"),
     path("api/account/", include("account.urls")),
     path("api/cafe/", include("cafe.urls")),
+    path("api/cloud/", include("cloud.urls")),
     path("api/blog/", include("blog.urls")),
     path("api/comment/", include("comment.urls")),
     path("api/siteinfo/", include("siteinfo.urls")),
