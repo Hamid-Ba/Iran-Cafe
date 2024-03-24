@@ -233,7 +233,7 @@ class OrderAdmin(admin.ModelAdmin):
     ]
     list_display_links = ["code", "total_price"]
     list_editable = ["state"]
-    list_filter = ["code", "cafe__code", "state"]
+    list_filter = ["cafe__code", "state"]
     sortable_by = ["registered_date", "code"]
     search_fields = [
         "code",
@@ -241,6 +241,7 @@ class OrderAdmin(admin.ModelAdmin):
         "registered_date",
         "user__phone",
         "cafe__code",
+        "cafe__persian_title",
         "cafe__owner__phone",
     ]
     inlines = [OrderItemInline]
@@ -252,6 +253,10 @@ class OrderAdmin(admin.ModelAdmin):
     @admin.display(ordering="cafe__owner__phone")
     def cafe_owner(self, obj):
         return obj.cafe.owner.phone
+    
+    @admin.display(ordering="cafe__persian_title")
+    def cafe_title(self, obj):
+        return obj.cafe.persian_title
 
     @admin.display(ordering="user__phone")
     def user_phone(self, obj):
