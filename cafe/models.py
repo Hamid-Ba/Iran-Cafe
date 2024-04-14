@@ -442,6 +442,11 @@ class OrderManager(models.Manager):
 
         return None
 
+    def delivered(self, id):
+        self.filter(id=id).update(
+            state=Order.OrderState.CONFIRMED, delivered_date=datetime.now()
+        )
+
 
 class Order(models.Model):
     """Order model"""
@@ -459,6 +464,9 @@ class Order(models.Model):
         max_digits=10, decimal_places=0, default_currency="IRR", null=False
     )
     registered_date = models.DateTimeField(auto_now_add=True, editable=False)
+    delivered_date = models.DateTimeField(
+        auto_now_add=False, editable=True, null=True, blank=True
+    )
     phone = models.CharField(
         max_length=11,
         blank=False,

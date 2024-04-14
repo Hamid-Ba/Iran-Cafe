@@ -351,6 +351,7 @@ class OrderSerializer(CreateOrderSerializer, serializers.ModelSerializer):
     items = OrderItemSerializer(many=True)
     is_owner = serializers.SerializerMethodField()
     registered_date = JDateTimeField()
+    delivered_date = JDateTimeField()
 
     def get_is_owner(self, obj):
         request = self.context.get("request", None)
@@ -369,6 +370,7 @@ class OrderSerializer(CreateOrderSerializer, serializers.ModelSerializer):
             "code",
             "state",
             "registered_date",
+            "delivered_date",
             "is_owner",
         ] + CreateOrderSerializer.Meta.fields
 

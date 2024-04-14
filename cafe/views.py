@@ -474,6 +474,55 @@ class OrderViewSet(
 
         return self.serializer_class
 
+    def update(self, request, pk, *args, **kwargs):
+        user = self.request.user
+
+        if not Order.objects.filter(id=pk).exists():
+            return Response(
+                {"message": "سفارشی یافت نشد"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+        order = Order.objects.filter(id=pk).first()
+
+        if order.cafe.owner != user:
+            return Response(
+                {"message": "شما قادر به انجام این کار نیستید"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        state = request.data.get("state")
+
+        if state:
+            if state == "D":
+                Order.objects.delivered(pk)
+        return super().update(request, pk, *args, **kwargs)
+
+    def partial_update(self, request, pk, *args, **kwargs):
+        user = self.request.user
+
+        if not Order.objects.filter(id=pk).exists():
+            return Response(
+                {"message": "سفارشی یافت نشد"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+        order = Order.objects.filter(id=pk).first()
+
+        if order.cafe.owner != user:
+            return Response(
+                {"message": "شما قادر به انجام این کار نیستید"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        state = request.data.get("state")
+
+        if state:
+            if state == "D":
+                Order.objects.delivered(pk)
+        return super().partial_update(request, pk, *args, **kwargs)
+
+    def perform_update(self, serializer):
+        return super().perform_update(serializer)
+
 
 class PlaceOrderAPI(generics.CreateAPIView):
     serializer_class = serializers.CreateOrderSerializer

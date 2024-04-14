@@ -225,6 +225,7 @@ class OrderAdmin(admin.ModelAdmin):
         "total_price",
         "state",
         "registered_date",
+        "delivered_date",
         "user",
         "user_phone",
         "cafe",
@@ -253,7 +254,7 @@ class OrderAdmin(admin.ModelAdmin):
     @admin.display(ordering="cafe__owner__phone")
     def cafe_owner(self, obj):
         return obj.cafe.owner.phone
-    
+
     @admin.display(ordering="cafe__persian_title")
     def cafe_title(self, obj):
         return obj.cafe.persian_title
