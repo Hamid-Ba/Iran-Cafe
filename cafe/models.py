@@ -312,7 +312,8 @@ class MenuItem(models.Model):
     calorie = models.FloatField(null=True, blank=True)
     order_count = models.IntegerField(default=0)
     sort_index = models.PositiveIntegerField(null=True, blank=True, default=1)
-
+    is_board_game = models.BooleanField(default=False)
+    
     cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE, related_name="menu_items")
     category = models.ForeignKey(
         Category, on_delete=models.CASCADE, related_name="menu_items"
@@ -500,6 +501,7 @@ class OrderItem(models.Model):
         max_digits=10, decimal_places=0, default_currency="IRR", null=False
     )
     count = models.IntegerField(default=0)
+    is_board_game = models.BooleanField(default=False)
 
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="items")
 
