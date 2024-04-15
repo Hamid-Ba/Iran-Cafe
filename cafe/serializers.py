@@ -295,15 +295,15 @@ class CreateOrderSerializer(serializers.ModelSerializer):
             # if item["is_board_game"]:
             #     payload["price"] = self._calc_board_game_price(order.registered_date, order.delivered_date, item["price"])
 
-            order.items.create(
-                menu_item_id=item["menu_item_id"],
-                title=item["title"],
-                image_url=item["image_url"],
-                desc=item["desc"],
-                price=item["price"],
-                count=item["count"],
-                is_board_game=item["is_board_game"],
-            )
+            # order.items.create(
+            #     menu_item_id=item["menu_item_id"],
+            #     title=item["title"],
+            #     image_url=item["image_url"],
+            #     desc=item["desc"],
+            #     price=item["price"],
+            #     count=item["count"],
+            #     is_board_game=item["is_board_game"],
+            # )
 
             order.items.create(**payload)
 
