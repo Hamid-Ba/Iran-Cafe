@@ -149,6 +149,7 @@ class CreateUpdateMenuItemSerializer(serializers.ModelSerializer):
             "calorie",
             "category",
             "sort_index",
+            "is_board_game"
         ]
 
     def create(self, validated_data):
