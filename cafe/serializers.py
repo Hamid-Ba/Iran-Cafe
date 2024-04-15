@@ -302,7 +302,7 @@ class CreateOrderSerializer(serializers.ModelSerializer):
                 desc=item["desc"],
                 price=item["price"],
                 count=item["count"],
-                is_board_game=item["is_board_game"],
+                is_board_game=item["is_board_game"]
             )
 
             order.items.create(**payload)
