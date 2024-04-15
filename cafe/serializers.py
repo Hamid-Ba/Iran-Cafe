@@ -2,6 +2,7 @@
 Cafe Module Serializers
 """
 import json
+import math
 from django_jalali.serializers.serializerfield import JDateField, JDateTimeField
 from uuid import uuid4
 from rest_framework import serializers
@@ -149,7 +150,7 @@ class CreateUpdateMenuItemSerializer(serializers.ModelSerializer):
             "calorie",
             "category",
             "sort_index",
-            "is_board_game"
+            "is_board_game",
         ]
 
     def create(self, validated_data):
@@ -281,6 +282,19 @@ class CreateOrderSerializer(serializers.ModelSerializer):
 
     def _add_items(self, order, items):
         for item in items:
+            payload = {
+                "menu_item_id": item["menu_item_id"],
+                "title": item["title"],
+                "image_url": item["image_url"],
+                "desc": item["desc"],
+                "price": item["price"],
+                "count": item["count"],
+                "is_board_game": item["is_board_game"],
+            }
+
+            # if item["is_board_game"]:
+            #     payload["price"] = self._calc_board_game_price(order.registered_date, order.delivered_date, item["price"])
+
             order.items.create(
                 menu_item_id=item["menu_item_id"],
                 title=item["title"],
@@ -288,11 +302,27 @@ class CreateOrderSerializer(serializers.ModelSerializer):
                 desc=item["desc"],
                 price=item["price"],
                 count=item["count"],
+                is_board_game=item["is_board_game"],
             )
+
+            order.items.create(**payload)
 
             menu_item = MenuItem.objects.filter(id=item["menu_item_id"])
             if menu_item.exists():
                 menu_item.first().ordered(item["count"])
+
+    def _calc_board_game_price(self, registered_date, delivered_date, price):
+        """Claculate Board Game Price By Time Priod"""
+        reg_time = registered_date.time()
+        del_time = delivered_date.time()
+
+        hour = (del_time.hour - reg_time.hour) * 3600
+        minute = math.abs(del_time.minute - reg_time.minute) * 60
+        second = math.abs(del_time.second - reg_time.second)
+
+        different_time = (hour + minute + second) / 60
+
+        return price * different_time
 
     def create(self, validated_data):
         """Custom Create"""

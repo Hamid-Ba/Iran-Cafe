@@ -313,7 +313,7 @@ class MenuItem(models.Model):
     order_count = models.IntegerField(default=0)
     sort_index = models.PositiveIntegerField(null=True, blank=True, default=1)
     is_board_game = models.BooleanField(default=False)
-    
+
     cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE, related_name="menu_items")
     category = models.ForeignKey(
         Category, on_delete=models.CASCADE, related_name="menu_items"
