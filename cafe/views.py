@@ -1,6 +1,7 @@
 """
 Cafe Module Views
 """
+from datetime import datetime
 from random import randint
 from drf_spectacular.utils import (
     extend_schema,
@@ -495,6 +496,7 @@ class OrderViewSet(
         if state:
             if state == "D":
                 Order.objects.delivered(pk)
+                order.calc_total_price(datetime.now())
         return super().update(request, pk, *args, **kwargs)
 
     def partial_update(self, request, pk, *args, **kwargs):
@@ -518,6 +520,7 @@ class OrderViewSet(
         if state:
             if state == "D":
                 Order.objects.delivered(pk)
+                order.calc_total_price(datetime.now())
         return super().partial_update(request, pk, *args, **kwargs)
 
     def perform_update(self, serializer):

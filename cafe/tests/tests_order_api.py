@@ -153,6 +153,7 @@ class PublicTest(TestCase):
                     "desc": item_1.desc,
                     "price": 10000,
                     "count": 2,
+                    "is_board_game": False,
                 },
                 {
                     "menu_item_id": item_2.id,
@@ -161,6 +162,7 @@ class PublicTest(TestCase):
                     "desc": item_2.desc,
                     "price": 10000,
                     "count": 1,
+                    "is_board_game": False,
                 },
             ],
             "cafe": self.cafe.id,

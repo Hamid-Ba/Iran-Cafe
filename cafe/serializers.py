@@ -311,19 +311,6 @@ class CreateOrderSerializer(serializers.ModelSerializer):
             if menu_item.exists():
                 menu_item.first().ordered(item["count"])
 
-    def _calc_board_game_price(self, registered_date, delivered_date, price):
-        """Claculate Board Game Price By Time Priod"""
-        reg_time = registered_date.time()
-        del_time = delivered_date.time()
-
-        hour = (del_time.hour - reg_time.hour) * 3600
-        minute = math.abs(del_time.minute - reg_time.minute) * 60
-        second = math.abs(del_time.second - reg_time.second)
-
-        different_time = (hour + minute + second) / 60
-
-        return price * different_time
-
     def create(self, validated_data):
         """Custom Create"""
         cafe = validated_data.pop("cafe", None)
@@ -413,7 +400,8 @@ class PatchOrderSerializer(serializers.ModelSerializer):
         """Meta Class"""
 
         model = Order
-        fields = ["id", "state"]
+        fields = ["id", "state", "total_price"]
+        read_only_fields = ["total_price"]
 
 
 class CreateBartenderSerializer(serializers.Serializer):

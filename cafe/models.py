@@ -1,6 +1,7 @@
 """
 Cafe Module Models
 """
+import math
 import os
 import pytz
 from uuid import uuid4
@@ -487,6 +488,39 @@ class Order(models.Model):
 
     def __str__(self):
         return self.user.phone
+
+    def calc_total_price(self, delivered_date):
+        total_price = 0.0
+        for item in self.items.all():
+            item_price = 0
+            if item.is_board_game:
+                item_price = self._calc_board_game_price(
+                    delivered_date, self.registered_date, item.price
+                )
+
+            else:
+                item_price = item.price * item.count
+
+            total_price += item_price
+
+        self.total_price.amount = total_price
+        self.save()
+
+    def _calc_board_game_price(self, registered_date, delivered_date, price):
+        """Claculate Board Game Price By Time Priod"""
+        reg_time = registered_date.time()
+        del_time = delivered_date.time()
+
+        hour = (del_time.hour - reg_time.hour) * 3600
+        minute = abs(del_time.minute - reg_time.minute) * 60
+        second = abs(del_time.second - reg_time.second)
+
+        different_time = (hour + minute + second) / 60
+
+        if different_time < 1:
+            different_time = 1
+
+        return price * different_time
 
 
 class OrderItem(models.Model):
