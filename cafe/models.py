@@ -1,6 +1,7 @@
 """
 Cafe Module Models
 """
+import decimal
 import math
 import os
 import pytz
@@ -486,16 +487,17 @@ class Order(models.Model):
     
     def delivered(self):
         self.state = Order.OrderState.CONFIRMED
-        self.delivered_date = datetime.now()
+        # utc = pytz.UTC
+        self.delivered_date = datetime.now()#.replace(tzinfo=utc)
         self.save()
 
     def calc_total_price(self, delivered_date):
-        total_price = 0.0
+        total_price = decimal.Decimal(0.0)
         for item in self.items.all():
             item_price = 0
             if item.is_board_game:
                 item_price = self._calc_board_game_price(
-                    delivered_date, self.registered_date, item.price
+                    delivered_date, self.registered_date, item.price.amount
                 )
 
             else:
@@ -514,13 +516,13 @@ class Order(models.Model):
         hour = (del_time.hour - reg_time.hour) * 3600
         minute = abs(del_time.minute - reg_time.minute) * 60
         second = abs(del_time.second - reg_time.second)
-
-        different_time = (hour + minute + second) / 60
+        
+        different_time = (hour + minute + second) / 3600
 
         if different_time < 1:
             different_time = 1
 
-        return price * different_time
+        return decimal.Decimal(different_time) * price
 
 
 class OrderItem(models.Model):
