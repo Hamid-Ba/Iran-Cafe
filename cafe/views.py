@@ -495,7 +495,7 @@ class OrderViewSet(
 
         if state:
             if state == "D":
-                Order.objects.delivered(pk)
+                order.delivered()
                 order.calc_total_price(datetime.now())
         return super().update(request, pk, *args, **kwargs)
 
@@ -519,7 +519,7 @@ class OrderViewSet(
 
         if state:
             if state == "D":
-                Order.objects.delivered(pk)
+                order.delivered()
                 order.calc_total_price(datetime.now())
         return super().partial_update(request, pk, *args, **kwargs)
 

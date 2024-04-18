@@ -444,11 +444,6 @@ class OrderManager(models.Manager):
 
         return None
 
-    def delivered(self, id):
-        self.filter(id=id).update(
-            state=Order.OrderState.CONFIRMED, delivered_date=datetime.now()
-        )
-
 
 class Order(models.Model):
     """Order model"""
@@ -488,6 +483,11 @@ class Order(models.Model):
 
     def __str__(self):
         return self.user.phone
+    
+    def delivered(self):
+        self.state = Order.OrderState.CONFIRMED
+        self.delivered_date = datetime.now()
+        self.save()
 
     def calc_total_price(self, delivered_date):
         total_price = 0.0
