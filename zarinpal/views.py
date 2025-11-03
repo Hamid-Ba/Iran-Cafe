@@ -17,7 +17,7 @@ from .zp import Zarinpal, ZarinpalError
 from .serializers import PaymentSerializer, StorePaymentSerializer
 from . import pagination
 
-zarin_pal = Zarinpal(settings.MERCHANT_ID, settings.VERIFY_URL, sandbox=True)
+zarin_pal = Zarinpal(settings.MERCHANT_ID, settings.VERIFY_URL, sandbox=False)
 FRONT_VERIFY = settings.FRONT_VERIFY
 
 

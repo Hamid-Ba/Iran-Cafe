@@ -11,10 +11,13 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 import os
-import environ
 from pathlib import Path
 
-env = environ.Env()
+from decouple import Csv, config
+from dotenv import load_dotenv
+from dj_database_url import parse as db_url
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,16 +27,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env("DJANGO_SECRET_KEY", default="None")
+SECRET_KEY = os.getenv(
+    "SECRET_KEY",
+    default="django-insecure-1aexmk-ef)_)(^grkc$4_6azv^lbkv*jzvrd%9zk+rl=y0(er8",
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool("DJANGO_DEBUG", True)
-DOCKER = env.bool("DOCKER", False)
+DEBUG = config("DEBUG", cast=bool)
 
 ALLOWED_HOSTS = ["*"]
 
 SITE_ID = 1
-
 SITE = {"front": {"protocol": "https", "url": "cafesiran.ir"}}
 
 # Application definition
@@ -96,6 +100,9 @@ CSRF_TRUSTED_ORIGINS = [
     "http://cafesiran.ir",
     "https://cafesiran.ir",
 ]
+
+CSRF_TRUSTED_ORIGINS = config("CSRF_TRUSTED_ORIGINS", cast=Csv())
+
 CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = "config.urls"
@@ -123,30 +130,13 @@ ASGI_APPLICATION = "config.asgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-if not DOCKER:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": "IranCafe",
-            "HOST": "localhost",
-            "USER": "postgres",
-            "PASSWORD": "09155490422HamidBa",
-            "PORT": "5432",
-        }
-    }
-else:
-    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-    DATABASES = {"default": env.db("DATABASE_URL")}
-    DATABASES["default"]["ATOMIC_REQUESTS"] = True
-# if DEBUG:
-#     DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
-# }
-# else:
-
+DATABASES = {
+    "default": config(
+        "MAIN_DATABASE",
+        default="sqlite:///" + str(BASE_DIR / "db.sqlite3"),
+        cast=db_url,
+    )
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -172,7 +162,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "Asia/Tehran"
+TIME_ZONE = os.getenv("TIME_ZONE", default="Asia/Tehran")
 
 USE_I18N = True
 
@@ -204,7 +194,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "account.User"
 
-KAVENEGAR_API_KEY = ""
+KAVENEGAR_API_KEY = os.getenv("KAVENEGAR_API_KEY")
 
 REST_FRAMEWORK = {
     # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
@@ -213,27 +203,44 @@ REST_FRAMEWORK = {
 }
 
 SPECTACULAR_SETTINGS = {
+    "TITLE": "Cafes Iran API",
     "COMPONENT_SPLIT_REQUEST": True,
+    "VERSION": "2.2.0",
 }
 
 # Zarinpal setting
-MERCHANT_ID = "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
+MERCHANT_ID = os.getenv("MERCHANT_ID")
 VERIFY_URL = "http://127.0.0.1:8000/api/payment/verify_order/"
 VERIFY_STORE_URL = "http://127.0.0.1:8000/api/payment/verify_store_order/"
 # SELLER_LOCAL_VERIFY = "http://cafesiran.ir/dashboard/verify/"
 FRONT_VERIFY = "https://cafesiran.ir/dashboard/verify/"
 
-if not DOCKER:
-    CELERY_BROKER_URL = "redis://127.0.0.1:6379/0"
-    CELERY_RESULT_BACKEND = "redis://127.0.0.1:6379/0"
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
+REDIS_CACHE = os.getenv("REDIS_CACHE")
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_BACKEND = CELERY_BROKER_URL
 
-else:
-    CELERY_BROKER_URL = env("CELERY_BROKER")
-    CELERY_RESULT_BACKEND = env("CELERY_BACKEND")
-    CELERY_TIMEZONE = "Asia/Tehran"
+IS_TEST = config("IS_TEST", cast=bool)
+if IS_TEST:
+    CELERY_TASK_ALWAYS_EAGER = True  # Executes tasks synchronously
+    CELERY_TASK_EAGER_PROPAGATES = True  # Propagates exceptions
+    
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": REDIS_CACHE,
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    }
+}
 
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer",
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [(REDIS_CACHE.split('//')[1])],
+        },
     },
 }

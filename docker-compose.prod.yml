@@ -1,0 +1,30 @@
+version: "3.8"
+services:
+  back:
+    env_file:
+      - .env.prod
+    ports:
+      - "127.0.0.1:8000:8000"  # Keep localhost binding for nginx proxy
+    
+  celery_worker:
+    env_file:
+      - .env.prod
+      
+  celery_beat:
+    env_file:
+      - .env.prod
+      
+  flower:
+    env_file:
+      - .env.prod
+    ports:
+      - "127.0.0.1:5555:5555"  # Keep localhost binding for security
+      
+  db:
+    env_file:
+      - .env.prod
+    volumes:
+      - postgres_data:/var/lib/postgresql/data:Z
+      
+volumes:
+  postgres_data:

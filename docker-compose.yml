@@ -1,0 +1,116 @@
+version: "3.8"
+services:
+  db:
+    image: postgres:17-bookworm
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data:Z
+    networks:
+      - cafesiran_back
+
+  redis:
+    restart: unless-stopped
+    image: redis:7.4.0-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    expose:
+      - "6379"
+    environment:
+      - TZ=Asia/Tehran
+    networks:
+      - cafesiran_back
+
+  back:
+    build: .
+    command: >
+      sh -c "python manage.py migrate --no-input &&
+       python manage.py collectstatic --no-input &&
+       daphne -b 0.0.0.0 -p 8000 config.asgi:application"
+    volumes:
+      - /home/cafesiran_back/static:/home/app/cafesiran/static/
+      - /home/cafesiran_back/media:/home/app/cafesiran/media/
+      - .:/home/app/cafesiran
+    labels:
+      co.elastic.logs/enabled: "true"
+      filebeat_log: "true"
+    ports:
+      - 127.0.0.1:8000:8000
+    healthcheck:
+      test: ["CMD", "python", "manage.py", "check"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    depends_on:
+      db:
+        condition: service_started
+      redis:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      - TZ=Asia/Tehran
+    restart: unless-stopped
+    networks:
+      - cafesiran_back
+
+  celery_worker:
+    build: .
+    command: celery -A config worker --loglevel=info
+    volumes:
+      - /home/cafesiran_back/static:/home/app/cafesiran/static/
+      - /home/cafesiran_back/media:/home/app/cafesiran/media/
+      - .:/home/app/cafesiran
+    labels:
+      co.elastic.logs/enabled: "true"
+      filebeat_log: "true"
+    depends_on:
+      - db
+      - redis
+    env_file:
+      - .env
+    environment:
+      - TZ=Asia/Tehran
+    restart: unless-stopped
+    networks:
+      - cafesiran_back
+
+  celery_beat:
+    build: .
+    command: celery -A config beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    labels:
+      co.elastic.logs/enabled: "true"
+      filebeat_log: "true"
+    depends_on:
+      - db
+      - redis
+    env_file:
+      - .env
+    environment:
+      - TZ=Asia/Tehran
+    restart: unless-stopped
+    networks:
+      - cafesiran_back
+  
+  flower:
+    build: .
+    command: celery -A config flower --port=5555 --basic_auth="09151498722:0422HamidBa" 
+    ports:
+      - 127.0.0.1:5555:5555
+    depends_on:
+      - celery_worker
+    env_file:
+      - .env
+    environment:
+      - TZ=Asia/Tehran
+    restart: unless-stopped
+    networks:
+      - cafesiran_back
+
+networks:
+  cafesiran_back:

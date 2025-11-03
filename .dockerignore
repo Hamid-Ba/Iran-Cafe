@@ -5,3 +5,15 @@ venv
 .vscode
 README.md
 LICENSE
+.env
+.env.prod
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache
+.coverage
+htmlcov/
+.DS_Store
+celerybeat-schedule.db
+dump.rdb
