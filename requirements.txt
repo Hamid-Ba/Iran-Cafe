@@ -281,6 +281,8 @@ vine==5.1.0
     #   kombu
 wcwidth==0.2.14
     # via prompt-toolkit
+websocket-client==1.9.0
+    # via -r requirements.ini
 zeep==3.4.0
     # via -r requirements.ini
 zope-interface==8.0.1
