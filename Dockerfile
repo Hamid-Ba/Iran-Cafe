@@ -41,4 +41,4 @@ RUN mkdir -p $HOME/static $HOME/media
 
 CMD python manage.py migrate --no-input && \
     python manage.py collectstatic --no-input && \
-    gunicorn -b 0.0.0.0:8000 config.wsgi:application --workers 3 --timeout 120
+    daphne -b 0.0.0.0 -p 8000 config.asgi:application
