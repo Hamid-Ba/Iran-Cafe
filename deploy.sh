@@ -28,17 +28,17 @@ fi
 
 # Build and start services
 echo "🏗️  Building Docker images..."
-docker-compose -f docker-compose.yml -f docker-compose.prod.yml build
+docker compose -f docker-compose.yml -f docker-compose.prod.yml build
 
 echo "📦 Starting services..."
-docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 
 echo "⏳ Waiting for services to be ready..."
 sleep 30
 
 # Check if services are healthy
 echo "🏥 Checking service health..."
-docker-compose -f docker-compose.yml -f docker-compose.prod.yml ps
+docker compose -f docker-compose.yml -f docker-compose.prod.yml ps
 
 echo "✅ Deployment complete!"
 echo ""
@@ -51,7 +51,7 @@ echo "🔧 To set up Nginx and SSL:"
 echo "   sudo ./setup-nginx.sh"
 echo ""
 echo "📊 To view logs:"
-echo "   docker-compose -f docker-compose.yml -f docker-compose.prod.yml logs -f"
+echo "   docker compose -f docker-compose.yml -f docker-compose.prod.yml logs -f"
 echo ""
 echo "🛑 To stop services:"
-echo "   docker-compose -f docker-compose.yml -f docker-compose.prod.yml down"
+echo "   docker compose -f docker-compose.yml -f docker-compose.prod.yml down"
