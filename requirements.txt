@@ -26,6 +26,8 @@ autobahn==24.4.2
     # via daphne
 automat==25.4.16
     # via twisted
+babel==2.17.0
+    # via py-moneyed
 billiard==4.2.2
     # via celery
 black==22.12.0
@@ -86,6 +88,7 @@ django==4.2.25
     #   django-jalali
     #   django-jalali-date
     #   django-js-asset
+    #   django-money
     #   django-redis
     #   django-sonar
     #   django-taggit
@@ -110,6 +113,8 @@ django-jalali-date==1.0.2
     # via -r requirements.ini
 django-js-asset==3.1.2
     # via django-ckeditor
+django-money==3.5.4
+    # via -r requirements.ini
 django-redis==5.4.0
     # via -r requirements.ini
 django-sonar==0.1.8
@@ -184,6 +189,8 @@ psutil==6.1.1
     # via -r requirements.ini
 psycopg2-binary==2.9.11
     # via -r requirements.ini
+py-moneyed==3.0
+    # via django-money
 pyasn1==0.6.1
     # via
     #   pyasn1-modules
@@ -255,6 +262,7 @@ typing-extensions==4.15.0
     #   cron-descriptor
     #   cryptography
     #   dj-database-url
+    #   py-moneyed
     #   pyopenssl
     #   referencing
     #   twisted
