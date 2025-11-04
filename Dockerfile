@@ -31,13 +31,13 @@ RUN pip install --upgrade pip && \
 
 # Copy application code
 COPY . $HOME/
-RUN chown -R appuser:appuser $HOME
+
+# Create directories for static and media files and set permissions
+RUN mkdir -p $HOME/static $HOME/media && \
+    chown -R appuser:appuser $HOME
 
 # Switch to non-root user
 USER appuser
-
-# Create directories for static and media files
-RUN mkdir -p $HOME/static $HOME/media
 
 CMD python manage.py migrate --no-input && \
     python manage.py collectstatic --no-input && \
