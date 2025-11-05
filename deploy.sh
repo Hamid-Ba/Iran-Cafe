@@ -29,7 +29,8 @@ fi
 # Create host directories for volumes
 echo "📁 Creating host directories..."
 sudo mkdir -p /home/cafesiran_back/static /home/cafesiran_back/media
-sudo chown -R $USER:$USER /home/cafesiran_back/
+sudo chown -R $(id -u):$(id -g) /home/cafesiran_back/
+sudo chmod -R 755 /home/cafesiran_back/
 
 # Build and start services
 echo "🏗️  Building Docker images..."

@@ -28,8 +28,8 @@ services:
   back:
     build: .
     command: >
-      sh -c "python manage.py migrate --no-input &&
-       python manage.py collectstatic --no-input &&
+      sh -c "python manage.py makemigrations --no-input &&
+       python manage.py migrate --no-input &&
        daphne -b 0.0.0.0 -p 8000 config.asgi:application"
     volumes:
       - /home/cafesiran_back/static:/home/app/cafesiran/static/

@@ -34,10 +34,10 @@ RUN pip install --upgrade pip && \
 # Copy application code
 COPY . $HOME/
 
-# Run collectstatic as root to avoid permission issues
-RUN python manage.py collectstatic --no-input || true
+# Collect static files as root (migrations will be handled at runtime)
+RUN python manage.py collectstatic --no-input --clear || true
 
-# Set ownership after collectstatic
+# Set ownership after operations
 RUN chown -R appuser:appuser $HOME
 
 # Switch to non-root user
