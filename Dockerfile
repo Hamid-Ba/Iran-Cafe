@@ -13,12 +13,11 @@ RUN apt-get update && apt-get install -y \
     libssl-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Create user and home directory
-RUN groupadd -r appuser && useradd -r -g appuser appuser
+# Set up application directory
 ENV HOME=/home/app/cafesiran
-RUN mkdir -p $HOME && chown -R appuser:appuser $HOME
-# Create static and media directories with proper permissions
-RUN mkdir -p $HOME/static $HOME/media && chown -R appuser:appuser $HOME
+RUN mkdir -p $HOME
+# Create static and media directories
+RUN mkdir -p $HOME/static $HOME/media
 
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -34,14 +33,8 @@ RUN pip install --upgrade pip && \
 # Copy application code
 COPY . $HOME/
 
-# Collect static files as root (migrations will be handled at runtime)
+# Collect static files (migrations will be handled at runtime)
 RUN python manage.py collectstatic --no-input --clear || true
-
-# Set ownership after operations
-RUN chown -R appuser:appuser $HOME
-
-# Switch to non-root user
-USER appuser
 
 CMD python manage.py migrate --no-input && \
     daphne -b 0.0.0.0 -p 8000 config.asgi:application
