@@ -26,11 +26,15 @@ if [ $? -eq 0 ]; then
     fi
 fi
 
-# Create host directories for volumes
+# Create host directories for volumes with proper permissions
 echo "📁 Creating host directories..."
 sudo mkdir -p /home/cafesiran_back/static /home/cafesiran_back/media
 sudo chown -R $(id -u):$(id -g) /home/cafesiran_back/
 sudo chmod -R 755 /home/cafesiran_back/
+
+# Ensure nginx can read the static files
+sudo chown -R www-data:www-data /home/cafesiran_back/static || true
+sudo chmod -R 755 /home/cafesiran_back/static || true
 
 # Build and start services
 echo "🏗️  Building Docker images..."
@@ -39,12 +43,23 @@ docker compose -f docker-compose.yml -f docker-compose.prod.yml build
 echo "📦 Starting services..."
 docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 
+# Ensure static files are collected properly
+echo "📦 Collecting static files..."
+docker compose -f docker-compose.yml -f docker-compose.prod.yml exec -T back python manage.py collectstatic --no-input --clear || true
+
+# Fix permissions for static files
+sudo chown -R www-data:www-data /home/cafesiran_back/static || true
+sudo chmod -R 755 /home/cafesiran_back/static || true
+
 echo "⏳ Waiting for services to be ready..."
 sleep 30
 
 # Check if services are healthy
 echo "🏥 Checking service health..."
 docker compose -f docker-compose.yml -f docker-compose.prod.yml ps
+
+echo "📂 Checking static files..."
+ls -la /home/cafesiran_back/static/ | head -10
 
 echo "✅ Deployment complete!"
 echo ""
