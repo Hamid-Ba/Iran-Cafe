@@ -90,18 +90,24 @@ MIDDLEWARE = [
 
 CSRF_TRUSTED_ORIGINS = [
     "http://*.127.0.0.1",
-    "https://*.127.0.0.1",
+    "https://*.127.0.0.1", 
     "http://localhost:8080",
     "http://localhost:8000",
-    "http://87.107.165.182",
-    "https://87.107.165.182",
+    "http://87.107.155.215",
+    "https://87.107.155.215",
     "http://api.cafesiran.ir",
     "https://api.cafesiran.ir",
     "http://cafesiran.ir",
-    "https://cafesiran.ir",
+    "https://cafesiran.ir"
 ]
 
-CSRF_TRUSTED_ORIGINS = config("CSRF_TRUSTED_ORIGINS", cast=Csv())
+# Override with environment variable if provided
+try:
+    env_origins = config("CSRF_TRUSTED_ORIGINS", default="", cast=str)
+    if env_origins:
+        CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in env_origins.split(',') if origin.strip()]
+except Exception as e:
+    print(f"Warning: Error parsing CSRF_TRUSTED_ORIGINS from environment: {e}")
 
 CORS_ALLOW_ALL_ORIGINS = True
 
