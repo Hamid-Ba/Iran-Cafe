@@ -26,6 +26,11 @@ if [ $? -eq 0 ]; then
     fi
 fi
 
+# Create host directories for volumes
+echo "📁 Creating host directories..."
+sudo mkdir -p /home/cafesiran_back/static /home/cafesiran_back/media
+sudo chown -R $USER:$USER /home/cafesiran_back/
+
 # Build and start services
 echo "🏗️  Building Docker images..."
 docker compose -f docker-compose.yml -f docker-compose.prod.yml build
