@@ -269,3 +269,19 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+# When running behind a reverse proxy (nginx) that terminates TLS, ensure
+# Django knows the original request scheme so build_absolute_uri() and other
+# helpers produce https:// URLs instead of http://. nginx is configured to
+# send X-Forwarded-Proto; tell Django to trust that header.
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+USE_X_FORWARDED_HOST = True
+
+# Make cookies secure so browsers only send them over HTTPS.
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+# Optional: redirect HTTP to HTTPS in Django (nginx already handles this if
+# using certbot --nginx with redirect). Keep False by default but make it
+# configurable via env.
+SECURE_SSL_REDIRECT = config("SECURE_SSL_REDIRECT", default=False, cast=bool)
