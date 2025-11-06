@@ -16,6 +16,7 @@ from pathlib import Path
 from decouple import Csv, config
 from dotenv import load_dotenv
 from dj_database_url import parse as db_url
+import urllib.parse
 
 load_dotenv()
 
@@ -242,11 +243,29 @@ CACHES = {
     }
 }
 
+# Configure Channels layer using REDIS_CACHE (or CELERY_BROKER_URL as fallback).
+# If the configured host is localhost/127.0.0.1 but we're running under Docker
+# compose the redis service is available as the hostname `redis`. Normalize
+# the URL to a redis://... string accepted by channels_redis.
+_raw_redis = REDIS_CACHE or CELERY_BROKER_URL or "redis://127.0.0.1:6379/0"
+try:
+    _parsed = urllib.parse.urlparse(_raw_redis)
+    _host = _parsed.hostname or "redis"
+    _port = _parsed.port or 6379
+    # path may contain the DB number, strip leading '/'
+    _db = (_parsed.path.lstrip('/') if _parsed.path else "0")
+    # inside docker-compose the redis server is reachable at hostname 'redis'
+    if _host in ("127.0.0.1", "localhost"):
+        _host = "redis"
+    _redis_normalized = f"redis://{_host}:{_port}/{_db}"
+except Exception:
+    _redis_normalized = _raw_redis
+
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [(REDIS_CACHE.split('//')[1])],
+            "hosts": [_redis_normalized],
         },
     },
 }
