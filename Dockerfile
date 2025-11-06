@@ -28,7 +28,8 @@ WORKDIR $HOME
 # Copy requirements first for better caching
 COPY requirements.txt $HOME/
 RUN pip install --upgrade pip && \
-    pip install -r requirements.txt --no-cache-dir
+    pip install -r requirements.txt --no-cache-dir && \
+    pip install channels-redis==4.1.0 --no-cache-dir
 
 # Copy application code
 COPY . $HOME/

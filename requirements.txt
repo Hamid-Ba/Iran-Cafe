@@ -11,6 +11,7 @@ appdirs==1.4.4
 asgiref==3.10.0
     # via
     #   channels
+    #   channels-redis
     #   daphne
     #   django
 async-timeout==5.0.1
@@ -44,6 +45,10 @@ certifi==2025.10.5
 cffi==2.0.0
     # via cryptography
 channels==4.0.0
+    # via
+    #   -r requirements.ini
+    #   channels-redis
+channels-redis==4.1.0
     # via -r requirements.ini
 charset-normalizer==3.4.4
     # via requests
@@ -171,6 +176,8 @@ lxml==6.0.2
     # via zeep
 model-bakery==1.11.0
     # via -r requirements.ini
+msgpack==1.1.2
+    # via channels-redis
 mypy-extensions==1.1.0
     # via black
 packaging==25.0
@@ -220,6 +227,7 @@ pyyaml==6.0.3
 redis==4.6.0
     # via
     #   -r requirements.ini
+    #   channels-redis
     #   django-redis
 referencing==0.37.0
     # via
